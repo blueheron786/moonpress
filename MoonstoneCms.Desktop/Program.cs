@@ -12,4 +12,6 @@ if (builder.HostEnvironment.IsDevelopment())
     builder.UseDeveloperTools();
 }
 
+builder.Window.UseTitle("Moonstone CMS Desktop");
+
 await builder.Build().RunAsync();
