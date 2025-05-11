@@ -12,4 +12,12 @@
     <PackageReference Include="BlazorDesktop" Version="9.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MoonstoneCms.Core\MoonstoneCms.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+  </ItemGroup>
+
 </Project>

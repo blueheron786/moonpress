@@ -1,0 +1,27 @@
+@page "/new-project"
+@using System.Windows.Forms
+@inject IJSRuntime JS
+
+<h3>New Project</h3>
+
+<div class="form-group mb-3">
+    <label>Project Name</label>
+    <InputText class="form-control" @bind-Value="_projectName" />
+</div>
+
+<div class="form-group mb-3">
+    <label>Project Folder</label>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-secondary" @onclick="SelectFolder">Select Folder</button>
+        <span>@(string.IsNullOrWhiteSpace(_selectedFolder) ? "No folder selected" : _selectedFolder)</span>
+    </div>
+</div>
+
+<button class="btn btn-primary" @onclick="CreateProject" disabled="@IsCreateDisabled">Create Project</button>
+
+@if (_isCreationSuccessful)
+{
+    <div class="alert alert-success mt-3">
+        Project created successfully!
+    </div>
+}
