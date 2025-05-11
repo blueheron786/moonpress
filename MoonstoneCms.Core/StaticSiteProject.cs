@@ -2,17 +2,18 @@
 
 namespace MoonstoneCms.Core;
 
-using System.Text.Json;
-
 public class StaticSiteProject
 {
     public string ProjectName { get; set; } = string.Empty;
+    public string Location { get; private set; } = string.Empty;
 
     public static StaticSiteProject Load(string path)
     {
         var jsonPath = Path.Combine(path, "project.json");
         var json = File.ReadAllText(jsonPath);
-        return JsonSerializer.Deserialize<StaticSiteProject>(json)!;
+        var toReturn = JsonSerializer.Deserialize<StaticSiteProject>(json)!;
+        toReturn.Location = path;
+        return toReturn;
     }
 
     public void Save(string path)

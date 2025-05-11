@@ -1,6 +1,6 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">MoonstoneCms.Desktop</a>
+        <a class="navbar-brand" href="">@(ProjectState.Current?.ProjectName ?? "MoonstoneCms.Desktop")</a>
     </div>
 </div>
 
@@ -19,5 +19,14 @@
                 <i class="fa-solid fa-folder-open"></i> Load Project
             </NavLink>
         </div>
+        
+        @if (ProjectState.Current is not null)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="pages">
+                    <i class="fa-solid fa-file-lines"></i> Pages
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>

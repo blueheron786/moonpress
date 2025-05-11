@@ -1,0 +1,17 @@
+@page "/pages"
+
+<h3>Pages</h3>
+
+@if (PageFiles is null || !PageFiles.Any())
+{
+    <p>No pages found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var pageFile in PageFiles)
+        {
+            <li>@pageFile</li>
+        }
+    </ul>
+}

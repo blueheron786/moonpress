@@ -7,5 +7,21 @@ namespace MoonstoneCms.Desktop;
 /// </summary>
 public static class ProjectState
 {
-    public static StaticSiteProject? Current { get; set; }
+    /// <summary>
+    /// Notify interested parties when the project is loaded.
+    /// e.g. the nav bar page, so that it can add project-specific links.
+    /// </summary>
+    public static event Action? OnProjectLoaded;
+
+    private static StaticSiteProject? _current;
+
+    public static StaticSiteProject? Current
+    {
+        get => _current;
+        set
+        {
+            _current = value;
+            OnProjectLoaded?.Invoke();
+        }
+    }
 }
