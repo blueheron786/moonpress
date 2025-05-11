@@ -4,7 +4,7 @@ using MoonstoneCms.Core;
 
 namespace MoonstoneCms.Desktop.Components.Pages;
 
-public partial class NewProjectPage : ComponentBase
+public partial class NewProject : ComponentBase
 {
     private string _projectName = "";
     private string _selectedFolder = "";
