@@ -1,5 +1,9 @@
-# Moonpress
+# MoonPress
 
-Imagine Wordpress, but as an offline, file-based, static website generator.
+Imagine Wordpress as an offline, file-based, static website generator:
 
-That's Moonpress. Built in C# and Avalonia for cross-platform goodness.
+- **Secure:** No database to hack
+- **Blazing Fast:** No slow-running code
+- **Easy to Update:** With a friendly user UI
+
+That's MoonPress. Built in C# and Avalonia for cross-platform goodness.
