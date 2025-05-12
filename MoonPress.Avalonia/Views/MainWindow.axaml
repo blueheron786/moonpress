@@ -15,6 +15,11 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+        <TextBlock Text="Welcome to MoonPress" FontSize="24" HorizontalAlignment="Center"/>
+        <Button Content="New Project" Width="200" Command="{Binding NewProjectCommand}"/>
+        <Button Content="Load Project" Width="200" Command="{Binding LoadProjectCommand}"/>
+    </StackPanel>
+
 
 </Window>
