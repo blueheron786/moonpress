@@ -30,6 +30,7 @@ public partial class LoadProject : ComponentBase
                 if (project is not null)
                 {
                     ProjectState.Current = project;
+                    ProjectState.Current.Location = folder;
                     Nav.NavigateTo("/project");
                 }
             }

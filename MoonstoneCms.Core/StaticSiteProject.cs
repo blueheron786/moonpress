@@ -5,7 +5,7 @@ namespace MoonstoneCms.Core;
 public class StaticSiteProject
 {
     public string ProjectName { get; set; } = string.Empty;
-    public string Location { get; private set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
 
     public static StaticSiteProject Load(string path)
     {

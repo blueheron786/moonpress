@@ -4,16 +4,16 @@
 
 <button class="btn btn-primary" @onclick="GoToNewContentItem">Add New Content Item</button>
 
-@if (!ContentFiles.Any())
+@if (!ContentItemsList.Any())
 {
     <p>No content items found.</p>
 }
 else
 {
     <ul>
-        @foreach (var filename in ContentFiles)
+        @foreach (var content in ContentItemsList)
         {
-            <li>@filename</li>
+            <li><strong>@(content.FileNameOnly):</strong> Created @(content.DatePublished) [@(content.Status)]</li>
         }
     </ul>
 }
