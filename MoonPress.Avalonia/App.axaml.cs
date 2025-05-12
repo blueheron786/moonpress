@@ -5,8 +5,7 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using MoonPress.Avalonia.ViewModels;
 using MoonPress.Avalonia.Views;
-using Splat;
-using ReactiveUI;
+using MoonPress.Avalonia.Services.IO;
 
 namespace MoonPress.Avalonia;
 
@@ -26,7 +25,8 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                // TODO: poor man's DI, use real DI in the future
+                DataContext = new MainWindowViewModel(new FolderPickerService()),
             };
         }
 
