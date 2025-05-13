@@ -6,11 +6,12 @@ using MoonPress.Core.Models;
 using System.Text.Json;
 using MoonPress.Avalonia.Models;
 using MoonPress.Avalonia.Services.IO;
+using MoonPress.Avalonia.ViewModels.Project;
 
-namespace MoonPress.Avalonia.Tests.ViewModels;
+namespace MoonPress.Avalonia.Tests.ViewModels.Project;
 
 [TestFixture]
-public class MainWindowViewModelTests
+public class NewProjectViewModelTests
 {
     [Test]
     public void NewProjectCommand_CreatesProjectJsonFileAndSetsAppContext()
@@ -28,10 +29,10 @@ public class MainWindowViewModelTests
         
             var appContext = Substitute.For<IAppContext>();
 
-            var viewModel = new MainWindowViewModel(dialogService, appContext);
+            var viewModel = new NewProjectViewModel(dialogService, appContext);
 
             // Act
-            viewModel.NewProjectCommand.Execute().Subscribe();
+            viewModel.CreateCommand.Execute().Subscribe();
 
             // Assert
             var jsonPath = Path.Combine(tempFolder, "project.json");
