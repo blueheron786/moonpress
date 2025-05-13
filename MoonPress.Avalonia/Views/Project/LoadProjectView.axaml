@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmp="using:MoonPress.Avalonia.ViewModels.Project"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MoonPress.Avalonia.Views.Project.LoadProjectView"
+             x:DataType="vmp:LoadProjectViewModel"
+             >
+  
+  <StackPanel Spacing="10">
+      <TextBlock Text="Load Existing Project" FontWeight="Bold" FontSize="20"/>
+      <Button Content="Browse..." Command="{Binding LoadCommand}" />
+  </StackPanel>
+  
+</UserControl>

@@ -4,6 +4,7 @@ using NSubstitute;
 using MoonPress.Avalonia.ViewModels;
 using MoonPress.Core.Models;
 using System.Text.Json;
+using MoonPress.Avalonia.Models;
 using MoonPress.Avalonia.Services.IO;
 
 namespace MoonPress.Avalonia.Tests.ViewModels;
@@ -12,7 +13,7 @@ namespace MoonPress.Avalonia.Tests.ViewModels;
 public class MainWindowViewModelTests
 {
     [Test]
-    public void NewProjectCommand_CreatesProjectJsonFile()
+    public void NewProjectCommand_CreatesProjectJsonFileAndSetsAppContext()
     {
         // Arrange
         var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -24,8 +25,10 @@ public class MainWindowViewModelTests
             var dialogService = Substitute.For<IFolderPickerService>();
             dialogService.ShowFolderSelectionDialogAsync()
                 .Returns(tempFolder);
+        
+            var appContext = Substitute.For<IAppContext>();
 
-            var viewModel = new MainWindowViewModel(dialogService);
+            var viewModel = new MainWindowViewModel(dialogService, appContext);
 
             // Act
             viewModel.NewProjectCommand.Execute().Subscribe();
@@ -39,6 +42,8 @@ public class MainWindowViewModelTests
 
             Assert.That(project!.ProjectName, Is.EqualTo("Hardcoded Project Name"));
             Assert.That(project.ProjectFolder, Is.EqualTo(tempFolder));
+            Assert.That(appContext.CurrentProject!.ProjectFolder, Is.EqualTo(project.ProjectFolder));
+            Assert.That(appContext.CurrentProject.ProjectName, Is.EqualTo(project.ProjectName));
         }
         finally
         {

@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using MoonPress.Avalonia.Models;
 using MoonPress.Avalonia.ViewModels;
 using MoonPress.Avalonia.Views;
 using MoonPress.Avalonia.Services.IO;
@@ -11,6 +12,9 @@ namespace MoonPress.Avalonia;
 
 public partial class App : Application
 {
+    private IAppContext _appContext = new AppContext();
+    private IFolderPickerService _folderPickerService = new FolderPickerService();
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -25,8 +29,7 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                // TODO: poor man's DI, use real DI in the future
-                DataContext = new MainWindowViewModel(new FolderPickerService()),
+                DataContext = new MainWindowViewModel(_folderPickerService, _appContext),
             };
         }
 
