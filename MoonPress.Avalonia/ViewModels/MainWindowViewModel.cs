@@ -1,95 +1,53 @@
-﻿using System;
-using System.IO;
-using System.Reactive;
-using System.Text.Json;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using System.Reactive;
+using System.Runtime.InteropServices.Swift;
 using MoonPress.Avalonia.Models;
 using MoonPress.Avalonia.Services.IO;
-using MoonPress.Core.Models;
+using MoonPress.Avalonia.ViewModels.Project;
 using ReactiveUI;
 
 namespace MoonPress.Avalonia.ViewModels;
 
+/// <summary>
+/// This is the main view model for the application.
+/// It will contain the logic for navigating between different views (like NewProjectViewModel, LoadProjectViewModel, etc.)
+/// and will be used as the DataContext for the MainWindow.
+/// The commands are defined here and will be bound to buttons in the MainWindow.xaml
+/// The commands are executed when the buttons are clicked.
+/// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
+    // Commands just navigate to the appropriate view
     public ReactiveCommand<Unit, Unit> NewProjectCommand { get; }
     public ReactiveCommand<Unit, Unit> LoadProjectCommand { get; }
 
-    private readonly IFolderPickerService _folderPickerService;
-    private readonly IAppContext _appContext;
-
-    public MainWindowViewModel(IFolderPickerService folderPickerService, IAppContext  appContext)
+    private IFolderPickerService _folderPickerService;
+    private IAppContext _appContext;
+    
+    // The currently active view
+    private ViewModelBase _currentView = default!;
+    
+    public MainWindowViewModel(IFolderPickerService folderPickerService, IAppContext appContext)
     {
         _folderPickerService = folderPickerService;
         _appContext = appContext;
 
-        NewProjectCommand = ReactiveCommand.Create(HandleNewProject);
-        LoadProjectCommand = ReactiveCommand.Create(HandleLoadProject);
+        NewProjectCommand = ReactiveCommand.Create(() => 
+        {
+            // CurrentView = new NewProjectViewModel(_folderPickerService, _appContext);
+        });
+
+        LoadProjectCommand = ReactiveCommand.Create(() => 
+        {
+            CurrentView = new LoadProjectViewModel(_folderPickerService, _appContext);
+        });
+
+        // Set the initial view to LoadProjectViewModel
+        CurrentView = new LoadProjectViewModel(_folderPickerService, _appContext);
     }
 
-    private async void HandleNewProject()
+    public ViewModelBase CurrentView
     {
-        var folder = await _folderPickerService.ShowFolderSelectionDialogAsync();
-
-        if (string.IsNullOrWhiteSpace(folder))
-        {
-            // User cancelled, so we don't need to do anything
-            return;
-        }
-
-        // var inputDialog = new TextInputDialog("Enter project name:");
-        // var name = await inputDialog.ShowAsync(window);
-        var name = "Hardcoded Project Name"; // TODO: Replace with actual input dialog
-
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return;
-        }
-
-        var project = new MoonPressProject
-        {
-            ProjectName = name,
-            ProjectFolder = folder
-        };
-
-        var jsonPath = Path.Combine(folder, "project.json");
-        File.WriteAllText(jsonPath, JsonSerializer.Serialize(project, new JsonSerializerOptions { WriteIndented = true }));
-        
-        // TODO: Navigate to a Project Dashboard
-        _appContext.CurrentProject = project;
-    }
-
-    private async void HandleLoadProject()
-    {
-        // Open file dialog to select a project.json file
-        var folder = await _folderPickerService.ShowFolderSelectionDialogAsync();
-
-        // If the user cancels or doesn't select any file, exit early
-        if (string.IsNullOrWhiteSpace(folder))
-        {
-            return;
-        }
-
-        try
-        {
-            var jsonContent = await File.ReadAllTextAsync(Path.Join(folder, "project.json"));
-            var project = JsonSerializer.Deserialize<MoonPressProject>(jsonContent);
-
-            if (project == null)
-            {
-                // Handle error if the project couldn't be deserialized
-                // You can show an error message to the user here
-                return;
-            }
-
-            _appContext.CurrentProject = project;
-        }
-        catch (Exception ex)
-        {
-            // Handle any errors (e.g., file read errors, JSON deserialization errors)
-            // You can log the error or show a message to the user
-            Console.Error.WriteLine($"Error loading project: {ex.Message}");
-        }
+        get => _currentView;
+        set => this.RaiseAndSetIfChanged(ref _currentView, value);
     }
 }

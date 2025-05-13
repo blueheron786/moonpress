@@ -1,25 +1,25 @@
 <Window xmlns="https://github.com/avaloniaui"
+        xmlns:views="clr-namespace:MoonPress.Avalonia.Views.Project"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:MoonPress.Avalonia.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="MoonPress.Avalonia.Views.MainWindow"
+        xmlns:vmp="using:MoonPress.Avalonia.ViewModels.Project"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/moon.ico"
-        Title="MoonPress">
+        x:Class="MoonPress.Avalonia.Views.MainWindow">
+    <DockPanel>
+        <!-- Navigation menu -->
+        <StackPanel DockPanel.Dock="Left" Margin="16">
+            <Label Content="Main Menu" />
+            <Button Command="{Binding NewProjectCommand}" Content="New Project" />
+            <Button Command="{Binding LoadProjectCommand}" Content="Load Project" />
+        </StackPanel>
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-        <TextBlock Text="Welcome to MoonPress" FontSize="24" HorizontalAlignment="Center"/>
-        <Button Content="New Project" Width="200" Command="{Binding NewProjectCommand}"/>
-        <Button Content="Load Project" Width="200" Command="{Binding LoadProjectCommand}"/>
-    </StackPanel>
-
-
+         <!-- Dynamic content area (like Blazor's @Body)  -->
+        <ContentControl Content="{Binding CurrentView}">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="vmp:LoadProjectViewModel">
+                    <views:LoadProjectView />
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+    </DockPanel>
 </Window>

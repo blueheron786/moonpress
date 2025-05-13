@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ReactiveUI;
 
 namespace MoonPress.Avalonia.ViewModels;
 
-public class ViewModelBase : ObservableObject
+public class ViewModelBase : ReactiveObject 
 {
 }
