@@ -1,8 +1,15 @@
 <!-- app-wide styles -->
 <Styles xmlns="https://github.com/avaloniaui">
-    <Style Selector="TextBlock">
+    <!-- containers -->
+    <Style Selector="StackPanel">
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="Margin" Value="20" />
+    </Style>
+
+    <!-- controls -->
+    <Style Selector="TextBlock.Header">
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="20" />
     </Style>
     <Style Selector="Button">
         <Setter Property="Padding" Value="10,5" />
@@ -10,8 +17,5 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="FontSize" Value="14" />
-    </Style>
-    <Style Selector="StackPanel">
-        <Setter Property="Margin" Value="5" />
     </Style>
 </Styles>

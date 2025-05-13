@@ -9,7 +9,7 @@
     <DockPanel>
         <!-- Navigation menu -->
         <StackPanel DockPanel.Dock="Left" Classes="StockPanel">
-            <TextBlock Text="Main Menu" Classes="SidebarHeading" />
+            <TextBlock Text="Main Menu" Classes="Header" />
             <Button Command="{Binding NewProjectCommand}" Content="New Project" />
             <Button Command="{Binding LoadProjectCommand}" Content="Load Project" />
         </StackPanel>

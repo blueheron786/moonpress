@@ -7,8 +7,8 @@
              x:Class="MoonPress.Avalonia.Views.Project.NewProjectView"
              x:DataType="vmp:NewProjectViewModel">
   
-        <StackPanel Spacing="10" Margin="20">
-            <TextBlock Text="Create New Project" FontSize="20" FontWeight="Bold" />
+        <StackPanel>
+            <TextBlock Classes="Header" Text="Create New Project" />
         
             <!-- Project Name Input -->
             <TextBlock Text="Project Name:" />
@@ -16,13 +16,13 @@
         
             <!-- Folder Selection -->
             <TextBlock Text="Project Folder:" />
-            <StackPanel Orientation="Horizontal" Spacing="10">
+            <StackPanel Margin="0">
                 <TextBox Text="{Binding ProjectFolder}" Watermark="Select folder..." IsReadOnly="True" />
                 <Button Content="Browse..." Command="{Binding BrowseFolderCommand}" />
             </StackPanel>
         
             <!-- Create/Cancel Buttons -->
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Create" Command="{Binding CreateCommand}" />
             </StackPanel>
         </StackPanel>
