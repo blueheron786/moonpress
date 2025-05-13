@@ -37,7 +37,9 @@ public class LoadProjectViewModelTests
         _viewModel.LoadCommand.Execute(Unit.Default).Subscribe();
 
         // Assert
-        _appContext.Received().CurrentProject = Arg.Is<MoonPressProject>(p => p.ProjectName == "Test Project");
+        Assert.That(_appContext.CurrentProject, Is.Not.Null);
+        Assert.That(_appContext.CurrentProject!.ProjectName, Is.EqualTo(project.ProjectName));
+        Assert.That(_appContext.CurrentProject.ProjectFolder, Is.EqualTo(project.ProjectFolder));
     }
 
     [Test]

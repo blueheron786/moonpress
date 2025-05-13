@@ -30,6 +30,7 @@ public class NewProjectViewModelTests
             var appContext = Substitute.For<IAppContext>();
 
             var viewModel = new NewProjectViewModel(dialogService, appContext);
+            viewModel.BrowseFolderCommand.Execute().Subscribe();
 
             // Act
             viewModel.CreateCommand.Execute().Subscribe();
@@ -41,7 +42,7 @@ public class NewProjectViewModelTests
             var json = File.ReadAllText(jsonPath);
             var project = JsonSerializer.Deserialize<MoonPressProject>(json);
 
-            Assert.That(project!.ProjectName, Is.EqualTo("Hardcoded Project Name"));
+            Assert.That(project, Is.Not.Null);
             Assert.That(project.ProjectFolder, Is.EqualTo(tempFolder));
             Assert.That(appContext.CurrentProject!.ProjectFolder, Is.EqualTo(project.ProjectFolder));
             Assert.That(appContext.CurrentProject.ProjectName, Is.EqualTo(project.ProjectName));

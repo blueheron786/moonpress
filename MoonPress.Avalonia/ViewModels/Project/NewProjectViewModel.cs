@@ -50,7 +50,9 @@ public class NewProjectViewModel : ViewModelBase
     {
         var folder = await _folderPickerService.ShowFolderSelectionDialogAsync();
         if (!string.IsNullOrWhiteSpace(folder))
+        {
             ProjectFolder = folder;
+        }
     }
 
     private async Task CreateProjectAsync()

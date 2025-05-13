@@ -29,7 +29,9 @@ public class LoadProjectViewModel : ViewModelBase
     {
         var folder = await _folderPickerService.ShowFolderSelectionDialogAsync();
         if (string.IsNullOrWhiteSpace(folder))
+        {
             return;
+        }
 
         var path = Path.Combine(folder, "project.json");
         if (!File.Exists(path))
