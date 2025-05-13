@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "coreclr",
+      "request": "launch",
+      "name": "Launch MoonPress.Avalonia",
+      "program": "${workspaceFolder}/MoonPress.Avalonia/bin/Debug/net9.0/MoonPress.Avalonia.exe",
+      "preLaunchTask": "build MoonPress.Avalonia",
+      "cwd": "${workspaceFolder}/MoonPress.Avalonia"
+    }
+  ]
+}
