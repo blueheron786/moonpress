@@ -16,6 +16,9 @@
          <!-- Dynamic content area (like Blazor's @Body)  -->
         <ContentControl Content="{Binding CurrentView}">
             <ContentControl.DataTemplates>
+                <DataTemplate DataType="vmp:NewProjectViewModel">
+                    <views:NewProjectView />
+                </DataTemplate>
                 <DataTemplate DataType="vmp:LoadProjectViewModel">
                     <views:LoadProjectView />
                 </DataTemplate>

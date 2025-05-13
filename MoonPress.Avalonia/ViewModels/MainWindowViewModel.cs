@@ -33,7 +33,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         NewProjectCommand = ReactiveCommand.Create(() => 
         {
-            // CurrentView = new NewProjectViewModel(_folderPickerService, _appContext);
+            CurrentView = new NewProjectViewModel(_folderPickerService, _appContext);
         });
 
         LoadProjectCommand = ReactiveCommand.Create(() => 
