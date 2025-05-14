@@ -8,6 +8,9 @@ namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
 public partial class LoadProject : ComponentBase
 {
+    [Inject]
+    private NavigationManager Nav { get; set; } = default!;
+
     private async Task SelectAndLoadProject()
     {
         using var dialog = new FolderBrowserDialog();
@@ -31,7 +34,7 @@ public partial class LoadProject : ComponentBase
                 {
                     ProjectState.Current = project;
                     ProjectState.Current.RootFolder = folder;
-                    Nav.NavigateTo("/project");
+                    Nav.NavigateTo("/content-items");
                 }
             }
             catch (Exception ex)

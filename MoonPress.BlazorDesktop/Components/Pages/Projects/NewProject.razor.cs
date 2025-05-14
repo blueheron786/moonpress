@@ -6,6 +6,9 @@ namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
 public partial class NewProject : ComponentBase
 {
+    [Inject]
+    private NavigationManager Nav { get; set; } = default!;
+    
     private string _projectName = "";
     private string _selectedFolder = "";
     private bool _isCreationSuccessful = false;
@@ -27,6 +30,10 @@ public partial class NewProject : ComponentBase
     {
         var project = new StaticSiteProject { ProjectName = _projectName };
         project.Save(_selectedFolder);
+        
         _isCreationSuccessful = true;
+
+        ProjectState.Current = project;
+        ProjectState.Current.RootFolder = _selectedFolder;
     }
 }

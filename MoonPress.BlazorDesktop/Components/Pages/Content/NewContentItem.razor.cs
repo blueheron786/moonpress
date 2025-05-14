@@ -24,8 +24,7 @@ public partial class NewContentItem
 
         try
         {
-            // Define the file path (you can adjust this path as needed)
-            var fileName = $"{_item.Title.Replace(" ", "_")}.md";
+            var fileName = $"{_item.Title.Replace(" ", "-")}.md";
             var filePath = Path.Combine(ProjectState.Current!.RootFolder, "Content");
 
             // Create the directory if it doesn't exist
@@ -42,7 +41,6 @@ public partial class NewContentItem
             // Write the content to the file
             await File.WriteAllTextAsync(Path.Combine(filePath, fileName), markdownContent);
 
-            // Navigate to another page or show a success message
             Nav.NavigateTo("/content-items");
         }
         catch (Exception ex)

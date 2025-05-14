@@ -12,7 +12,7 @@ public class ContentItem
     public List<string> Tags { get; set; } = new();
     public DateTime? DatePublished { get; set; }
 
-    public string FileNameOnly => Path.GetFileName(FilePath);
+    public string FileNameOnly => Path.GetFileName(FilePath).Replace(' ', '-');
     public string Slug => Title?.ToLower().Replace(' ', '-') ?? "";
     public string Status => IsDraft ? "Draft" : "Published";
 }
