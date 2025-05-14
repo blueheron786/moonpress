@@ -4,7 +4,7 @@
 # Rider ignored files
 /contentModel.xml
 /modules.xml
-/.idea.MoonstoneCms.iml
+/.idea.MoonPress.iml
 /projectSettingsUpdater.xml
 # Editor-based HTTP Client requests
 /httpRequests/

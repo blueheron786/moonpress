@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace MoonstoneCms.Core;
+namespace MoonPress.Core;
 
 public class StaticSiteProject
 {

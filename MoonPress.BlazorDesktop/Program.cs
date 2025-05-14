@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using BlazorDesktop.Hosting;
-using MoonstoneCms.Desktop.Components;
+using MoonPress.BlazorDesktop.Components;
 
 var builder = BlazorDesktopHostBuilder.CreateDefault(args);
 
@@ -12,6 +12,6 @@ if (builder.HostEnvironment.IsDevelopment())
     builder.UseDeveloperTools();
 }
 
-builder.Window.UseTitle("Moonstone CMS Desktop");
+builder.Window.UseTitle("MoonPress");
 
 await builder.Build().RunAsync();

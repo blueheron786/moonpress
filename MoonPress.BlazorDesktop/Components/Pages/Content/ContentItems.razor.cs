@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using MoonstoneCms.Core.Models;
+using MoonPress.Core.Models;
 
-namespace MoonstoneCms.Desktop.Components.Pages.Content;
+namespace MoonPress.BlazorDesktop.Components.Pages.Content;
 
 public partial class ContentItems : ComponentBase
 {

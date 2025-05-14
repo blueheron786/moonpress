@@ -1,6 +1,6 @@
-using MoonstoneCms.Core;
+using MoonPress.Core;
 
-namespace MoonstoneCms.Desktop;
+namespace MoonPress.BlazorDesktop;
 
 /// <summary>
 /// The state of the current project we have open

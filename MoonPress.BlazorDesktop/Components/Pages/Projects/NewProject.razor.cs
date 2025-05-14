@@ -1,8 +1,8 @@
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Components;
-using MoonstoneCms.Core;
+using MoonPress.Core;
 
-namespace MoonstoneCms.Desktop.Components.Pages.Projects;
+namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
 public partial class NewProject : ComponentBase
 {

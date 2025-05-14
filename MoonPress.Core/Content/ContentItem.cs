@@ -1,4 +1,4 @@
-namespace MoonstoneCms.Core.Models;
+namespace MoonPress.Core.Models;
 
 public class ContentItem
 {

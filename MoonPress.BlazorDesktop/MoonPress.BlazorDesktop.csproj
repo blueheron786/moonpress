@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MoonstoneCms.Core\MoonstoneCms.Core.csproj" />
+    <ProjectReference Include="..\MoonPress.Core\MoonPress.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

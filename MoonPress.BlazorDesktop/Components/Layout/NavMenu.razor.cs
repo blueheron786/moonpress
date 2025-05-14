@@ -1,6 +1,4 @@
-using System;
-
-namespace MoonstoneCms.Desktop.Components.Layout;
+namespace MoonPress.BlazorDesktop.Components.Layout;
 
 public partial class NavMenu
 {

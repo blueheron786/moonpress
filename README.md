@@ -1,2 +1,7 @@
-# Moonstone-CMS
+# MoonPress
+
 Imagine Wordpress, but as an offline, file-based, static website generator.
+
+That's MoonPress.
+
+Built in C# and Blazor.

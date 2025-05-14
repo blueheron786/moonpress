@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace MoonstoneCms.Core.Tests;
+namespace MoonPress.Core.Tests;
 
 [TestFixture]
 public class StaticSiteProjectTests

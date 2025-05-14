@@ -2,9 +2,9 @@ using System.IO;
 using System.Text.Json;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Components;
-using MoonstoneCms.Core;
+using MoonPress.Core;
 
-namespace MoonstoneCms.Desktop.Components.Pages.Projects;
+namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
 public partial class LoadProject : ComponentBase
 {
