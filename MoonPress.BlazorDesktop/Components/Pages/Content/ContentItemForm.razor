@@ -1,0 +1,12 @@
+<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="Model.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Contents</label>
+        <InputTextArea class="form-control" @bind-Value="Model.Contents" rows="10" />
+    </div>
+    <button class="btn btn-success" type="submit">Save</button>
+    <button class="btn btn-secondary" type="button" @onclick="OnCancel">Cancel</button>
+</EditForm>

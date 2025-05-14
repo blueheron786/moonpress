@@ -3,6 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace MoonPress.Core;
 
+/// <summary>
+/// The in-memory representation of the current project.
+/// This is the project that is currently open in the editor.
+/// </summary>
 public class StaticSiteProject
 {
     public string ProjectName { get; set; } = string.Empty;

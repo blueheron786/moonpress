@@ -13,7 +13,14 @@ else
     <ul>
         @foreach (var content in ContentItemsList)
         {
-            <li><strong>@(content.FileNameOnly):</strong> Created @(content.DatePublished) [@(content.Status)]</li>
+            <li>
+                <strong>
+                    <a href="/content-item/edit/@(content.Id)">
+                        @(content.FileNameOnly)
+                    </a>:
+                </strong> 
+                Created @(content.DatePublished) [@(content.Status)]
+            </li>
         }
     </ul>
 }
