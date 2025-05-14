@@ -49,7 +49,7 @@ public static class ContentItemFetcher
 
     public static void UpdateCache(ContentItem newOrExistingItem)
     {
-                if (newOrExistingItem == null)
+        if (newOrExistingItem == null)
         {
             throw new ArgumentNullException(nameof(newOrExistingItem));
         }
@@ -83,6 +83,7 @@ public static class ContentItemFetcher
             var title = ExtractYamlValue(yamlContent, "title");
             var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished");
             var isDraftStr = ExtractYamlValue(yamlContent, "isDraft");
+            var summary = ExtractYamlValue(yamlContent, "summary");
 
             // Parse datePublished
             DateTime.TryParseExact(
@@ -106,6 +107,7 @@ public static class ContentItemFetcher
                 Title = title ?? "Untitled",
                 DatePublished = datePublished,
                 IsDraft = isDraft,
+                Summary = summary,
                 Contents = bodyContent
             };
         }
