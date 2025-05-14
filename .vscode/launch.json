@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Windows",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/MoonPress.BlazorDesktop/bin/Debug/net9.0-windows10.0.22000.0/MoonPress.BlazorDesktop.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/MoonPress.BlazorDesktop", // Set to the project folder
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        }
+    ]
+}
