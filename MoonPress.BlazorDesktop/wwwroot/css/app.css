@@ -65,6 +65,10 @@ h1:focus {
         content: "An error has occurred."
     }
 
+/*****************
+App customizations
+*****************/
+
 .navbar-brand .logo {
     height: 32px; /* Adjust the size of the logo if needed */
     margin-right: 8px; /* Add spacing to the right of the image */
@@ -72,4 +76,9 @@ h1:focus {
 
 .navbar-brand span {
     vertical-align: middle; /* Ensure the text aligns vertically with the image */
+}
+
+.sidebar {
+    padding: 4px;
+    color: white;
 }
