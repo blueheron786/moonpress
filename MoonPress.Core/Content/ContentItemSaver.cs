@@ -18,9 +18,14 @@ public static class ContentItemSaver
 
         try
         {
+            // Population of items that appear on first save
             if (item.Id == null)
             {
                 item.Id = Guid.NewGuid().ToString();
+            }
+            if (item.DatePublished == null)
+            {
+                item.DatePublished = DateTime.UtcNow;
             }
 
             var fileName = $"{item.Title.Replace(" ", "-")}.md";
