@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MoonPress.PWA</title>
+    <title>MoonPress</title>
     <base href="/" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -13,26 +13,8 @@
     <link href="manifest.webmanifest" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
-
-    <script>
-        window.pickFolderAndListFiles = async () => {
-            try {
-                const dirHandle = await window.showDirectoryPicker();
-                const files = [];
-                for await (const [name, handle] of dirHandle.entries()) {
-                    if (handle.kind === "file" && name.endsWith(".md")) {
-                        const file = await handle.getFile();
-                        const content = await file.text();
-                        files.push({ name, content });
-                    }
-                }
-                return files;
-            } catch (e) {
-                return { error: e.message };
-            }
-        };
-    </script>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
 </head>
 
 <body>
