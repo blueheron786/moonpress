@@ -16,4 +16,8 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MoonPress.Core\MoonPress.Core.csproj" />
+  </ItemGroup>
+
 </Project>

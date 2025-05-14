@@ -2,20 +2,22 @@
  * Shows a folder picker. Lists all .md files within that folder (non-recursively).
  * @returns {Promise<{error}|*[]>}
  */
-window.pickFolderAndListFiles = async () => {
-    try {
-        const dirHandle = await window.showDirectoryPicker();
-        const files = [];
-        
-        for await (const [name, handle] of dirHandle.entries()) {
-            if (handle.kind === "file" && name.endsWith(".md")) {
-                const file = await handle.getFile();
-                const content = await file.text();
-                files.push({ name, content });
-            }
+window.moonpress = {
+    async showFolderPicker() {
+        try {
+            const dirHandle = await window.showDirectoryPicker();
+            return {
+                success: true,
+                name: dirHandle.name
+                // You can't pass the full handle directly to Blazor, it's a JS object.
+                // You'll need to cache it or operate on it within JS.
+            };
+        } catch (err) {
+            return {
+                success: false,
+                error: err.message
+            };
         }
-        return files;
-    } catch (e) {
-        return { error: e.message };
     }
 };
+

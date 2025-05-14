@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.PWA", "MoonPress.PWA\MoonPress.PWA.csproj", "{EF52AB76-138B-45E0-9B0C-2CBCF17FA3C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.Core", "MoonPress.Core\MoonPress.Core.csproj", "{73FB8A6C-EAFA-433F-B638-E858C612319C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{EF52AB76-138B-45E0-9B0C-2CBCF17FA3C1}.Release|x64.Build.0 = Release|Any CPU
 		{EF52AB76-138B-45E0-9B0C-2CBCF17FA3C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF52AB76-138B-45E0-9B0C-2CBCF17FA3C1}.Release|x86.Build.0 = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|x64.Build.0 = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Debug|x86.Build.0 = Debug|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|x64.ActiveCfg = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|x64.Build.0 = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|x86.ActiveCfg = Release|Any CPU
+		{73FB8A6C-EAFA-433F-B638-E858C612319C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

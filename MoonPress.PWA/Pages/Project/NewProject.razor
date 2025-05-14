@@ -1,0 +1,15 @@
+@page "/project/new"
+
+<h3>New Project</h3>
+
+<div class="form-group">
+    <label>Project Name:</label>
+    <input @bind="ProjectName" class="form-control" />
+</div>
+
+<button class="btn btn-primary mt-2" @onclick="CreateNewProject">Create Project</button>
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <p class="mt-2">@Message</p>
+}
