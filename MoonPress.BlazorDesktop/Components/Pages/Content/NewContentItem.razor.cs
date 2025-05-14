@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MoonPress.Core.Content;
 using MoonPress.Core.Models;
+using MoonPress.Rendering;
 
 namespace MoonPress.BlazorDesktop.Components.Pages.Content;
 
@@ -13,7 +14,7 @@ public partial class NewContentItem
 
     private async Task Save()
     {
-        await ContentItemSaver.SaveContentItem(_item, ProjectState.Current!.RootFolder);
+        await ContentItemSaver.SaveContentItem(_item, new ContentItemMarkdownRenderer(), ProjectState.Current!.RootFolder);
         Nav.NavigateTo("/content-items");
     }
 

@@ -28,16 +28,4 @@ public class ContentItem
     {
         DatePublished = DateTime.UtcNow;
     }
-
-    public string MarkdownContent { get {
-        // Prepare the Markdown content with metadata
-        return $"---\n" +
-            $"id: {Id}\n" +
-            $"title: {Title}\n" +
-            $"datePublished: {DatePublished:yyyy-MM-dd HH:mm:ss}\n" +
-            $"isDraft: {IsDraft.ToString().ToLower()}\n" +
-            $"summary: {Summary}\n" +
-            $"---\n\n" +
-            $"{Contents}";
-    } }
 }

@@ -1,10 +1,11 @@
 using MoonPress.Core.Models;
+using MoonPress.Core.Renderers;
 
 namespace MoonPress.Core.Content;
 
 public static class ContentItemSaver
 {
-    public static async Task SaveContentItem(ContentItem item, string rootFolder)
+    public static async Task SaveContentItem(ContentItem item, IMarkdownRenderer renderer, string rootFolder)
     {
         if (string.IsNullOrWhiteSpace(rootFolder))
         {
@@ -35,7 +36,8 @@ public static class ContentItemSaver
             Directory.CreateDirectory(filePath);            
 
             // Write the content to the file
-            await File.WriteAllTextAsync(Path.Combine(filePath, fileName), item.MarkdownContent);
+            var markdown = renderer.RenderMarkdown(item);
+            await File.WriteAllTextAsync(Path.Combine(filePath, fileName), markdown);
             ContentItemFetcher.UpdateCache(item);
         }
         catch (Exception ex)
