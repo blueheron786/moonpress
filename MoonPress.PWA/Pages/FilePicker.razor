@@ -1,0 +1,42 @@
+@page "/files"
+@inject IJSRuntime JS
+
+<h3>Markdown Files</h3>
+<button class="btn btn-primary" @onclick="PickFolder">Pick Folder</button>
+
+@if (error != null)
+{
+    <p style="color:red">Error: @error</p>
+}
+@if (files?.Count > 0)
+{
+    <ul>
+        @foreach (var file in files)
+        {
+            <li>
+                <strong>@file.Name</strong>
+                <pre>@file.Content</pre>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    record MarkdownFile(string Name, string Content);
+    List<MarkdownFile> files;
+    string error;
+
+    async Task PickFolder()
+    {
+        try
+        {
+            error = null;
+            var result = await JS.InvokeAsync<List<MarkdownFile>>("pickFolderAndListFiles");
+            files = result;
+        }
+        catch (JSException ex)
+        {
+            error = ex.Message;
+        }
+    }
+}
