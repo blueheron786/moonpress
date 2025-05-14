@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "restore",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "restore"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/MoonPress.BlazorHybridMaui/MoonPress.BlazorHybridMaui.csproj"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/MoonPress.BlazorHybridMaui/MoonPress.BlazorHybridMaui.csproj"
+            ],
+            "group": "test",
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
