@@ -1,6 +1,18 @@
 <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">@(ProjectState.Current?.ProjectName ?? "MoonPress.BlazorDesktop")</a>
+    <div class="container-fluid d-flex align-items-center justify-content-start">
+        <a class="navbar-brand d-flex align-items-center" href="">
+            <span class="align-middle">
+                @if (ProjectState.Current?.ProjectName != null)
+                {
+                    <span>@ProjectState.Current.ProjectName</span>
+                }
+                else
+                {
+                    <img src="favicon-32x32.png" alt="Logo" class="logo me-2" />
+                    <span>MoonPress</span>
+                }
+            </span>
+        </a>
     </div>
 </div>
 

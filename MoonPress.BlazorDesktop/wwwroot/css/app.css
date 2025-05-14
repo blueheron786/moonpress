@@ -64,3 +64,12 @@ h1:focus {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.navbar-brand .logo {
+    height: 32px; /* Adjust the size of the logo if needed */
+    margin-right: 8px; /* Add spacing to the right of the image */
+}
+
+.navbar-brand span {
+    vertical-align: middle; /* Ensure the text aligns vertically with the image */
+}
