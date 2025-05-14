@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MoonPress.Core.Models;
 
 public class ContentItem
@@ -12,13 +14,18 @@ public class ContentItem
     public List<string> Tags { get; set; } = new();
     public DateTime? DatePublished { get; set; }
 
+    /// <summary>
+    /// Used to generate the OpenGraph og:description meta tag.
+    /// </summary>
+    [MaxLength(140, ErrorMessage = "Summary should be 140 characters or less to fit into og:description.")]
+    public string? Summary { get; set; } = null;
+
     public string FileNameOnly => Path.GetFileName(FilePath).Replace(' ', '-');
     public string Slug => Title?.ToLower().Replace(' ', '-') ?? "";
     public string Status => IsDraft ? "Draft" : "Published";
 
     public ContentItem()
     {
-        Id = Guid.NewGuid().ToString();
         DatePublished = DateTime.UtcNow;
     }
 
@@ -29,6 +36,7 @@ public class ContentItem
             $"title: {Title}\n" +
             $"datePublished: {DatePublished:yyyy-MM-dd HH:mm:ss}\n" +
             $"isDraft: {IsDraft.ToString().ToLower()}\n" +
+            $"summary: {Summary}\n" +
             $"---\n\n" +
             $"{Contents}";
     } }

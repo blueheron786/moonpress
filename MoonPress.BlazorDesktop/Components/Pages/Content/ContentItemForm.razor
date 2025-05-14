@@ -1,4 +1,10 @@
-<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+@using MoonPress.Core.Models
+@inject NavigationManager Navigation
+
+<EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <div class="mb-3">
         <label>Title</label>
         <InputText class="form-control" @bind-Value="Model.Title" />
@@ -7,6 +13,19 @@
         <label>Contents</label>
         <InputTextArea class="form-control" @bind-Value="Model.Contents" rows="10" />
     </div>
-    <button class="btn btn-success" type="submit">Save</button>
-    <button class="btn btn-secondary" type="button" @onclick="OnCancel">Cancel</button>
+
+    <div class="mb-3">
+        <label for="summary">Summary (for og:description tag)</label>
+        <InputTextArea id="summary"
+                       class="form-control"
+                       @bind-Value="Model.Summary"
+                       @oninput="OnSummaryChanged" />
+        <div class="form-text">
+            @SummaryLength / 140
+        </div>
+        <ValidationMessage For="@(() => Model.Summary)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
 </EditForm>
