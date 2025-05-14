@@ -14,7 +14,7 @@ public partial class NewContentItem
 
     private async Task Save()
     {
-        if (string.IsNullOrWhiteSpace(ProjectState.Current!.Location))
+        if (string.IsNullOrWhiteSpace(ProjectState.Current!.RootFolder))
         {
             // Message to user: "There was an error saving the content. A copy of your updated
             // content is in the clipboard."
@@ -26,7 +26,7 @@ public partial class NewContentItem
         {
             // Define the file path (you can adjust this path as needed)
             var fileName = $"{_item.Title.Replace(" ", "_")}.md";
-            var filePath = Path.Combine(ProjectState.Current!.Location, "Content");
+            var filePath = Path.Combine(ProjectState.Current!.RootFolder, "Content");
 
             // Create the directory if it doesn't exist
             Directory.CreateDirectory(filePath);

@@ -19,7 +19,7 @@ public partial class ContentItems : ComponentBase
     {
         if (ProjectState.Current is not null)
         {
-            var pagesDirectory = Path.Combine(ProjectState.Current.Location, "content");
+            var pagesDirectory = Path.Combine(ProjectState.Current.RootFolder, "content");
             if (Directory.Exists(pagesDirectory))
             {
                 var files = Directory
