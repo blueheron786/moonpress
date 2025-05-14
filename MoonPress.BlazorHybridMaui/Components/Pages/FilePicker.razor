@@ -1,0 +1,37 @@
+@page "/file"
+@using Windows.Storage
+@using Windows.Storage.Pickers
+@using WinRT.Interop
+
+<h3>Pick a Folder</h3>
+
+<button @onclick="PickFolder">Pick Folder</button>
+
+<p>@folderPath</p>
+
+@code {
+    string? folderPath;
+
+    public async Task PickFolder()
+    {
+        folderPath = await PickFolderAsync();
+    }
+
+    public async Task<string?> PickFolderAsync()
+    {
+#if WINDOWS
+        var picker = new FolderPicker();
+        picker.SuggestedStartLocation = PickerLocationId.Desktop;
+        picker.FileTypeFilter.Add("*");
+
+        // Get the current window's HWND
+        var hwnd = ((MauiWinUIWindow)Application.Current.Windows[0].Handler.PlatformView).WindowHandle;
+        InitializeWithWindow.Initialize(picker, hwnd);
+
+        StorageFolder folder = await picker.PickSingleFolderAsync();
+        return folder?.Path;
+#else
+        return null;
+#endif
+    }
+}
