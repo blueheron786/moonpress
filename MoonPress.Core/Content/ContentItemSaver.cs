@@ -18,6 +18,11 @@ public static class ContentItemSaver
 
         try
         {
+            if (item.Id == null)
+            {
+                item.Id = Guid.NewGuid().ToString();
+            }
+
             var fileName = $"{item.Title.Replace(" ", "-")}.md";
             var filePath = Path.Combine(rootFolder, "Content");
 

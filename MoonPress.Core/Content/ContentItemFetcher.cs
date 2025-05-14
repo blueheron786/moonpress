@@ -79,6 +79,7 @@ public static class ContentItemFetcher
             var yamlContent = yamlMatch.Groups[1].Value;
 
             // Extract metadata from YAML
+            var id = ExtractYamlValue(yamlContent, "id");
             var title = ExtractYamlValue(yamlContent, "title");
             var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished");
             var isDraftStr = ExtractYamlValue(yamlContent, "isDraft");
@@ -100,6 +101,7 @@ public static class ContentItemFetcher
 
             return new ContentItem
             {
+                Id = id!,
                 FilePath = filePath,
                 Title = title ?? "Untitled",
                 DatePublished = datePublished,
