@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.BlazorDesktop", "MoonPress.BlazorDesktop\MoonPress.BlazorDesktop.csproj", "{6717A1DB-3508-48D4-8BDE-82534A0B0932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.Core", "MoonPress.Core\MoonPress.Core.csproj", "{DE0C5B24-250B-4B69-8669-DDCDFFB41830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.Core.Tests", "MoonPress.Core.Tests\MoonPress.Core.Tests.csproj", "{53CEA758-C2FC-43FA-A150-9A17DB35091B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|x64.Build.0 = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Debug|x86.Build.0 = Debug|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|x64.ActiveCfg = Release|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|x64.Build.0 = Release|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|x86.ActiveCfg = Release|Any CPU
+		{6717A1DB-3508-48D4-8BDE-82534A0B0932}.Release|x86.Build.0 = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|x64.Build.0 = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Debug|x86.Build.0 = Debug|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|x64.ActiveCfg = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|x64.Build.0 = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE0C5B24-250B-4B69-8669-DDCDFFB41830}.Release|x86.Build.0 = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|x64.Build.0 = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Debug|x86.Build.0 = Debug|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|x64.ActiveCfg = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|x64.Build.0 = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|x86.ActiveCfg = Release|Any CPU
+		{53CEA758-C2FC-43FA-A150-9A17DB35091B}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
