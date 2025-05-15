@@ -1,6 +1,6 @@
 # MoonPress
 
-[![.NET](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml/badge.svg)](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml)
+[![Build status badge](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml/badge.svg)](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml) [![CodeCov code coverage badge](https://codecov.io/gh/blueheron786/moonpress/graph/badge.svg?token=66NBA3ZW9U)](https://codecov.io/gh/blueheron786/moonpress)
 
 MoonPress is a static website generator, inspired by the amazing WordPress.
 
