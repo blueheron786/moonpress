@@ -4,7 +4,28 @@ namespace MoonPress.Core.Models;
 
 public class ContentItem
 {
-    // Infered, not stored in the file
+    public static string Sanitize(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+        
+        // Remove invalid characters and replace spaces with hyphens
+        return new string(input
+            .Trim()
+            .ToLowerInvariant()
+            .Replace(' ', '-')
+            .Replace('|', '-')
+            // them doubles are hard to kill ...
+            .Replace("--", "-")
+            .Replace("--", "-")
+            .Replace("--", "-")
+            .Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_')
+            .ToArray());
+    }
+
+    // Inferred, not stored in the file
     public string FilePath { get; set; } = string.Empty;
 
     public string Id { get; set; } // populated on first save
@@ -20,8 +41,8 @@ public class ContentItem
     [MaxLength(140, ErrorMessage = "Summary should be 140 characters or less to fit into og:description.")]
     public string? Summary { get; set; } = null;
 
-    public string FileNameOnly => Path.GetFileName(FilePath).Replace(' ', '-');
-    public string Slug => Title?.ToLower().Replace(' ', '-') ?? "";
+    public string FileNameOnly => Sanitize(Path.GetFileName(FilePath).Replace(".md", ""));
+    public string Slug => Sanitize(Title?.ToLower()) ?? "";
     public string Status => IsDraft ? "Draft" : "Published";
 
     public ContentItem()
