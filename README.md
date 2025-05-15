@@ -1,5 +1,7 @@
 # MoonPress
 
+[![.NET](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml/badge.svg)](https://github.com/blueheron786/moonpress/actions/workflows/dotnet.yml)
+
 MoonPress is a static website generator, inspired by the amazing WordPress.
 
 - **No Code:** Manage and create your site and content, entirely through a UI, without writing any code
