@@ -37,6 +37,8 @@ public static class ContentItemSaver
                 item.FilePath = Path.Combine(filePath, fileName);
             }
 
+            item.DateUpdated = DateTime.UtcNow;
+
             // Create the directory if it doesn't exist
             Directory.CreateDirectory(filePath);            
 

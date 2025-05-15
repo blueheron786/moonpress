@@ -29,11 +29,13 @@ public class ContentItem
     public string FilePath { get; set; } = string.Empty;
 
     public string Id { get; set; } // populated on first save
+    public DateTime DatePublished { get; set; } // also populated on first save
+    public DateTime DateUpdated { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Contents { get; set; } = string.Empty;
     public bool IsDraft { get; set; }
-    public List<string> Tags { get; set; } = new();
-    public DateTime DatePublished { get; set; } // also populated on first save
+    public string Category { get; set; } = string.Empty;
+    public string Tags { get; set; } = string.Empty; // comma separated list of tags
 
     /// <summary>
     /// Used to generate the OpenGraph og:description meta tag.
@@ -48,5 +50,6 @@ public class ContentItem
     public ContentItem()
     {
         DatePublished = DateTime.UtcNow;
+        DateUpdated = DatePublished;
     }
 }

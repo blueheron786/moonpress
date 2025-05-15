@@ -17,6 +17,9 @@ public class ContentItemMarkdownRenderer : IMarkdownRenderer
             $"id: {contentItem.Id}\n" +
             $"title: {contentItem.Title}\n" +
             $"datePublished: {contentItem.DatePublished:yyyy-MM-dd HH:mm:ss}\n" +
+            $"dateUpdated: {contentItem.DateUpdated:yyyy-MM-dd HH:mm:ss}\n" +
+            $"category: {contentItem.Category}\n" +
+            $"tags: {string.Join(", ", contentItem.Tags)}\n" +
             $"isDraft: {contentItem.IsDraft.ToString().ToLower()}\n" +
             $"summary: {contentItem.Summary}\n" +
             $"---\n\n" +

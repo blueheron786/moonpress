@@ -24,7 +24,6 @@ public static class ContentItemFetcher
 
         if (_contentItems == null || !_contentItems.Any())
         {
-
             _contentItems = new Dictionary<string, ContentItem>();
 
             var pagesDirectory = Path.Combine(rootFolder, "content");
@@ -45,6 +44,33 @@ public static class ContentItemFetcher
         }
 
         return _contentItems;
+    }
+
+    public static IEnumerable<string> GetCategories()
+    {
+        if (_contentItems == null)
+        {
+            throw new InvalidOperationException("Content items have not been loaded.");
+        }
+
+        return _contentItems.Values
+            .Select(item => item.Category)
+            .Distinct()
+            .OrderBy(c => c);
+    }
+
+    public static IEnumerable<string> GetTags()
+    {
+        if (_contentItems == null)
+        {
+            throw new InvalidOperationException("Content items have not been loaded.");
+        }
+
+        return _contentItems.Values
+            .SelectMany(item => item.Tags.Split(','))
+            .Select(tag => tag.Trim())
+            .Distinct()
+            .OrderBy(t => t);
     }
 
     public static void UpdateCache(ContentItem newOrExistingItem)
@@ -79,11 +105,9 @@ public static class ContentItemFetcher
             var yamlContent = yamlMatch.Groups[1].Value;
 
             // Extract metadata from YAML
-            var id = ExtractYamlValue(yamlContent, "id");
-            var title = ExtractYamlValue(yamlContent, "title");
             var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished");
+            var dateUpdatedStr = ExtractYamlValue(yamlContent, "dateUpdated");
             var isDraftStr = ExtractYamlValue(yamlContent, "isDraft");
-            var summary = ExtractYamlValue(yamlContent, "summary");
 
             // Parse datePublished
             DateTime.TryParseExact(
@@ -92,6 +116,13 @@ public static class ContentItemFetcher
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out var datePublished);
+
+            DateTime.TryParseExact(
+                dateUpdatedStr,
+                PublishedDateFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var dateUpdated);
 
             // Parse draft status
             var isDraft = bool.TryParse(isDraftStr, out var draft) && draft;
@@ -102,12 +133,15 @@ public static class ContentItemFetcher
 
             return new ContentItem
             {
-                Id = id!,
+                Id = ExtractYamlValue(yamlContent, "id")!,
                 FilePath = filePath,
-                Title = title ?? "Untitled",
+                Title = ExtractYamlValue(yamlContent, "title") ?? "Untitled",
                 DatePublished = datePublished,
+                DateUpdated = dateUpdated,
+                Category = ExtractYamlValue(yamlContent, "category") ?? string.Empty,
+                Tags = ExtractYamlValue(yamlContent, "tags") ?? string.Empty,
                 IsDraft = isDraft,
-                Summary = summary,
+                Summary = ExtractYamlValue(yamlContent, "summary"),
                 Contents = bodyContent
             };
         }

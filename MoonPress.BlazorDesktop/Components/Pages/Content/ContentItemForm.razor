@@ -15,6 +15,27 @@
     </div>
 
     <div class="mb-3">
+        <label for="category">Category</label>
+        <InputText id="categorys"
+                   class="form-control"
+                   @bind-Value="Model.Category" />
+        <div class="form-text">
+        </div>
+        <ValidationMessage For="@(() => Model.Category)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="tags">Tags (comma separated)</label>
+        <InputText id="tags"
+                   class="form-control"
+                   @bind-Value="Model.Tags" />
+        <div class="form-text">
+            Separate multiple tags with commas.
+        </div>
+        <ValidationMessage For="@(() => Model.Tags)" />
+    </div>
+
+    <div class="mb-3">
         <label for="summary">Summary (for og:description tag)</label>
         <InputTextArea id="summary"
                        class="form-control"
