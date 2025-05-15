@@ -23,5 +23,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Test with coverage
+      run: dotnet test --no-build --collect:"XPlat Code Coverage" --verbosity normal
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: '**/TestResults/**/*.xml'
+        fail_ci_if_error: true
