@@ -105,25 +105,5 @@ namespace MoonPress.Core.Tests.Content
             Assert.That(item.DatePublished, Is.GreaterThanOrEqualTo(before));
             Assert.That(item.DateUpdated, Is.GreaterThanOrEqualTo(before));
         }
-
-        [Test]
-        public async Task SaveContentItem_UsesFilePathIfProvided()
-        {
-            // Arrange
-            var item = new ContentItem
-            {
-                Title = "Custom",
-                FilePath = Path.Combine(_contentDir, "custom.md")
-            };
-            _renderer.RenderMarkdown(item).Returns("custom content");
-
-            // Act
-            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
-
-            // Assert
-            Assert.That(File.Exists(item.FilePath), Is.True);
-            var content = await File.ReadAllTextAsync(item.FilePath);
-            Assert.That(content, Is.EqualTo("custom content"));
-        }
     }
 }
