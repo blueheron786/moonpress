@@ -93,4 +93,94 @@ public class ContentItemTests
         // Assert
         Assert.That(result, Is.EqualTo("hello-world-this-is-a-test-string"));
     }
+
+    [Test]
+    public void FileNameOnly_ShouldReturnSanitizedFileName_WhenFilePathIsValid()
+    {
+        // Arrange
+        var contentItem = new ContentItem
+        {
+            FilePath = "/path/to/file/Hello World! This is a test | string.md"
+        };
+
+        // Act
+        var result = contentItem.FileNameOnly;
+
+        // Assert
+        Assert.That(result, Is.EqualTo("hello-world-this-is-a-test-string"));
+    }
+
+    [Test]
+    public void Slug_ShouldReturnSanitizedSlug_WhenTitleIsValid()
+    {
+        // Arrange
+        var contentItem = new ContentItem
+        {
+            Title = "Hello World! This is a test | string."
+        };
+
+        // Act
+        var result = contentItem.Slug;
+
+        // Assert
+        Assert.That(result, Is.EqualTo("hello-world-this-is-a-test-string"));
+    }
+
+    [Test]
+    public void Status_ShouldReturnDraft_WhenIsDraftIsTrue()
+    {
+        // Arrange
+        var contentItem = new ContentItem
+        {
+            IsDraft = true
+        };
+
+        // Act
+        var result = contentItem.Status;
+
+        // Assert
+        Assert.That(result, Is.EqualTo("Draft"));
+    }
+
+    [Test]
+    public void Status_ShouldReturnPublished_WhenIsDraftIsFalse()
+    {
+        // Arrange
+        var contentItem = new ContentItem
+        {
+            IsDraft = false
+        };
+
+        // Act
+        var result = contentItem.Status;
+
+        // Assert
+        Assert.That(result, Is.EqualTo("Published"));
+    }
+
+    [Test]
+    public void DatePublished_ShouldBeSetToCurrentDateTime_WhenContentItemIsCreated()
+    {
+        // Arrange
+        var contentItem = new ContentItem();
+
+        // Act
+        var result = contentItem.DatePublished;
+
+        // Assert
+        Assert.That(result, Is.EqualTo(DateTime.UtcNow).Within(TimeSpan.FromSeconds(1)));
+    }
+
+    [Test]
+    public void DateUpdated_ShouldBeSetToCurrentDateTime_WhenContentItemIsCreated()
+    {
+        // Arrange
+        var contentItem = new ContentItem();
+
+        // Act
+        var result = contentItem.DateUpdated;
+
+        // Assert
+        Assert.That(result, Is.EqualTo(DateTime.UtcNow).Within(TimeSpan.FromSeconds(1)));
+    }
 }
