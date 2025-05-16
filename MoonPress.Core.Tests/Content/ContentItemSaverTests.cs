@@ -105,5 +105,27 @@ namespace MoonPress.Core.Tests.Content
             Assert.That(item.DatePublished, Is.GreaterThanOrEqualTo(before));
             Assert.That(item.DateUpdated, Is.GreaterThanOrEqualTo(before));
         }
+
+        [Test]
+        public async Task SaveContentItem_SetsDatePublishedIfMinValue()
+        {
+            // Arrange
+            var item = new ContentItem
+            {
+                Title = "MinDate",
+                DatePublished = DateTime.MinValue // Explicitly set to min value
+            };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+
+            // Capture time before save
+            var before = DateTime.UtcNow;
+
+            // Act
+            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
+
+            // Assert
+            Assert.That(item.DatePublished, Is.GreaterThanOrEqualTo(before));
+            Assert.That(item.DatePublished, Is.LessThanOrEqualTo(DateTime.UtcNow));
+        }
     }
 }
