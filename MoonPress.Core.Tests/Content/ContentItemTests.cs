@@ -127,6 +127,22 @@ public class ContentItemTests
     }
 
     [Test]
+    public void Slug_ShouldReturnEmptyString_WhenTitleIsNull()
+    {
+        // Arrange
+        var contentItem = new ContentItem
+        {
+            Title = null
+        };
+
+        // Act
+        var result = contentItem.Slug;
+
+        // Assert
+        Assert.That(result, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
     public void Status_ShouldReturnDraft_WhenIsDraftIsTrue()
     {
         // Arrange
