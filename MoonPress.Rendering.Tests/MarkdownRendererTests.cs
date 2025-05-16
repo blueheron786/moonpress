@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace MoonPress.Rendering.Tests
 {
     [TestFixture]
-    public class ContentItemMarkdownRendererTest
+    public class MarkdownRendererTest
     {
         [Test]
         public void RenderMarkdown_NullContentItem_ThrowsArgumentNullException()

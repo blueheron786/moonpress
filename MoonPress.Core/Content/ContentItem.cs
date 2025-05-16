@@ -6,23 +6,28 @@ public class ContentItem
 {
     public static string Sanitize(string? input)
     {
-        if (string.IsNullOrEmpty(input))
-        {
+        if (string.IsNullOrWhiteSpace(input))
             return string.Empty;
-        }
-        
-        // Remove invalid characters and replace spaces with hyphens
-        return new string(input
-            .Trim()
-            .ToLowerInvariant()
-            .Replace(' ', '-')
-            .Replace('|', '-')
-            // them doubles are hard to kill ...
-            .Replace("--", "-")
-            .Replace("--", "-")
-            .Replace("--", "-")
-            .Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_')
-            .ToArray());
+
+        // Convert to lowercase
+        var sanitized = input.ToLowerInvariant();
+
+        // Replace underscores with spaces for normalization
+        sanitized = sanitized.Replace("_", " ");
+
+        // Remove all non-alphanumeric characters except spaces
+        sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"[^a-z0-9\s]", " ");
+
+        // Replace all whitespace with single dash
+        sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"\s+", "-");
+
+        // Remove multiple dashes
+        sanitized = System.Text.RegularExpressions.Regex.Replace(sanitized, @"-+", "-");
+
+        // Trim leading/trailing dashes
+        sanitized = sanitized.Trim('-');
+
+        return sanitized;
     }
 
     // Inferred, not stored in the file

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace MoonPress.Rendering.Tests
 {
     [TestFixture]
-    public class ContentItemHtmlRendererTest
+    public class HtmlRendererTest
     {
         public void RenderHtml_NullContentItem_ThrowsArgumentNullException()
         {
