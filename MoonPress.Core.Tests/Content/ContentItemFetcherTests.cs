@@ -167,4 +167,78 @@ summary: A summary";
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ContentItemFetcher.UpdateCache(null!));
     }
+
+    [Test]
+    public void GetContentItems_ParsesCustomFields()
+    {
+        // Arrange
+        var yaml = @"
+id: test2
+title: Custom Fields Test
+datePublished: 2023-02-01 10:00:00
+dateUpdated: 2023-02-02 11:00:00
+category: CatB
+tags: tag3, tag4
+isDraft: true
+summary: Has custom fields
+customField1: value1
+customField2: value2";
+        WriteMarkdown("item2.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        var item = items.Values.First(i => i.Id == "test2");
+        Assert.That(item.CustomFields, Is.Not.Null);
+        Assert.That(item.CustomFields.ContainsKey("customField1"));
+        Assert.That(item.CustomFields["customField1"], Is.EqualTo("value1"));
+        Assert.That(item.CustomFields.ContainsKey("customField2"));
+        Assert.That(item.CustomFields["customField2"], Is.EqualTo("value2"));
+    }
+
+    [Test]
+    public void GetContentItems_ParsesTagsWithSpacesAndQuotes()
+    {
+        // Arrange
+        var yaml = @"
+id: test3
+title: Tag Quotes
+datePublished: 2023-03-01 09:00:00
+dateUpdated: 2023-03-02 10:00:00
+category: CatC
+tags: tag1, ""tag 2"", tag3
+isDraft: false
+summary: Tags with spaces and quotes";
+        WriteMarkdown("item3.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        var item = items.Values.First(i => i.Id == "test3");
+        Assert.That(item.Tags, Is.EqualTo("tag1, \"tag 2\", tag3"));
+    }
+
+    [Test]
+    public void GetContentItems_EmptyOrMissingTags_ResultsInEmptyTags()
+    {
+        // Arrange
+        var yaml = @"
+id: test4
+title: No Tags
+datePublished: 2023-04-01 08:00:00
+dateUpdated: 2023-04-02 09:00:00
+category: CatD
+isDraft: false
+summary: No tags field";
+        WriteMarkdown("item4.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        var item = items.Values.First(i => i.Id == "test4");
+        Assert.That(item.Tags, Is.EqualTo(string.Empty));
+    }
 }

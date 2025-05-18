@@ -1,3 +1,4 @@
+using System.Text;
 using MoonPress.Core.Models;
 using MoonPress.Core.Renderers;
 
@@ -12,17 +13,40 @@ public class ContentItemMarkdownRenderer : IMarkdownRenderer
             throw new ArgumentNullException(nameof(contentItem), "Content item cannot be null.");
         }
 
-        // Rudimentary markdown with meta-data. We need something ... more.
-        return $"---\n" +
-            $"id: {contentItem.Id}\n" +
-            $"title: {contentItem.Title}\n" +
-            $"datePublished: {contentItem.DatePublished:yyyy-MM-dd HH:mm:ss}\n" +
-            $"dateUpdated: {contentItem.DateUpdated:yyyy-MM-dd HH:mm:ss}\n" +
-            $"category: {contentItem.Category}\n" +
-            $"tags: {string.Join(", ", contentItem.Tags)}\n" +
-            $"isDraft: {contentItem.IsDraft.ToString().ToLower()}\n" +
-            $"summary: {contentItem.Summary}\n" +
-            $"---\n\n" +
-            $"{contentItem.Contents}";
+        var sb = new StringBuilder();
+        sb.AppendLine("---");
+        sb.AppendLine($"id: {contentItem.Id}");
+        sb.AppendLine($"title: {EscapeYaml(contentItem.Title)}");
+        sb.AppendLine($"datePublished: {contentItem.DatePublished:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"dateUpdated: {contentItem.DateUpdated:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"category: {EscapeYaml(contentItem.Category)}");
+        sb.AppendLine($"tags: {string.Join(", ", (contentItem.Tags ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(t => $"{EscapeYaml(t)}"))}");
+        sb.AppendLine($"isDraft: {contentItem.IsDraft.ToString().ToLower()}");
+        sb.AppendLine($"summary: {EscapeYaml(contentItem.Summary)}");
+
+        // Add custom fields
+        if (contentItem.CustomFields != null)
+        {
+            foreach (var kvp in contentItem.CustomFields)
+            {
+                sb.AppendLine($"{kvp.Key}: {EscapeYaml(kvp.Value)}");
+            }
+        }
+
+        sb.AppendLine("---");
+        sb.AppendLine();
+        sb.Append(contentItem.Contents);
+
+        return sb.ToString();
+    }
+    
+    private static string EscapeYaml(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        return value.Replace("\"", "\\\"");
     }
 }

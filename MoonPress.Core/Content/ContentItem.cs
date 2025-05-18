@@ -41,6 +41,8 @@ public class ContentItem
     public bool IsDraft { get; set; }
     public string Category { get; set; } = string.Empty;
     public string Tags { get; set; } = string.Empty; // comma separated list of tags
+                                                     // Custom key/value pairs
+    public Dictionary<string, string> CustomFields { get; set; } = new();
 
     /// <summary>
     /// Used to generate the OpenGraph og:description meta tag.

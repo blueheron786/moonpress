@@ -131,6 +131,27 @@ public static class ContentItemFetcher
             var contentStartIndex = yamlMatch.Index + yamlMatch.Length;
             var bodyContent = content.Substring(contentStartIndex).Trim();
 
+            // Extract all YAML key-value pairs for custom fields
+            var customFields = new Dictionary<string, string>();
+            var yamlLines = yamlContent.Split('\n');
+            var knownKeys = new HashSet<string>
+            {
+                "id", "title", "datePublished", "dateUpdated", "category", "tags", "isDraft", "summary"
+            };
+            foreach (var line in yamlLines)
+            {
+                var match = Regex.Match(line, @"^(?<key>[^:]+):\s*(?<value>.+)$");
+                if (match.Success)
+                {
+                    var key = match.Groups["key"].Value.Trim();
+                    var value = match.Groups["value"].Value.Trim().Trim('"');
+                    if (!knownKeys.Contains(key))
+                    {
+                        customFields[key] = value;
+                    }
+                }
+            }
+
             return new ContentItem
             {
                 Id = ExtractYamlValue(yamlContent, "id")!,
@@ -142,7 +163,8 @@ public static class ContentItemFetcher
                 Tags = ExtractYamlValue(yamlContent, "tags") ?? string.Empty,
                 IsDraft = isDraft,
                 Summary = ExtractYamlValue(yamlContent, "summary"),
-                Contents = bodyContent
+                Contents = bodyContent,
+                CustomFields = customFields
             };
         }
         catch

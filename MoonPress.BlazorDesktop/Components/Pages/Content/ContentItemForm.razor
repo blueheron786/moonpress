@@ -47,6 +47,22 @@
         <ValidationMessage For="@(() => Model.Summary)" />
     </div>
 
+    <div class="mb-3">
+        <label>Custom Fields</label>
+        @foreach (var pair in CustomFieldsList)
+        {
+            <div class="input-group mb-2">
+                <input class="form-control" placeholder="Key"
+                       @bind="pair.Key" @bind:event="oninput" />
+                <input class="form-control" placeholder="Value"
+                       @bind="pair.Value" @bind:event="oninput" />
+                <button type="button" class="btn btn-danger"
+                        @onclick="() => RemoveCustomField(pair)">Remove</button>
+            </div>
+        }
+        <button type="button" class="btn btn-secondary" @onclick="AddCustomField">Add Custom Field</button>
+    </div>
+
     <button type="submit" class="btn btn-primary">Save</button>
     <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
 </EditForm>
