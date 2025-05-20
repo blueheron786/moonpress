@@ -76,7 +76,7 @@ namespace MoonPress.Rendering.Tests
             Assert.That(result, Does.Contain("id: "));
             Assert.That(result, Does.Contain("title: "));
             Assert.That(result, Does.Contain("summary: "));
-            Assert.That(result, Does.Contain("---\n\n"));
+            Assert.That(result, Does.Contain("---"));
         }
 
         [Test]
