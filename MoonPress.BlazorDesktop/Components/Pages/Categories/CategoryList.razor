@@ -1,15 +1,16 @@
 @page "/categories"
+@using MoonPress.Core.Content
 
 <h3>Categories</h3>
 
-@if (!_itemsByCategory.Any())
+@if (!ContentItemFetcher.GetItemsByCategory().Any())
 {
     <p>No categories found.</p>
 }
 else
 {
     <ul>
-        @foreach (var kvp in _itemsByCategory
+        @foreach (var kvp in ContentItemFetcher.GetItemsByCategory()
             .OrderBy(g => g.Key))
         {
             <li>
