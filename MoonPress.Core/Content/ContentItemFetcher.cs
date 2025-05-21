@@ -8,7 +8,7 @@ public static class ContentItemFetcher
 {
     private const string PublishedDateFormat = "yyyy-MM-dd HH:mm:ss";
 
-    // Cache for content items
+    // Cache for content items. ID => item
     private static Dictionary<string, ContentItem>? _contentItems;
 
     public static Dictionary<string, ContentItem> GetContentItems(string rootFolder)
@@ -59,6 +59,16 @@ public static class ContentItemFetcher
             .OrderBy(c => c);
     }
 
+    public static Dictionary<string, ContentItem> GetCategoriesWithContentItems()
+    {
+        if (_contentItems == null)
+        {
+            throw new InvalidOperationException("Content items have not been loaded.");
+        }
+
+        return _contentItems.OrderBy(c => c.Value).ToDictionary();
+    }
+
     public static IEnumerable<string> GetTags()
     {
         if (_contentItems == null)
@@ -87,6 +97,21 @@ public static class ContentItemFetcher
 
         // Upsert
         _contentItems[newOrExistingItem.Id] = newOrExistingItem;
+    }
+
+    public static Dictionary<string, List<ContentItem>> GetItemsByCategory()
+    {
+        if (_contentItems == null)
+        {
+            throw new InvalidOperationException("Content items have not been loaded.");
+        }
+
+        return _contentItems.Values
+            .GroupBy(item => item.Category ?? string.Empty)
+            .ToDictionary(
+                g => g.Key,
+                g => g.ToList()
+            );
     }
 
     private static ContentItem? ParseContentItem(string filePath)

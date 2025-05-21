@@ -1,0 +1,23 @@
+@page "/categories"
+
+<h3>Categories</h3>
+
+@if (!_itemsByCategory.Any())
+{
+    <p>No categories found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var kvp in _itemsByCategory
+            .OrderBy(g => g.Key))
+        {
+            <li>
+                <a href="/category/@(kvp.Key)">
+                    @(kvp.Key)
+                </a>
+                (@kvp.Value.Count())
+            </li>
+        }
+    </ul>
+}
