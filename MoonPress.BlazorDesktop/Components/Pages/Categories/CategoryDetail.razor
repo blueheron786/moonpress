@@ -1,0 +1,25 @@
+@page "/category/{CategoryName}"
+
+<h3>Category: @CategoryName</h3>
+
+@if (!Items.Any())
+{
+    <p>No posts found in this category.</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Items)
+        {
+            <li class="mb-3">
+                <strong>
+                    <a href="/content-item/edit/@item.Id">@item.Title</a>
+                </strong>
+                <div>
+                    @item.Summary
+                </div>
+                <small>Published @item.DatePublished.ToString("yyyy-MM-dd")</small>
+            </li>
+        }
+    </ul>
+}
