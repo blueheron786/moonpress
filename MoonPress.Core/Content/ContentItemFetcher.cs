@@ -66,7 +66,7 @@ public static class ContentItemFetcher
             throw new InvalidOperationException("Content items have not been loaded.");
         }
 
-        return _contentItems.OrderBy(c => c.Value).ToDictionary();
+        return _contentItems.ToDictionary();
     }
 
     public static IEnumerable<string> GetTags()

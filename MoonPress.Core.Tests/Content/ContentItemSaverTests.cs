@@ -215,7 +215,7 @@ namespace MoonPress.Core.Tests.Content
         }
 
         [Test]
-        public async Task SaveContentItem_HandlesExceptionGracefully()
+        public void SaveContentItem_HandlesExceptionGracefully()
         {
             // Arrange
             var item = new ContentItem { Title = "Test" };
@@ -226,9 +226,8 @@ namespace MoonPress.Core.Tests.Content
 
             // Act & Assert
             // This should not throw an exception, but handle it internally
-            await Assert.That(async () => 
-                await ContentItemSaver.SaveContentItem(item, _renderer, invalidPath), 
-                Throws.Nothing);
+            Assert.DoesNotThrowAsync(async () => 
+                await ContentItemSaver.SaveContentItem(item, _renderer, invalidPath));
         }
 
         [Test]
