@@ -127,5 +127,122 @@ namespace MoonPress.Core.Tests.Content
             Assert.That(item.DatePublished, Is.GreaterThanOrEqualTo(before));
             Assert.That(item.DatePublished, Is.LessThanOrEqualTo(DateTime.UtcNow));
         }
+
+        [Test]
+        public async Task SaveContentItem_SetsFilePathIfEmpty()
+        {
+            // Arrange
+            var item = new ContentItem
+            {
+                Title = "Test Title",
+                FilePath = string.Empty // Empty file path
+            };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+
+            // Act
+            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
+
+            // Assert
+            Assert.That(item.FilePath, Is.Not.Empty);
+            Assert.That(item.FilePath, Does.Contain("Test-Title.md"));
+        }
+
+        [Test]
+        public async Task SaveContentItem_DoesNotOverwriteExistingFilePath()
+        {
+            // Arrange
+            var existingPath = "existing/path/file.md";
+            var item = new ContentItem
+            {
+                Title = "Test Title",
+                FilePath = existingPath // Already has a file path
+            };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+
+            // Act
+            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
+
+            // Assert
+            Assert.That(item.FilePath, Is.EqualTo(existingPath));
+        }
+
+        [Test]
+        public async Task SaveContentItem_UpdatesDateUpdated()
+        {
+            // Arrange
+            var originalDate = DateTime.UtcNow.AddDays(-1);
+            var item = new ContentItem
+            {
+                Title = "Test Title",
+                DateUpdated = originalDate
+            };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+
+            var before = DateTime.UtcNow;
+
+            // Act
+            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
+
+            // Assert
+            Assert.That(item.DateUpdated, Is.GreaterThan(originalDate));
+            Assert.That(item.DateUpdated, Is.GreaterThanOrEqualTo(before));
+        }
+
+        [Test]
+        public async Task SaveContentItem_CreatesDirectoryIfNotExists()
+        {
+            // Arrange
+            var newRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var item = new ContentItem { Title = "Test" };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+
+            try
+            {
+                // Act
+                await ContentItemSaver.SaveContentItem(item, _renderer, newRoot);
+
+                // Assert
+                var contentDir = Path.Combine(newRoot, "Content");
+                Assert.That(Directory.Exists(contentDir), Is.True);
+            }
+            finally
+            {
+                if (Directory.Exists(newRoot))
+                {
+                    Directory.Delete(newRoot, true);
+                }
+            }
+        }
+
+        [Test]
+        public async Task SaveContentItem_HandlesExceptionGracefully()
+        {
+            // Arrange
+            var item = new ContentItem { Title = "Test" };
+            _renderer.RenderMarkdown(item).Returns("dummy");
+            
+            // Use an invalid path to trigger an exception
+            var invalidPath = "\x00\x00\x00"; // Invalid path characters
+
+            // Act & Assert
+            // This should not throw an exception, but handle it internally
+            await Assert.That(async () => 
+                await ContentItemSaver.SaveContentItem(item, _renderer, invalidPath), 
+                Throws.Nothing);
+        }
+
+        [Test]
+        public async Task SaveContentItem_CallsRendererWithCorrectItem()
+        {
+            // Arrange
+            var item = new ContentItem { Title = "Test" };
+            _renderer.RenderMarkdown(item).Returns("rendered content");
+
+            // Act
+            await ContentItemSaver.SaveContentItem(item, _renderer, _testRoot);
+
+            // Assert
+            _renderer.Received(1).RenderMarkdown(item);
+        }
     }
 }

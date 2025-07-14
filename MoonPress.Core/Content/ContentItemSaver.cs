@@ -20,7 +20,7 @@ public static class ContentItemSaver
         try
         {
             // Population of items that appear on first save
-            if (item.Id == null)
+            if (string.IsNullOrEmpty(item.Id))
             {
                 item.Id = Guid.NewGuid().ToString();
             }

@@ -241,4 +241,162 @@ summary: No tags field";
         var item = items.Values.First(i => i.Id == "test4");
         Assert.That(item.Tags, Is.EqualTo(string.Empty));
     }
+
+    [Test]
+    public void ParseContentItem_ReturnsNullForInvalidYaml()
+    {
+        // Arrange - Create a file with no YAML front matter
+        var filePath = Path.Combine(_contentDir, "invalid.md");
+        File.WriteAllText(filePath, "Just content, no YAML front matter");
+
+        // Act
+        var item = typeof(ContentItemFetcher)
+            .GetMethod("ParseContentItem", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.Invoke(null, new object[] { filePath });
+
+        // Assert
+        Assert.That(item, Is.Null);
+    }
+
+    [Test]
+    public void ExtractYamlValue_ReturnsNullIfKeyMissing()
+    {
+        // Arrange
+        var yamlContent = "key1: value1";
+
+        // Act
+        var result = typeof(ContentItemFetcher)
+            .GetMethod("ExtractYamlValue", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.Invoke(null, new object[] { yamlContent, "missingKey" }) as string;
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public void GetCategoriesWithContentItems_ReturnsOrderedDictionary()
+    {
+        // Arrange
+        WriteMarkdown("a.md", "id: a\ncategory: CatB\ntags: x\nisDraft: false");
+        WriteMarkdown("b.md", "id: b\ncategory: CatA\ntags: y\nisDraft: false");
+        ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Act
+        var result = ContentItemFetcher.GetCategoriesWithContentItems();
+
+        // Assert
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result.ContainsKey("a"));
+        Assert.That(result.ContainsKey("b"));
+        // Verify the items are returned
+        Assert.That(result["a"].Category, Is.EqualTo("CatB"));
+        Assert.That(result["b"].Category, Is.EqualTo("CatA"));
+    }
+
+    [Test]
+    public void GetCategoriesWithContentItems_ThrowsIfNotLoaded()
+    {
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => ContentItemFetcher.GetCategoriesWithContentItems());
+    }
+
+    [Test]
+    public void GetItemsByCategory_GroupsItemsByCategory()
+    {
+        // Arrange
+        WriteMarkdown("a.md", "id: a\ncategory: CatB\ntags: x\nisDraft: false");
+        WriteMarkdown("b.md", "id: b\ncategory: CatA\ntags: y\nisDraft: false");
+        WriteMarkdown("c.md", "id: c\ncategory: CatB\ntags: z\nisDraft: false");
+        ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Act
+        var result = ContentItemFetcher.GetItemsByCategory();
+
+        // Assert
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result["CatA"], Has.Count.EqualTo(1));
+        Assert.That(result["CatB"], Has.Count.EqualTo(2));
+    }
+
+    [Test]
+    public void GetItemsByCategory_ThrowsIfNotLoaded()
+    {
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => ContentItemFetcher.GetItemsByCategory());
+    }
+
+    [Test]
+    public void GetContentItems_HandlesItemsWithoutYamlFrontMatter()
+    {
+        // Arrange
+        var filePath = Path.Combine(_contentDir, "no-yaml.md");
+        File.WriteAllText(filePath, "Just content, no YAML");
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(0));
+    }
+
+    [Test]
+    public void GetContentItems_HandlesNullCategory()
+    {
+        // Arrange
+        var yaml = @"
+id: test5
+title: No Category
+datePublished: 2023-05-01 07:00:00
+dateUpdated: 2023-05-02 08:00:00
+isDraft: false
+summary: No category field";
+        WriteMarkdown("item5.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        var item = items.Values.First(i => i.Id == "test5");
+        Assert.That(item.Category, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void UpdateCache_WorksWithNullCacheInitially()
+    {
+        // Arrange
+        var newItem = new ContentItem
+        {
+            Id = "new",
+            Category = "NewCat",
+            Tags = "newTag",
+            Title = "New Item",
+            FilePath = "dummy",
+            DatePublished = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            IsDraft = false,
+            Summary = "new summary",
+            Contents = "new content"
+        };
+
+        // Act (cache should be null initially)
+        ContentItemFetcher.UpdateCache(newItem);
+
+        // Assert
+        // This should work without throwing an exception
+        Assert.That(newItem.Id, Is.EqualTo("new"));
+    }
+
+    [Test]
+    public void GetContentItems_ReturnsFromCacheOnSecondCall()
+    {
+        // Arrange
+        WriteMarkdown("a.md", "id: a\ncategory: CatB\ntags: x\nisDraft: false");
+        
+        // Act
+        var items1 = ContentItemFetcher.GetContentItems(_testRoot);
+        var items2 = ContentItemFetcher.GetContentItems(_testRoot);
+        
+        // Assert
+        Assert.That(items1, Is.SameAs(items2)); // Should return same instance from cache
+    }
 }

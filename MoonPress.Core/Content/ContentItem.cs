@@ -33,7 +33,7 @@ public class ContentItem
     // Inferred, not stored in the file
     public string FilePath { get; set; } = string.Empty;
 
-    public string Id { get; set; } // populated on first save
+    public string Id { get; set; } = string.Empty; // populated on first save
     public DateTime DatePublished { get; set; } // also populated on first save
     public DateTime DateUpdated { get; set; }
     public string Title { get; set; } = string.Empty;
