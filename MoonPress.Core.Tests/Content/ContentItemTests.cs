@@ -132,7 +132,7 @@ public class ContentItemTests
         // Arrange
         var contentItem = new ContentItem
         {
-            Title = null
+            Title = null!
         };
 
         // Act

@@ -8,9 +8,10 @@ namespace MoonPress.Rendering.Tests
     [TestFixture]
     public class HtmlRendererTest
     {
+        [Test]
         public void RenderHtml_NullContentItem_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new ContentItemHtmlRenderer().RenderHtml(null));
+            Assert.Throws<ArgumentNullException>(() => new ContentItemHtmlRenderer().RenderHtml(null!));
         }
 
         [Test]

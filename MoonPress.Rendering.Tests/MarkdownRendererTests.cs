@@ -10,7 +10,7 @@ namespace MoonPress.Rendering.Tests
         [Test]
         public void RenderMarkdown_NullContentItem_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new ContentItemMarkdownRenderer().RenderMarkdown(null));
+            Assert.Throws<ArgumentNullException>(() => new ContentItemMarkdownRenderer().RenderMarkdown(null!));
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace MoonPress.Rendering.Tests
                 DatePublished = DateTime.UtcNow,
                 DateUpdated = DateTime.UtcNow,
                 Category = "",
-                Tags = null,
+                Tags = null!,
                 IsDraft = false,
                 Summary = "",
                 Contents = ""
