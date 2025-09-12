@@ -17,6 +17,7 @@ public class ContentItemMarkdownRenderer : IMarkdownRenderer
         sb.AppendLine("---");
         sb.AppendLine($"id: {contentItem.Id}");
         sb.AppendLine($"title: {EscapeYaml(contentItem.Title)}");
+        sb.AppendLine($"slug: {EscapeYaml(contentItem.Slug)}");
         sb.AppendLine($"datePublished: {contentItem.DatePublished:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine($"dateUpdated: {contentItem.DateUpdated:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine($"category: {EscapeYaml(contentItem.Category)}");

@@ -161,7 +161,7 @@ public static class ContentItemFetcher
             var yamlLines = yamlContent.Split('\n');
             var knownKeys = new HashSet<string>
             {
-                "id", "title", "datePublished", "dateUpdated", "category", "tags", "isDraft", "summary"
+                "id", "title", "slug", "datePublished", "dateUpdated", "category", "tags", "isDraft", "summary"
             };
             foreach (var line in yamlLines)
             {
@@ -177,7 +177,7 @@ public static class ContentItemFetcher
                 }
             }
 
-            return new ContentItem
+            var contentItem = new ContentItem
             {
                 Id = ExtractYamlValue(yamlContent, "id")!,
                 FilePath = filePath,
@@ -191,6 +191,15 @@ public static class ContentItemFetcher
                 Contents = bodyContent,
                 CustomFields = customFields
             };
+            
+            // Set slug through the property (after object initialization)
+            var slugValue = ExtractYamlValue(yamlContent, "slug");
+            if (!string.IsNullOrWhiteSpace(slugValue))
+            {
+                contentItem.Slug = slugValue;
+            }
+            
+            return contentItem;
         }
         catch
         {

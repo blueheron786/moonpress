@@ -219,5 +219,43 @@ namespace MoonPress.Rendering.Tests
             Assert.That(result, Does.Contain("datePublished: 2024-05-01 10:00:00"));
             Assert.That(result, Does.Contain("dateUpdated: 2024-05-02 12:00:00"));
         }
+
+        [Test]
+        public void RenderMarkdown_IncludesSlugField()
+        {
+            var contentItem = new ContentItem
+            {
+                Id = "slugtest",
+                Title = "Test Article",
+                DatePublished = DateTime.UtcNow,
+                Contents = "Test content"
+            };
+            
+            // Set a custom slug
+            contentItem.Slug = "custom-article-slug";
+
+            var result = new ContentItemMarkdownRenderer().RenderMarkdown(contentItem);
+
+            Assert.That(result, Does.Contain("slug: custom-article-slug"));
+        }
+
+        [Test]
+        public void RenderMarkdown_EmptySlug_IncludesEmptySlugField()
+        {
+            var contentItem = new ContentItem
+            {
+                Id = "emptyslugtest",
+                Title = "Test Article With Auto Slug",
+                DatePublished = DateTime.UtcNow,
+                Contents = "Test content"
+            };
+            
+            // Don't set custom slug - should use auto-generated from title
+
+            var result = new ContentItemMarkdownRenderer().RenderMarkdown(contentItem);
+
+            // Should still include the slug field in YAML, showing the auto-generated slug
+            Assert.That(result, Does.Contain("slug: test-article-with-auto-slug"));
+        }
     }
 }
