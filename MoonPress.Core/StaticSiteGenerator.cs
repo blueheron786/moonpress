@@ -227,7 +227,14 @@ public class StaticSiteGenerator
         
         if (File.Exists(themePath))
         {
-            return await File.ReadAllTextAsync(themePath);
+            string layoutHtml = await File.ReadAllTextAsync(themePath);
+            // Rewrite asset links to be flat (remove /themes/{theme}/ from href/src)
+            var themePrefix = $"/themes/{project.Theme}/";
+            layoutHtml = layoutHtml.Replace(themePrefix, "");
+            // Also handle relative links like themes/{theme}/
+            var relThemePrefix = $"themes/{project.Theme}/";
+            layoutHtml = layoutHtml.Replace(relThemePrefix, "");
+            return layoutHtml;
         }
         
         // Fallback to a basic layout
@@ -255,14 +262,14 @@ public class StaticSiteGenerator
     private async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
     {
         var themePath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme);
-        
+
         if (!Directory.Exists(themePath))
         {
             result.Errors.Add($"Theme directory not found: {themePath}");
             return;
         }
 
-        // Copy all theme files except layout.html and index.html
+        // Copy all theme files and folders (except .html) as flat files/folders into outputPath
         foreach (var file in Directory.GetFiles(themePath))
         {
             var fileName = Path.GetFileName(file);
@@ -270,13 +277,22 @@ public class StaticSiteGenerator
             {
                 continue; // Skip template files
             }
-
             var targetFile = Path.Combine(outputPath, fileName);
             File.Copy(file, targetFile, true);
             result.GeneratedFiles.Add(fileName);
             Console.WriteLine($"  -> Copied theme asset: {fileName}");
         }
-        
+
+        // Copy all directories inside themePath as flat folders into outputPath
+        foreach (var dir in Directory.GetDirectories(themePath))
+        {
+            var dirName = Path.GetFileName(dir);
+            var targetDir = Path.Combine(outputPath, dirName);
+            await CopyDirectoryAsync(dir, targetDir);
+            result.GeneratedFiles.Add($"{dirName}/ (directory)");
+            Console.WriteLine($"  -> Copied theme directory: {dirName}");
+        }
+
         await Task.CompletedTask;
     }
 }
