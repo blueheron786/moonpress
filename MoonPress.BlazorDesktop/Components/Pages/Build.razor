@@ -2,6 +2,8 @@
 @using MoonPress.Core
 @using MoonPress.Rendering
 @using System.IO
+@using System.Diagnostics
+@using System.Windows.Forms
 @inject IJSRuntime JS
 
 <h3>Build Site</h3>
@@ -119,24 +121,21 @@ else
         }
     }
 
-    private async Task SelectOutputDirectory()
+    private void SelectOutputDirectory()
     {
-        // Use JavaScript to show folder browser dialog
-        try
+        using var dialog = new FolderBrowserDialog();
+        dialog.Description = "Select output directory for generated site";
+        dialog.UseDescriptionForTitle = true;
+        
+        if (!string.IsNullOrWhiteSpace(OutputPath))
         {
-            var selectedPath = await JS.InvokeAsync<string>("selectFolder");
-            if (!string.IsNullOrWhiteSpace(selectedPath))
-            {
-                OutputPath = selectedPath;
-            }
+            dialog.InitialDirectory = OutputPath;
         }
-        catch
+        
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
-            // Fallback: if JS folder selection fails, use default output path
-            if (ProjectState.Current != null)
-            {
-                OutputPath = Path.Combine(ProjectState.Current.RootFolder, "output");
-            }
+            OutputPath = dialog.SelectedPath;
+            StateHasChanged();
         }
     }
 
@@ -174,18 +173,25 @@ else
         }
     }
 
-    private async Task OpenOutputFolder()
+    private void OpenOutputFolder()
     {
         if (!string.IsNullOrWhiteSpace(OutputPath) && Directory.Exists(OutputPath))
         {
             try
             {
-                await JS.InvokeVoidAsync("openFolder", OutputPath);
+                // Use Process.Start to open the folder in Windows Explorer
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = $"\"{OutputPath}\"",
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
             }
-            catch
+            catch (Exception ex)
             {
-                // Fallback: copy path to clipboard
-                await JS.InvokeVoidAsync("navigator.clipboard.writeText", OutputPath);
+                // If opening fails, we could log or show an error message
+                Console.WriteLine($"Failed to open folder: {ex.Message}");
             }
         }
     }
