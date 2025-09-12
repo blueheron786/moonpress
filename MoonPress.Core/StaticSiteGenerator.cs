@@ -11,6 +11,7 @@ namespace MoonPress.Core;
 public class StaticSiteGenerator
 {
     private const string ThemesFolderName = "themes";
+    private const string ContentFolderName = "content";
     private readonly IHtmlRenderer _htmlRenderer;
     
     public StaticSiteGenerator(IHtmlRenderer htmlRenderer)

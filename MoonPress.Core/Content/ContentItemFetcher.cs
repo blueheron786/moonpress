@@ -7,6 +7,7 @@ namespace MoonPress.Core.Content;
 public static class ContentItemFetcher
 {
     private const string PublishedDateFormat = "yyyy-MM-dd HH:mm:ss";
+    private const string ContentFolderName = "content";
 
     // Cache for content items. ID => item
     private static Dictionary<string, ContentItem>? _contentItems;
@@ -26,7 +27,7 @@ public static class ContentItemFetcher
         {
             _contentItems = new Dictionary<string, ContentItem>();
 
-            var pagesDirectory = Path.Combine(rootFolder, "content");
+            var pagesDirectory = Path.Combine(rootFolder, ContentFolderName);
             if (Directory.Exists(pagesDirectory))
             {
                 var files = Directory

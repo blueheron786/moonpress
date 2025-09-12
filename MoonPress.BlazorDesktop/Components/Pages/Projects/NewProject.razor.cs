@@ -8,6 +8,7 @@ namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 public partial class NewProject : ComponentBase
 {
     private const string ThemesFolderName = "themes";
+    private const string ContentFolderName = "content";
     
     [Inject]
     private NavigationManager Nav { get; set; } = default!;
@@ -36,7 +37,7 @@ public partial class NewProject : ComponentBase
             var project = new StaticSiteProject { ProjectName = _projectName };
             
             // Create project directory structure
-            var contentDir = Path.Combine(_selectedFolder, "content");
+            var contentDir = Path.Combine(_selectedFolder, ContentFolderName);
             var themeDir = Path.Combine(_selectedFolder, ThemesFolderName, "default");
             
             Directory.CreateDirectory(contentDir);

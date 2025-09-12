@@ -8,6 +8,7 @@ namespace MoonPress.Core.Tests;
 public class ThemeSystemIntegrationTests
 {
     private const string ThemesFolderName = "themes";
+    private const string ContentFolderName = "content";
     private string _testProjectPath = null!;
     private string _outputPath = null!;
 
@@ -104,7 +105,7 @@ public class ThemeSystemIntegrationTests
         File.WriteAllText(Path.Combine(themeDir, "style.css"), styleCss);
 
         // Create content directory and test content
-        var contentDir = Path.Combine(_testProjectPath, "Content");
+        var contentDir = Path.Combine(_testProjectPath, ContentFolderName);
         Directory.CreateDirectory(contentDir);
 
         var testContent = """
