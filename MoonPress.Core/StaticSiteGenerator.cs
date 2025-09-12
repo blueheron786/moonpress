@@ -256,16 +256,18 @@ public class StaticSiteGenerator
         
         if (!Directory.Exists(themePath))
         {
+            result.Errors.Add($"Theme directory not found: {themePath}");
             return;
         }
         
-        // Copy all theme files except layout.html
+        // Copy all theme files except layout.html and index.html
         foreach (var file in Directory.GetFiles(themePath))
         {
             var fileName = Path.GetFileName(file);
-            if (fileName.Equals("layout.html", StringComparison.OrdinalIgnoreCase))
+            if (fileName.Equals("layout.html", StringComparison.OrdinalIgnoreCase) ||
+                fileName.Equals("index.html", StringComparison.OrdinalIgnoreCase))
             {
-                continue; // Skip layout file
+                continue; // Skip template files
             }
             
             var targetFile = Path.Combine(outputPath, fileName);
