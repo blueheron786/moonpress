@@ -51,7 +51,14 @@ public class ContentItem
     public string? Summary { get; set; } = null;
 
     public string FileNameOnly => Sanitize(Path.GetFileName(FilePath).Replace(".md", ""));
-    public string Slug => Sanitize(Title?.ToLower()) ?? "";
+    
+    private string _slug = string.Empty;
+    public string Slug 
+    { 
+        get => string.IsNullOrWhiteSpace(_slug) ? Sanitize(Title?.ToLower()) ?? "" : _slug;
+        set => _slug = value;
+    }
+    
     public string Status => IsDraft ? "Draft" : "Published";
 
     public ContentItem()

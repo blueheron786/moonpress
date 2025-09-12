@@ -9,6 +9,27 @@
         <label>Title</label>
         <InputText class="form-control" @bind-Value="Model.Title" />
     </div>
+
+    <div class="mb-3">
+        <label for="slug">Slug (URL-friendly identifier)</label>
+        <InputText id="slug"
+                   class="form-control"
+                   @bind-Value="Model.Slug"
+                   placeholder="Leave blank to auto-generate from title" />
+        <div class="form-text">
+            Used in URLs. Leave blank to auto-generate from title.
+        </div>
+        <ValidationMessage For="@(() => Model.Slug)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="datePublished">Date Published</label>
+        <InputDate id="datePublished"
+                   class="form-control"
+                   @bind-Value="Model.DatePublished" />
+        <ValidationMessage For="@(() => Model.DatePublished)" />
+    </div>
+
     <div class="mb-3">
         <label>Contents</label>
         <InputTextArea class="form-control" @bind-Value="Model.Contents" rows="10" />
