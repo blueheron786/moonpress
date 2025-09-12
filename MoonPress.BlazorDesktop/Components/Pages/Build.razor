@@ -1,0 +1,192 @@
+@page "/build"
+@using MoonPress.Core
+@using MoonPress.Rendering
+@using System.IO
+@inject IJSRuntime JS
+
+<h3>Build Site</h3>
+
+@if (ProjectState.Current == null)
+{
+    <div class="alert alert-warning">
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        No project is currently loaded. Please <a href="/project/load">load a project</a> first.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fa-solid fa-hammer"></i>
+                Build Static Site
+            </h5>
+            <p class="card-text">
+                Generate the static HTML files for your site. This will create all pages and copy static assets to the output directory.
+            </p>
+            
+            <div class="mb-3">
+                <label for="outputPath" class="form-label">Output Directory</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="outputPath" @bind="OutputPath" readonly />
+                    <button class="btn btn-outline-secondary" type="button" @onclick="SelectOutputDirectory">
+                        <i class="fa-solid fa-folder"></i> Browse
+                    </button>
+                </div>
+                <div class="form-text">
+                    The directory where the generated site files will be saved.
+                </div>
+            </div>
+
+            <button class="btn btn-primary" @onclick="BuildSite" disabled="@IsBuilding">
+                @if (IsBuilding)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span>Building...</span>
+                }
+                else
+                {
+                    <i class="fa-solid fa-play"></i>
+                    <span>Build Site</span>
+                }
+            </button>
+        </div>
+    </div>
+
+    @if (BuildResult != null)
+    {
+        <div class="mt-4">
+            @if (BuildResult.Success)
+            {
+                <div class="alert alert-success">
+                    <h6><i class="fa-solid fa-check-circle"></i> Build Successful!</h6>
+                    <p class="mb-2">@BuildResult.Message</p>
+                    
+                    @if (BuildResult.GeneratedFiles.Any())
+                    {
+                        <details class="mt-2">
+                            <summary>Generated Files (@BuildResult.GeneratedFiles.Count)</summary>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var file in BuildResult.GeneratedFiles)
+                                {
+                                    <li><code>@file</code></li>
+                                }
+                            </ul>
+                        </details>
+                    }
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm" @onclick="OpenOutputFolder">
+                            <i class="fa-solid fa-folder-open"></i> Open Output Folder
+                        </button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">
+                    <h6><i class="fa-solid fa-exclamation-circle"></i> Build Failed</h6>
+                    <p class="mb-2">@BuildResult.Message</p>
+                    
+                    @if (BuildResult.Errors.Any())
+                    {
+                        <details class="mt-2">
+                            <summary>Errors (@BuildResult.Errors.Count)</summary>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var error in BuildResult.Errors)
+                                {
+                                    <li class="text-danger">@error</li>
+                                }
+                            </ul>
+                        </details>
+                    }
+                </div>
+            }
+        </div>
+    }
+}
+
+@code {
+    private string OutputPath = string.Empty;
+    private bool IsBuilding = false;
+    private SiteGenerationResult? BuildResult = null;
+
+    protected override void OnInitialized()
+    {
+        if (ProjectState.Current != null)
+        {
+            OutputPath = Path.Combine(ProjectState.Current.RootFolder, "output");
+        }
+    }
+
+    private async Task SelectOutputDirectory()
+    {
+        // Use JavaScript to show folder browser dialog
+        try
+        {
+            var selectedPath = await JS.InvokeAsync<string>("selectFolder");
+            if (!string.IsNullOrWhiteSpace(selectedPath))
+            {
+                OutputPath = selectedPath;
+            }
+        }
+        catch
+        {
+            // Fallback: if JS folder selection fails, use default output path
+            if (ProjectState.Current != null)
+            {
+                OutputPath = Path.Combine(ProjectState.Current.RootFolder, "output");
+            }
+        }
+    }
+
+    private async Task BuildSite()
+    {
+        if (ProjectState.Current == null || string.IsNullOrWhiteSpace(OutputPath))
+            return;
+
+        IsBuilding = true;
+        BuildResult = null;
+        StateHasChanged();
+
+        try
+        {
+            var htmlRenderer = new ContentItemHtmlRenderer();
+            var generator = new StaticSiteGenerator(htmlRenderer);
+            
+            BuildResult = await generator.GenerateSiteAsync(ProjectState.Current, OutputPath);
+        }
+        catch (Exception ex)
+        {
+            BuildResult = new SiteGenerationResult
+            {
+                Success = false,
+                Message = $"Unexpected error: {ex.Message}",
+                Error = ex,
+                StartTime = DateTime.UtcNow,
+                EndTime = DateTime.UtcNow
+            };
+        }
+        finally
+        {
+            IsBuilding = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OpenOutputFolder()
+    {
+        if (!string.IsNullOrWhiteSpace(OutputPath) && Directory.Exists(OutputPath))
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("openFolder", OutputPath);
+            }
+            catch
+            {
+                // Fallback: copy path to clipboard
+                await JS.InvokeVoidAsync("navigator.clipboard.writeText", OutputPath);
+            }
+        }
+    }
+}

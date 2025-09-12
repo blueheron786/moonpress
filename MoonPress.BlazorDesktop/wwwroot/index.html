@@ -27,6 +27,21 @@
     </div>
 
     <script src="_framework/blazor.webview.js"></script>
+    
+    <script>
+        // Helper functions for file/folder operations in Blazor Desktop
+        window.selectFolder = function() {
+            // This would typically use a native file dialog
+            // For now, return empty string to fall back to default path
+            return "";
+        };
+        
+        window.openFolder = function(path) {
+            // This would typically open the folder in the OS file explorer
+            // For Blazor Desktop, this might need to be handled on the C# side
+            console.log("Opening folder:", path);
+        };
+    </script>
 </body>
 
 </html>
