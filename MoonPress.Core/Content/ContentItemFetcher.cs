@@ -31,9 +31,9 @@ public static class ContentItemFetcher
             var contentDirectory = Path.Combine(rootFolder, ContentFolderName);
             if (Directory.Exists(contentDirectory))
             {
-                // Scan main content directory
+                // Scan all markdown files in content directory and subdirectories
                 var contentFiles = Directory
-                    .EnumerateFiles(contentDirectory, "*.md", SearchOption.TopDirectoryOnly);
+                    .EnumerateFiles(contentDirectory, "*.md", SearchOption.AllDirectories);
 
                 foreach (var file in contentFiles)
                 {
@@ -41,23 +41,6 @@ public static class ContentItemFetcher
                     if (contentItem != null)
                     {
                         _contentItems[contentItem.Id] = contentItem;
-                    }
-                }
-
-                // Scan pages subdirectory (and its subdirectories)
-                var pagesDirectory = Path.Combine(contentDirectory, PagesFolderName);
-                if (Directory.Exists(pagesDirectory))
-                {
-                    var pageFiles = Directory
-                        .EnumerateFiles(pagesDirectory, "*.md", SearchOption.AllDirectories);
-
-                    foreach (var file in pageFiles)
-                    {
-                        var contentItem = ParseContentItem(file);
-                        if (contentItem != null)
-                        {
-                            _contentItems[contentItem.Id] = contentItem;
-                        }
                     }
                 }
             }
@@ -181,6 +164,12 @@ public static class ContentItemFetcher
                 bodyContent = string.Join('\n', bodyLines).Trim();
             }
 
+            // If no YAML content found, return null
+            if (string.IsNullOrWhiteSpace(yamlContent))
+            {
+                return null;
+            }
+
             // Extract metadata from YAML - support both formats
             var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished") 
                                  ?? ExtractYamlValue(yamlContent, "Date");
@@ -242,7 +231,7 @@ public static class ContentItemFetcher
                 Title = ExtractYamlValue(yamlContent, "title") ?? ExtractYamlValue(yamlContent, "Title") ?? "Untitled",
                 DatePublished = datePublished,
                 DateUpdated = dateUpdated,
-                Category = ExtractYamlValue(yamlContent, "category") ?? "page", // Default to page for navbar
+                Category = ExtractYamlValue(yamlContent, "category") ?? string.Empty,
                 Tags = ExtractYamlValue(yamlContent, "tags") ?? string.Empty,
                 IsDraft = isDraft,
                 Summary = ExtractYamlValue(yamlContent, "summary"),

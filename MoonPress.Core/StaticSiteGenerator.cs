@@ -41,7 +41,15 @@ public class StaticSiteGenerator
             await PrepareOutputDirectoryAsync(outputPath);
             
             // Load theme template
-            var themeLayout = await LoadThemeLayoutAsync(project);
+            var themeLayoutResult = await LoadThemeLayoutAsync(project);
+            if (!themeLayoutResult.Success)
+            {
+                result.Success = false;
+                result.EndTime = DateTime.UtcNow;
+                result.Message = themeLayoutResult.ErrorMessage;
+                return result;
+            }
+            var themeLayout = themeLayoutResult.Layout;
             
             // Load all content items
             var contentItemsDict = ContentItemFetcher.GetContentItems(project.RootFolder);
@@ -227,49 +235,73 @@ public class StaticSiteGenerator
         }
     }
 
-    private async Task<string> LoadThemeLayoutAsync(StaticSiteProject project)
+    private async Task<ThemeLayoutResult> LoadThemeLayoutAsync(StaticSiteProject project)
     {
         var themePath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme, "layout.html");
         
-        if (File.Exists(themePath))
+        if (!File.Exists(themePath))
         {
-            string layoutHtml = await File.ReadAllTextAsync(themePath);
-            
-            // Validate that the theme contains the required navbar placeholder
-            if (!layoutHtml.Contains(NavbarPlaceholder))
+            return new ThemeLayoutResult
             {
-                throw new InvalidOperationException($"Theme layout '{project.Theme}/layout.html' is missing the required {NavbarPlaceholder} placeholder. Please add {NavbarPlaceholder} to your theme layout where you want the navigation to appear.");
-            }
-            
-            // Rewrite asset links to be flat (remove /themes/{theme}/ from href/src)
-            var themePrefix = $"/themes/{project.Theme}/";
-            layoutHtml = layoutHtml.Replace(themePrefix, "");
-            // Also handle relative links like themes/{theme}/
-            var relThemePrefix = $"themes/{project.Theme}/";
-            layoutHtml = layoutHtml.Replace(relThemePrefix, "");
-            return layoutHtml;
+                Success = false,
+                ErrorMessage = $"Theme layout file not found: {project.Theme}/layout.html"
+            };
+        }
+
+        string layoutHtml = await File.ReadAllTextAsync(themePath);
+        
+        // Debug output for tests
+        Console.WriteLine($"Debug: Layout HTML = {layoutHtml}");
+        Console.WriteLine($"Debug: Looking for ContentPlaceholder = '{ContentPlaceholder}'");
+        Console.WriteLine($"Debug: Contains ContentPlaceholder = {layoutHtml.Contains(ContentPlaceholder)}");
+        
+        // Validate that the theme contains all required placeholders
+        var missingPlaceholders = new List<string>();
+        
+        if (!layoutHtml.Contains(ContentPlaceholder))
+        {
+            missingPlaceholders.Add(ContentPlaceholder);
         }
         
-        // Fallback to a basic layout
-        return @"<!DOCTYPE html>
-<html lang=""en"">
-<head>
-    <meta charset=""utf-8"" />
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
-    <title>{{ title }}</title>
-    <link rel=""stylesheet"" href=""style.css"" />
-</head>
-<body>
-    <nav>{{ navbar }}</nav>
-    {{ content }}
-</body>
-</html>";
+        if (!layoutHtml.Contains(NavbarPlaceholder))
+        {
+            missingPlaceholders.Add(NavbarPlaceholder);
+        }
+        
+        if (!layoutHtml.Contains(TitlePlaceholder))
+        {
+            missingPlaceholders.Add(TitlePlaceholder);
+        }
+        
+        if (missingPlaceholders.Any())
+        {
+            var placeholderList = string.Join(", ", missingPlaceholders);
+            var placeholderWord = missingPlaceholders.Count == 1 ? "placeholder" : "placeholders";
+            return new ThemeLayoutResult
+            {
+                Success = false,
+                ErrorMessage = $"Theme layout '{project.Theme}/layout.html' is missing the required {placeholderWord}: {placeholderList}. Please add {(missingPlaceholders.Count == 1 ? "it" : "them")} to your theme layout."
+            };
+        }
+        
+        // Rewrite asset links to be flat (remove /themes/{theme}/ from href/src)
+        var themePrefix = $"/themes/{project.Theme}/";
+        layoutHtml = layoutHtml.Replace(themePrefix, "");
+        // Also handle relative links like themes/{theme}/
+        var relThemePrefix = $"themes/{project.Theme}/";
+        layoutHtml = layoutHtml.Replace(relThemePrefix, "");
+        
+        return new ThemeLayoutResult
+        {
+            Success = true,
+            Layout = layoutHtml
+        };
     }
 
     private static string GenerateNavbar(List<ContentItem> contentItems)
     {
         var pageItems = contentItems
-            .Where(item => item.Category.Equals("page", StringComparison.OrdinalIgnoreCase) && !item.IsDraft)
+            .Where(item => IsFromPagesDirectory(item.FilePath) && !item.IsDraft)
             .OrderBy(item => item.Title)
             .ToList();
 
@@ -286,6 +318,11 @@ public class StaticSiteGenerator
         }
 
         return navbarHtml.ToString().TrimEnd();
+    }
+
+    private static bool IsFromPagesDirectory(string filePath)
+    {
+        return filePath.Contains(Path.Combine("content", "pages"));
     }
 
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
@@ -332,6 +369,16 @@ public class StaticSiteGenerator
 
         await Task.CompletedTask;
     }
+}
+
+/// <summary>
+/// Result of loading a theme layout
+/// </summary>
+public class ThemeLayoutResult
+{
+    public bool Success { get; set; }
+    public string Layout { get; set; } = string.Empty;
+    public string ErrorMessage { get; set; } = string.Empty;
 }
 
 /// <summary>

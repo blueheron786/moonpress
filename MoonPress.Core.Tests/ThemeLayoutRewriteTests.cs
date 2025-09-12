@@ -20,7 +20,7 @@ namespace MoonPress.Core.Tests
             var themeDir = Path.Combine(tempDir, "themes", themeName);
             Directory.CreateDirectory(themeDir);
             var layoutPath = Path.Combine(themeDir, "layout.html");
-            var originalLayout = "<html><head><link rel=\"stylesheet\" href=\"/themes/testtheme/style.css\"><script src=\"themes/testtheme/app.js\"></script></head><body>{{CONTENT}}</body></html>";
+            var originalLayout = "<html><head><title>{{ title }}</title><link rel=\"stylesheet\" href=\"/themes/testtheme/style.css\"><script src=\"themes/testtheme/app.js\"></script></head><body><nav>{{ navbar }}</nav>{{ content }}</body></html>";
             await File.WriteAllTextAsync(layoutPath, originalLayout);
             var project = new StaticSiteProject { RootFolder = tempDir, Theme = themeName };
             var renderer = Substitute.For<MoonPress.Core.Renderers.IHtmlRenderer>();
@@ -29,9 +29,12 @@ namespace MoonPress.Core.Tests
             // Act
             var method = generator.GetType().GetMethod("LoadThemeLayoutAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var result = method?.Invoke(generator, new object[] { project });
-            Assert.That(result, Is.InstanceOf<Task<string>>(), "Reflection did not return Task<string>");
-            var rewritten = (Task<string>)result;
-            var layout = await rewritten;
+            Assert.That(result, Is.InstanceOf<Task<ThemeLayoutResult>>(), "Reflection did not return Task<ThemeLayoutResult>");
+            var rewritten = (Task<ThemeLayoutResult>)result;
+            var layoutResult = await rewritten;
+            
+            Assert.That(layoutResult.Success, Is.True, "Theme layout loading should succeed");
+            var layout = layoutResult.Layout;
 
             // Assert
             Assert.That(layout, Does.Contain("href=\"style.css\""));

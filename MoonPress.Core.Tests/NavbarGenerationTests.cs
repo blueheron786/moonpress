@@ -30,13 +30,13 @@ public class NavbarGenerationTests
         // Create layout.html with navbar placeholder
         var layoutHtml = @"<!DOCTYPE html>
 <html>
-<head><title>{{TITLE}}</title></head>
+<head><title>{{ title }}</title></head>
 <body>
     <nav>
         <a href=""index.html"">Home</a>
-        {{NAVBAR}}
+        {{ navbar }}
     </nav>
-    <main>{{CONTENT}}</main>
+    <main>{{ content }}</main>
 </body>
 </html>";
         File.WriteAllText(Path.Combine(themeDir, "layout.html"), layoutHtml);
@@ -46,7 +46,6 @@ public class NavbarGenerationTests
 id: about
 title: About Us
 slug: about
-category: page
 datePublished: 2025-09-12 10:00:00
 isDraft: false
 ---
@@ -58,7 +57,6 @@ This is the about page.";
 id: services
 title: Our Services
 slug: services
-category: page
 datePublished: 2025-09-12 10:00:00
 isDraft: false
 ---
@@ -70,7 +68,6 @@ This is the services page.";
 id: contact
 title: Contact Us
 slug: contact
-category: page
 datePublished: 2025-09-12 10:00:00
 isDraft: false
 ---
@@ -139,7 +136,6 @@ This is the contact page.";
 id: draft
 title: Draft Page
 slug: draft
-category: page
 datePublished: 2025-09-12 10:00:00
 isDraft: true
 ---
