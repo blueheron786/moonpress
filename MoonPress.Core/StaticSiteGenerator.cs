@@ -46,7 +46,7 @@ public class StaticSiteGenerator
             await GenerateContentPagesAsync(contentItems, outputPath, themeLayout, result);
             
             // Generate index page
-            await GenerateIndexPageAsync(contentItems, outputPath, themeLayout, result);
+            await GenerateIndexPageAsync(contentItems, outputPath, themeLayout, project, result);
             
             // Copy theme assets
             await CopyThemeAssetsAsync(project, outputPath, result);
@@ -103,14 +103,14 @@ public class StaticSiteGenerator
         }
     }
 
-    private async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
+    private async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, StaticSiteProject project, SiteGenerationResult result)
     {
         var publishedItems = contentItems
             .Where(i => !i.IsDraft)
             .OrderByDescending(i => i.DatePublished)
             .ToList();
 
-        var indexContentHtml = GenerateIndexContentHtml(publishedItems);
+        var indexContentHtml = await GenerateIndexContentHtmlAsync(publishedItems, project);
         var indexHtml = ApplyThemeLayout(themeLayout, "Site Index", indexContentHtml);
         var indexPath = Path.Combine(outputPath, "index.html");
         
@@ -119,30 +119,65 @@ public class StaticSiteGenerator
         result.GeneratedFiles.Add("index.html");
     }
 
-    private static string GenerateIndexContentHtml(List<ContentItem> contentItems)
+    private async Task<string> GenerateIndexContentHtmlAsync(List<ContentItem> contentItems, StaticSiteProject project)
+    {
+        // Load the index template
+        var indexTemplatePath = Path.Combine(project.RootFolder, "Themes", project.Theme, "index.html");
+        string indexTemplate;
+        
+        if (File.Exists(indexTemplatePath))
+        {
+            indexTemplate = await File.ReadAllTextAsync(indexTemplatePath);
+        }
+        else
+        {
+            // Fallback template
+            indexTemplate = @"    <div class=""text-center mb-4"">
+        <h1 class=""text-gradient"">Welcome to MoonPress</h1>
+        <p>A modern, beautiful static site generator</p>
+    </div>
+    
+    {{ARTICLES_SECTION}}";
+        }
+
+        // Generate the articles section
+        var articlesSection = GenerateArticlesSectionHtml(contentItems);
+        
+        // Replace the placeholder
+        return indexTemplate.Replace("{{ARTICLES_SECTION}}", articlesSection);
+    }
+
+    private static string GenerateArticlesSectionHtml(List<ContentItem> contentItems)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("    <h1>Site Index</h1>");
         
         if (contentItems.Any())
         {
-            sb.AppendLine("    <ul>");
+            sb.AppendLine("    <div class=\"py-8\">");
+            sb.AppendLine("        <h2>Latest Articles</h2>");
             foreach (var item in contentItems)
             {
-                sb.AppendLine($"        <li>");
-                sb.AppendLine($"            <a href=\"{item.Slug}.html\">{item.Title}</a>");
-                sb.AppendLine($"            <span> - {item.DatePublished:yyyy-MM-dd}</span>");
+                sb.AppendLine("        <div class=\"article-card\">");
+                sb.AppendLine($"            <h3><a href=\"{item.Slug}.html\">{item.Title}</a></h3>");
+                sb.AppendLine($"            <div class=\"date\">Published on {item.DatePublished:MMMM dd, yyyy}</div>");
                 if (!string.IsNullOrWhiteSpace(item.Summary))
                 {
                     sb.AppendLine($"            <p>{item.Summary}</p>");
                 }
-                sb.AppendLine($"        </li>");
+                sb.AppendLine($"            <a href=\"{item.Slug}.html\">Read More →</a>");
+                sb.AppendLine("        </div>");
             }
-            sb.AppendLine("    </ul>");
+            sb.AppendLine("    </div>");
         }
         else
         {
-            sb.AppendLine("    <p>No content available.</p>");
+            sb.AppendLine("    <div class=\"text-center py-8\">");
+            sb.AppendLine("        <h2>Welcome to Your New Site!</h2>");
+            sb.AppendLine("        <p>No content available yet. Create your first article to get started.</p>");
+            sb.AppendLine("        <div class=\"mt-4\">");
+            sb.AppendLine("            <p>🌙 Built with <strong>MoonPress</strong> - A modern static site generator</p>");
+            sb.AppendLine("        </div>");
+            sb.AppendLine("    </div>");
         }
         
         return sb.ToString();
