@@ -17,10 +17,7 @@ public class ThemeSystemIntegrationTests
     public void Setup()
     {
         // Reset static cache before each test
-        typeof(ContentItemFetcher)
-            .GetField("_contentItems", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-            ?.SetValue(null, null);
-
+        ContentItemFetcher.ClearContentItems();
         _testProjectPath = Path.Combine(Path.GetTempPath(), $"moonpress_theme_integration_test_{Guid.NewGuid()}");
         _outputPath = Path.Combine(_testProjectPath, "output");
         
@@ -45,9 +42,7 @@ public class ThemeSystemIntegrationTests
         }
 
         // Reset static cache between tests
-        typeof(ContentItemFetcher)
-            .GetField("_contentItems", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-            ?.SetValue(null, null);
+        ContentItemFetcher.ClearContentItems();
     }
 
     [Test]

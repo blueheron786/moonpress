@@ -13,6 +13,12 @@ public static class ContentItemFetcher
     // Cache for content items. ID => item
     private static Dictionary<string, ContentItem>? _contentItems;
 
+    // Used for unit testing
+    public static void ClearContentItems()
+    {
+        _contentItems = new Dictionary<string, ContentItem>();
+    }
+
     public static Dictionary<string, ContentItem> GetContentItems(string rootFolder)
     {
         if (string.IsNullOrWhiteSpace(rootFolder))
