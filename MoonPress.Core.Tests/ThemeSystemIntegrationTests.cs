@@ -1,4 +1,5 @@
 using MoonPress.Core;
+using MoonPress.Core.Content;
 using MoonPress.Rendering;
 using NUnit.Framework;
 
@@ -15,7 +16,12 @@ public class ThemeSystemIntegrationTests
     [SetUp]
     public void Setup()
     {
-        _testProjectPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "test-theme-project");
+        // Reset static cache before each test
+        typeof(ContentItemFetcher)
+            .GetField("_contentItems", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(null, null);
+
+        _testProjectPath = Path.Combine(Path.GetTempPath(), $"moonpress_theme_integration_test_{Guid.NewGuid()}");
         _outputPath = Path.Combine(_testProjectPath, "output");
         
         // Clean up any previous test runs
@@ -37,6 +43,11 @@ public class ThemeSystemIntegrationTests
         {
             Directory.Delete(_testProjectPath, true);
         }
+
+        // Reset static cache between tests
+        typeof(ContentItemFetcher)
+            .GetField("_contentItems", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(null, null);
     }
 
     [Test]
@@ -49,6 +60,14 @@ public class ThemeSystemIntegrationTests
 
         // Act
         var result = await generator.GenerateSiteAsync(project, _outputPath);
+
+        // Debug: Check what content items were found
+        var contentItems = ContentItemFetcher.GetContentItems(project.RootFolder);
+        TestContext.WriteLine($"Content items found: {contentItems.Count}");
+        foreach (var item in contentItems.Values)
+        {
+            TestContext.WriteLine($"  - {item.Id}: {item.Title} (slug: {item.Slug}, draft: {item.IsDraft})");
+        }
 
         // Debug: print generated files and errors
         TestContext.WriteLine($"Generated files: {string.Join(", ", result.GeneratedFiles)}");
