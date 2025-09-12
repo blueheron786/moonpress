@@ -8,6 +8,7 @@ public static class ContentItemFetcher
 {
     private const string PublishedDateFormat = "yyyy-MM-dd HH:mm:ss";
     private const string ContentFolderName = "content";
+    private const string PagesFolderName = "pages";
 
     // Cache for content items. ID => item
     private static Dictionary<string, ContentItem>? _contentItems;
@@ -27,18 +28,36 @@ public static class ContentItemFetcher
         {
             _contentItems = new Dictionary<string, ContentItem>();
 
-            var pagesDirectory = Path.Combine(rootFolder, ContentFolderName);
-            if (Directory.Exists(pagesDirectory))
+            var contentDirectory = Path.Combine(rootFolder, ContentFolderName);
+            if (Directory.Exists(contentDirectory))
             {
-                var files = Directory
-                    .EnumerateFiles(pagesDirectory, "*.md", SearchOption.AllDirectories);
+                // Scan main content directory
+                var contentFiles = Directory
+                    .EnumerateFiles(contentDirectory, "*.md", SearchOption.TopDirectoryOnly);
 
-                foreach (var file in files)
+                foreach (var file in contentFiles)
                 {
                     var contentItem = ParseContentItem(file);
                     if (contentItem != null)
                     {
                         _contentItems[contentItem.Id] = contentItem;
+                    }
+                }
+
+                // Scan pages subdirectory (and its subdirectories)
+                var pagesDirectory = Path.Combine(contentDirectory, PagesFolderName);
+                if (Directory.Exists(pagesDirectory))
+                {
+                    var pageFiles = Directory
+                        .EnumerateFiles(pagesDirectory, "*.md", SearchOption.AllDirectories);
+
+                    foreach (var file in pageFiles)
+                    {
+                        var contentItem = ParseContentItem(file);
+                        if (contentItem != null)
+                        {
+                            _contentItems[contentItem.Id] = contentItem;
+                        }
                     }
                 }
             }
@@ -121,27 +140,69 @@ public static class ContentItemFetcher
         {
             var content = File.ReadAllText(filePath);
 
-            // Extract metadata using regex
-            var yamlMatch = Regex.Match(content, @"^---\s*(.*?)\s*---", RegexOptions.Singleline);
-            if (!yamlMatch.Success)
+            string yamlContent;
+            string bodyContent;
+
+            // Check if it's fenced YAML (---...---)
+            var fencedYamlMatch = Regex.Match(content, @"^---\s*(.*?)\s*---", RegexOptions.Singleline);
+            if (fencedYamlMatch.Success)
             {
-                return null;
+                yamlContent = fencedYamlMatch.Groups[1].Value;
+                var contentStartIndex = fencedYamlMatch.Index + fencedYamlMatch.Length;
+                bodyContent = content.Substring(contentStartIndex).Trim();
+            }
+            else
+            {
+                // Handle simple key-value format at start of file
+                var lines = content.Split('\n');
+                var yamlLines = new List<string>();
+                var bodyLines = new List<string>();
+                bool inMetadata = true;
+
+                foreach (var line in lines)
+                {
+                    if (inMetadata && Regex.IsMatch(line.Trim(), @"^[A-Za-z_][A-Za-z0-9_]*\s*:"))
+                    {
+                        yamlLines.Add(line);
+                    }
+                    else if (inMetadata && string.IsNullOrWhiteSpace(line.Trim()))
+                    {
+                        // Empty line might separate metadata from content
+                        continue;
+                    }
+                    else
+                    {
+                        inMetadata = false;
+                        bodyLines.Add(line);
+                    }
+                }
+
+                yamlContent = string.Join('\n', yamlLines);
+                bodyContent = string.Join('\n', bodyLines).Trim();
             }
 
-            var yamlContent = yamlMatch.Groups[1].Value;
-
-            // Extract metadata from YAML
-            var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished");
+            // Extract metadata from YAML - support both formats
+            var datePublishedStr = ExtractYamlValue(yamlContent, "datePublished") 
+                                 ?? ExtractYamlValue(yamlContent, "Date");
             var dateUpdatedStr = ExtractYamlValue(yamlContent, "dateUpdated");
             var isDraftStr = ExtractYamlValue(yamlContent, "isDraft");
 
-            // Parse datePublished
-            DateTime.TryParseExact(
+            // Parse datePublished - try multiple formats
+            if (!DateTime.TryParseExact(
                 datePublishedStr,
                 PublishedDateFormat,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out var datePublished);
+                out var datePublished))
+            {
+                // Try simple date format like "2025-04-29"
+                DateTime.TryParseExact(
+                    datePublishedStr,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out datePublished);
+            }
 
             DateTime.TryParseExact(
                 dateUpdatedStr,
@@ -153,18 +214,14 @@ public static class ContentItemFetcher
             // Parse draft status
             var isDraft = bool.TryParse(isDraftStr, out var draft) && draft;
 
-            // Extract content after the YAML front matter
-            var contentStartIndex = yamlMatch.Index + yamlMatch.Length;
-            var bodyContent = content.Substring(contentStartIndex).Trim();
-
             // Extract all YAML key-value pairs for custom fields
             var customFields = new Dictionary<string, string>();
-            var yamlLines = yamlContent.Split('\n');
+            var metadataLines = yamlContent.Split('\n');
             var knownKeys = new HashSet<string>
             {
-                "id", "title", "slug", "datePublished", "dateUpdated", "category", "tags", "isDraft", "summary"
+                "id", "title", "slug", "datePublished", "dateUpdated", "category", "tags", "isDraft", "summary", "date", "save_as", "template"
             };
-            foreach (var line in yamlLines)
+            foreach (var line in metadataLines)
             {
                 var match = Regex.Match(line, @"^(?<key>[^:]+):\s*(?<value>.+)$");
                 if (match.Success)
@@ -180,12 +237,12 @@ public static class ContentItemFetcher
 
             var contentItem = new ContentItem
             {
-                Id = ExtractYamlValue(yamlContent, "id")!,
+                Id = ExtractYamlValue(yamlContent, "id") ?? Path.GetFileNameWithoutExtension(filePath),
                 FilePath = filePath,
-                Title = ExtractYamlValue(yamlContent, "title") ?? "Untitled",
+                Title = ExtractYamlValue(yamlContent, "title") ?? ExtractYamlValue(yamlContent, "Title") ?? "Untitled",
                 DatePublished = datePublished,
                 DateUpdated = dateUpdated,
-                Category = ExtractYamlValue(yamlContent, "category") ?? string.Empty,
+                Category = ExtractYamlValue(yamlContent, "category") ?? "page", // Default to page for navbar
                 Tags = ExtractYamlValue(yamlContent, "tags") ?? string.Empty,
                 IsDraft = isDraft,
                 Summary = ExtractYamlValue(yamlContent, "summary"),
@@ -194,7 +251,7 @@ public static class ContentItemFetcher
             };
             
             // Set slug through the property (after object initialization)
-            var slugValue = ExtractYamlValue(yamlContent, "slug");
+            var slugValue = ExtractYamlValue(yamlContent, "slug") ?? ExtractYamlValue(yamlContent, "Slug");
             if (!string.IsNullOrWhiteSpace(slugValue))
             {
                 contentItem.Slug = slugValue;

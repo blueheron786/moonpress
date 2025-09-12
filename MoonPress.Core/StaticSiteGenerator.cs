@@ -85,12 +85,14 @@ public class StaticSiteGenerator
 
     private async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
     {
+        var navbar = GenerateNavbar(contentItems);
+        
         foreach (var item in contentItems.Where(i => !i.IsDraft))
         {
             try
             {
                 var contentHtml = _htmlRenderer.RenderHtml(item);
-                var html = ApplyThemeLayout(themeLayout, item.Title, contentHtml);
+                var html = ApplyThemeLayout(themeLayout, item.Title, contentHtml, navbar);
                 var fileName = $"{item.Slug}.html";
                 var filePath = Path.Combine(outputPath, fileName);
                 
@@ -112,8 +114,9 @@ public class StaticSiteGenerator
             .OrderByDescending(i => i.DatePublished)
             .ToList();
 
+        var navbar = GenerateNavbar(contentItems);
         var indexContentHtml = await GenerateIndexContentHtmlAsync(publishedItems, project);
-        var indexHtml = ApplyThemeLayout(themeLayout, "Site Index", indexContentHtml);
+        var indexHtml = ApplyThemeLayout(themeLayout, "Site Index", indexContentHtml, navbar);
         var indexPath = Path.Combine(outputPath, "index.html");
         
         await File.WriteAllTextAsync(indexPath, indexHtml);
@@ -252,11 +255,34 @@ public class StaticSiteGenerator
 </html>";
     }
 
-    private static string ApplyThemeLayout(string layout, string title, string content)
+    private static string GenerateNavbar(List<ContentItem> contentItems)
+    {
+        var pageItems = contentItems
+            .Where(item => item.Category.Equals("page", StringComparison.OrdinalIgnoreCase) && !item.IsDraft)
+            .OrderBy(item => item.Title)
+            .ToList();
+
+        if (!pageItems.Any())
+        {
+            return string.Empty;
+        }
+
+        var navbarHtml = new StringBuilder();
+        foreach (var page in pageItems)
+        {
+            var href = !string.IsNullOrEmpty(page.Slug) ? $"{page.Slug}.html" : $"{page.Title.ToLowerInvariant().Replace(" ", "-")}.html";
+            navbarHtml.AppendLine($"                <a href=\"{href}\" class=\"nav-link\">{page.Title}</a>");
+        }
+
+        return navbarHtml.ToString().TrimEnd();
+    }
+
+    private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
     {
         return layout
             .Replace("{{TITLE}}", title)
-            .Replace("{{CONTENT}}", content);
+            .Replace("{{CONTENT}}", content)
+            .Replace("{{NAVBAR}}", navbar);
     }
 
     private async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
