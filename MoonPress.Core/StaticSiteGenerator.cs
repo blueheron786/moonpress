@@ -12,6 +12,9 @@ public class StaticSiteGenerator
 {
     private const string ThemesFolderName = "themes";
     private const string ContentFolderName = "content";
+    private const string TitlePlaceholder = "{{ title }}";
+    private const string ContentPlaceholder = "{{ content }}";
+    private const string NavbarPlaceholder = "{{ navbar }}";
     private readonly IHtmlRenderer _htmlRenderer;
     
     public StaticSiteGenerator(IHtmlRenderer htmlRenderer)
@@ -231,6 +234,13 @@ public class StaticSiteGenerator
         if (File.Exists(themePath))
         {
             string layoutHtml = await File.ReadAllTextAsync(themePath);
+            
+            // Validate that the theme contains the required navbar placeholder
+            if (!layoutHtml.Contains(NavbarPlaceholder))
+            {
+                throw new InvalidOperationException($"Theme layout '{project.Theme}/layout.html' is missing the required {NavbarPlaceholder} placeholder. Please add {NavbarPlaceholder} to your theme layout where you want the navigation to appear.");
+            }
+            
             // Rewrite asset links to be flat (remove /themes/{theme}/ from href/src)
             var themePrefix = $"/themes/{project.Theme}/";
             layoutHtml = layoutHtml.Replace(themePrefix, "");
@@ -246,11 +256,12 @@ public class StaticSiteGenerator
 <head>
     <meta charset=""utf-8"" />
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
-    <title>{{TITLE}}</title>
+    <title>{{ title }}</title>
     <link rel=""stylesheet"" href=""style.css"" />
 </head>
 <body>
-    {{CONTENT}}
+    <nav>{{ navbar }}</nav>
+    {{ content }}
 </body>
 </html>";
     }
@@ -280,9 +291,9 @@ public class StaticSiteGenerator
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
     {
         return layout
-            .Replace("{{TITLE}}", title)
-            .Replace("{{CONTENT}}", content)
-            .Replace("{{NAVBAR}}", navbar);
+            .Replace(TitlePlaceholder, title)
+            .Replace(ContentPlaceholder, content)
+            .Replace(NavbarPlaceholder, navbar);
     }
 
     private async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
