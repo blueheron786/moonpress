@@ -10,6 +10,7 @@ namespace MoonPress.Core;
 public class StaticSiteProject
 {
     public string ProjectName { get; set; } = string.Empty;
+    public string Theme { get; set; } = "default";
     public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
     [JsonIgnore]

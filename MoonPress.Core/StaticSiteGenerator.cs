@@ -35,15 +35,21 @@ public class StaticSiteGenerator
             // Ensure output directory exists and is clean
             await PrepareOutputDirectoryAsync(outputPath);
             
+            // Load theme template
+            var themeLayout = await LoadThemeLayoutAsync(project);
+            
             // Load all content items
             var contentItemsDict = ContentItemFetcher.GetContentItems(project.RootFolder);
             var contentItems = contentItemsDict.Values.ToList();
             
             // Generate HTML pages for each content item
-            await GenerateContentPagesAsync(contentItems, outputPath, result);
+            await GenerateContentPagesAsync(contentItems, outputPath, themeLayout, result);
             
             // Generate index page
-            await GenerateIndexPageAsync(contentItems, outputPath, result);
+            await GenerateIndexPageAsync(contentItems, outputPath, themeLayout, result);
+            
+            // Copy theme assets
+            await CopyThemeAssetsAsync(project, outputPath, result);
             
             // Copy static assets (if any)
             await CopyStaticAssetsAsync(project.RootFolder, outputPath, result);
@@ -75,13 +81,14 @@ public class StaticSiteGenerator
         await Task.CompletedTask;
     }
 
-    private async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, SiteGenerationResult result)
+    private async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
     {
         foreach (var item in contentItems.Where(i => !i.IsDraft))
         {
             try
             {
-                var html = _htmlRenderer.RenderHtml(item);
+                var contentHtml = _htmlRenderer.RenderHtml(item);
+                var html = ApplyThemeLayout(themeLayout, item.Title, contentHtml);
                 var fileName = $"{item.Slug}.html";
                 var filePath = Path.Combine(outputPath, fileName);
                 
@@ -96,14 +103,15 @@ public class StaticSiteGenerator
         }
     }
 
-    private async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, SiteGenerationResult result)
+    private async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
     {
         var publishedItems = contentItems
             .Where(i => !i.IsDraft)
             .OrderByDescending(i => i.DatePublished)
             .ToList();
 
-        var indexHtml = GenerateIndexHtml(publishedItems);
+        var indexContentHtml = GenerateIndexContentHtml(publishedItems);
+        var indexHtml = ApplyThemeLayout(themeLayout, "Site Index", indexContentHtml);
         var indexPath = Path.Combine(outputPath, "index.html");
         
         await File.WriteAllTextAsync(indexPath, indexHtml);
@@ -111,17 +119,9 @@ public class StaticSiteGenerator
         result.GeneratedFiles.Add("index.html");
     }
 
-    private static string GenerateIndexHtml(List<ContentItem> contentItems)
+    private static string GenerateIndexContentHtml(List<ContentItem> contentItems)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("<!DOCTYPE html>");
-        sb.AppendLine("<html lang=\"en\">");
-        sb.AppendLine("<head>");
-        sb.AppendLine("    <meta charset=\"utf-8\" />");
-        sb.AppendLine("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />");
-        sb.AppendLine("    <title>Site Index</title>");
-        sb.AppendLine("</head>");
-        sb.AppendLine("<body>");
         sb.AppendLine("    <h1>Site Index</h1>");
         
         if (contentItems.Any())
@@ -144,9 +144,6 @@ public class StaticSiteGenerator
         {
             sb.AppendLine("    <p>No content available.</p>");
         }
-        
-        sb.AppendLine("</body>");
-        sb.AppendLine("</html>");
         
         return sb.ToString();
     }
@@ -185,6 +182,63 @@ public class StaticSiteGenerator
             var targetSubDir = Path.Combine(targetDir, dirName);
             await CopyDirectoryAsync(subDir, targetSubDir);
         }
+    }
+
+    private async Task<string> LoadThemeLayoutAsync(StaticSiteProject project)
+    {
+        var themePath = Path.Combine(project.RootFolder, "Themes", project.Theme, "layout.html");
+        
+        if (File.Exists(themePath))
+        {
+            return await File.ReadAllTextAsync(themePath);
+        }
+        
+        // Fallback to a basic layout
+        return @"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""utf-8"" />
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+    <title>{{TITLE}}</title>
+    <link rel=""stylesheet"" href=""style.css"" />
+</head>
+<body>
+    {{CONTENT}}
+</body>
+</html>";
+    }
+
+    private static string ApplyThemeLayout(string layout, string title, string content)
+    {
+        return layout
+            .Replace("{{TITLE}}", title)
+            .Replace("{{CONTENT}}", content);
+    }
+
+    private async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
+    {
+        var themePath = Path.Combine(project.RootFolder, "Themes", project.Theme);
+        
+        if (!Directory.Exists(themePath))
+        {
+            return;
+        }
+        
+        // Copy all theme files except layout.html
+        foreach (var file in Directory.GetFiles(themePath))
+        {
+            var fileName = Path.GetFileName(file);
+            if (fileName.Equals("layout.html", StringComparison.OrdinalIgnoreCase))
+            {
+                continue; // Skip layout file
+            }
+            
+            var targetFile = Path.Combine(outputPath, fileName);
+            File.Copy(file, targetFile, true);
+            result.GeneratedFiles.Add(fileName);
+        }
+        
+        await Task.CompletedTask;
     }
 }
 

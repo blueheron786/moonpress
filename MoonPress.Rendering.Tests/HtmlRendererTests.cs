@@ -15,7 +15,7 @@ namespace MoonPress.Rendering.Tests
         }
 
         [Test]
-        public void RenderHtml_HeadContainsTitleAndOpenGraphTags()
+        public void RenderHtml_RendersContentWithoutHeadSection()
         {
             var contentItem = new ContentItem
             {
@@ -27,79 +27,81 @@ namespace MoonPress.Rendering.Tests
 
             var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
 
-            Assert.That(result, Does.Contain("<head>"));
-            Assert.That(result, Does.Contain("<title>My \"Special\" Title</title>"));
-            Assert.That(result, Does.Contain("<meta property=\"og:title\" content=\"My 'Special' Title\""));
-            Assert.That(result, Does.Contain("<meta property=\"og:type\" content=\"article\""));
-            Assert.That(result, Does.Contain("<meta property=\"og:url\" content=\"https://example.com/my-special-title\""));
-            Assert.That(result, Does.Contain("<meta property=\"og:description\" content=\"A summary for OG.\""));
+            Assert.That(result, Does.Contain("<h1>My \"Special\" Title</h1>"));
+            Assert.That(result, Does.Contain("Published on: 2024-06-01 14:30:00"));
+            Assert.That(result, Does.Contain("<div class=\"content\">"));
+            Assert.That(result, Does.Contain("Some content."));
+            Assert.That(result, Does.Not.Contain("<head>"));
         }
 
         [Test]
-        public void RenderHtml_HeadOgTitle_ReplacesDoubleQuotesWithSingleQuotes()
+        public void RenderHtml_IncludesPublicationDate()
         {
             var contentItem = new ContentItem
             {
                 Title = "Hello \"World\"",
-                DatePublished = DateTime.Now,
+                DatePublished = new DateTime(2024, 6, 1, 14, 30, 0),
                 Summary = "Summary",
                 Contents = "Content"
             };
 
             var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
 
-            Assert.That(result, Does.Contain("content=\"Hello 'World'\""));
+            Assert.That(result, Does.Contain("Published on: 2024-06-01 14:30:00"));
         }
 
         [Test]
-        public void RenderHtml_HeadOgUrl_UsesSlugWithDashes()
+        public void RenderHtml_WrapsContentInDiv()
         {
             var contentItem = new ContentItem
             {
-                Title = "Slug With Spaces",
+                Title = "Test Title",
                 DatePublished = DateTime.Now,
                 Summary = "Summary",
-                Contents = "Content"
+                Contents = "Test content here"
             };
 
             var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
 
-            Assert.That(result, Does.Contain("content=\"https://example.com/slug-with-spaces\""));
+            Assert.That(result, Does.Contain("<div class=\"content\">"));
+            Assert.That(result, Does.Contain("Test content here"));
+            Assert.That(result, Does.Contain("</div>"));
         }
 
         [Test]
-        public void RenderHtml_HeadOgDescription_UsesSummaryIfPresent()
+        public void RenderHtml_IncludesTitleAsH1()
         {
             var contentItem = new ContentItem
             {
-                Title = "Test",
+                Title = "My Test Title",
                 DatePublished = DateTime.Now,
                 Summary = "This is the summary.",
-                Contents = "Content that is long enough to be ignored."
+                Contents = "Content that is part of the article."
             };
 
             var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
 
-            Assert.That(result, Does.Contain("content=\"This is the summary.\""));
+            Assert.That(result, Does.Contain("<h1>My Test Title</h1>"));
         }
 
         [Test]
-        public void RenderHtml_HeadOgDescription_UsesFirst140CharsOfContentsIfSummaryNull()
+        public void RenderHtml_RendersBasicContentStructure()
         {
-            var longContent = string.Join(" ", new string[30].Select((_, i) => $"word{i}"));
+            var longContent = "This is a long piece of content that will be rendered in the content div.";
             var contentItem = new ContentItem
             {
-                Title = "Test",
-                DatePublished = DateTime.Now,
+                Title = "Test Article",
+                DatePublished = new DateTime(2024, 6, 1, 14, 30, 0),
                 Summary = null,
                 Contents = longContent
             };
 
             var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
 
-            // Should contain the first 140 chars of content, rounded up to the nearest word
-            var expectedDescription = longContent.Substring(0, longContent.IndexOf(' ', 140));
-            Assert.That(result, Does.Contain($"content=\"{expectedDescription}\""));
+            Assert.That(result, Does.Contain("<h1>Test Article</h1>"));
+            Assert.That(result, Does.Contain("Published on: 2024-06-01 14:30:00"));
+            Assert.That(result, Does.Contain("<div class=\"content\">"));
+            Assert.That(result, Does.Contain(longContent));
         }
     }
 }

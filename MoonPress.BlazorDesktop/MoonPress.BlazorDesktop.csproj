@@ -23,6 +23,10 @@
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Templates\**\*" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
   <PropertyGroup>
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
   </PropertyGroup>
