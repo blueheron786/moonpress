@@ -7,6 +7,7 @@ namespace MoonPress.Core.Tests;
 [TestFixture]
 public class ThemeSystemIntegrationTests
 {
+    private const string ThemesFolderName = "themes";
     private string _testProjectPath = null!;
     private string _outputPath = null!;
 
@@ -77,7 +78,7 @@ public class ThemeSystemIntegrationTests
         File.WriteAllText(Path.Combine(_testProjectPath, "project.json"), projectJson);
 
         // Create theme directory and files
-        var themeDir = Path.Combine(_testProjectPath, "Themes", "default");
+        var themeDir = Path.Combine(_testProjectPath, ThemesFolderName, "default");
         Directory.CreateDirectory(themeDir);
 
         var layoutHtml = """

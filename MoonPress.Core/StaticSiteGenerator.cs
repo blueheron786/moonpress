@@ -10,6 +10,7 @@ namespace MoonPress.Core;
 /// </summary>
 public class StaticSiteGenerator
 {
+    private const string ThemesFolderName = "themes";
     private readonly IHtmlRenderer _htmlRenderer;
     
     public StaticSiteGenerator(IHtmlRenderer htmlRenderer)
@@ -122,7 +123,7 @@ public class StaticSiteGenerator
     private async Task<string> GenerateIndexContentHtmlAsync(List<ContentItem> contentItems, StaticSiteProject project)
     {
         // Load the index template
-        var indexTemplatePath = Path.Combine(project.RootFolder, "Themes", project.Theme, "index.html");
+        var indexTemplatePath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme, "index.html");
         string indexTemplate;
         
         if (File.Exists(indexTemplatePath))
@@ -221,7 +222,7 @@ public class StaticSiteGenerator
 
     private async Task<string> LoadThemeLayoutAsync(StaticSiteProject project)
     {
-        var themePath = Path.Combine(project.RootFolder, "Themes", project.Theme, "layout.html");
+        var themePath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme, "layout.html");
         
         if (File.Exists(themePath))
         {
@@ -252,27 +253,27 @@ public class StaticSiteGenerator
 
     private async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
     {
-        var themePath = Path.Combine(project.RootFolder, "Themes", project.Theme);
+        var themePath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme);
         
         if (!Directory.Exists(themePath))
         {
             result.Errors.Add($"Theme directory not found: {themePath}");
             return;
         }
-        
+
         // Copy all theme files except layout.html and index.html
         foreach (var file in Directory.GetFiles(themePath))
         {
             var fileName = Path.GetFileName(file);
-            if (fileName.Equals("layout.html", StringComparison.OrdinalIgnoreCase) ||
-                fileName.Equals("index.html", StringComparison.OrdinalIgnoreCase))
+            if (fileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
             {
                 continue; // Skip template files
             }
-            
+
             var targetFile = Path.Combine(outputPath, fileName);
             File.Copy(file, targetFile, true);
             result.GeneratedFiles.Add(fileName);
+            Console.WriteLine($"  -> Copied theme asset: {fileName}");
         }
         
         await Task.CompletedTask;
