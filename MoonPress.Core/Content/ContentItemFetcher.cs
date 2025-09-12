@@ -212,6 +212,13 @@ public static class ContentItemFetcher
     private static string? ExtractYamlValue(string yamlContent, string key)
     {
         var match = Regex.Match(yamlContent, $@"^{key}:\s*(.+)$", RegexOptions.Multiline);
-        return match.Success ? match.Groups[1].Value.Trim() : null;
+        if (!match.Success) return null;
+        var value = match.Groups[1].Value.Trim();
+        // Remove surrounding quotes if present
+        if ((value.StartsWith("\"") && value.EndsWith("\"")) || (value.StartsWith("'") && value.EndsWith("'")))
+        {
+            value = value.Substring(1, value.Length - 2);
+        }
+        return value;
     }
 }

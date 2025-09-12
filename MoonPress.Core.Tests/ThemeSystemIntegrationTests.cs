@@ -50,14 +50,20 @@ public class ThemeSystemIntegrationTests
         // Act
         var result = await generator.GenerateSiteAsync(project, _outputPath);
 
+        // Debug: print generated files and errors
+        TestContext.WriteLine($"Generated files: {string.Join(", ", result.GeneratedFiles)}");
+        if (result.Errors.Count > 0)
+            TestContext.WriteLine($"Errors: {string.Join("\n", result.Errors)}");
+
         // Assert
         Assert.That(result.Success, Is.True, $"Generation failed: {result.Message}");
         Assert.That(result.PagesGenerated, Is.GreaterThan(0));
-        
+
         // Check that theme files are copied
         Assert.That(File.Exists(Path.Combine(_outputPath, "style.css")), Is.True);
-        
+
         // Check that content pages use theme layout
+        Assert.That(File.Exists(Path.Combine(_outputPath, "test-article.html")), Is.True, "test-article.html was not generated");
         var contentHtml = File.ReadAllText(Path.Combine(_outputPath, "test-article.html"));
         Assert.That(contentHtml, Does.Contain("<!DOCTYPE html>"));
         Assert.That(contentHtml, Does.Contain("<title>Test Article</title>"));
@@ -105,20 +111,23 @@ public class ThemeSystemIntegrationTests
         File.WriteAllText(Path.Combine(themeDir, "style.css"), styleCss);
 
         // Create content directory and test content
-        var contentDir = Path.Combine(_testProjectPath, ContentFolderName);
-        Directory.CreateDirectory(contentDir);
+    var contentDir = Path.Combine(_testProjectPath, ContentFolderName);
+    Directory.CreateDirectory(contentDir);
+    var articlesDir = Path.Combine(contentDir, "articles");
+    Directory.CreateDirectory(articlesDir);
 
-        var testContent = """
-        ---
-        title: "Test Article"
-        slug: "test-article"
-        date_published: "2024-06-01T14:30:00"
-        is_draft: false
-        summary: "A test article."
-        ---
+    var testContent = """
+    ---
+    id: test-article
+    title: "Test Article"
+    slug: "test-article"
+    datePublished: "2024-06-01 14:30:00"
+    isDraft: false
+    summary: "A test article."
+    ---
 
-        This is the content of the test article.
-        """;
-        File.WriteAllText(Path.Combine(contentDir, "test-article.md"), testContent);
+    This is the content of the test article.
+    """;
+    File.WriteAllText(Path.Combine(articlesDir, "test-article.md"), testContent);
     }
 }
