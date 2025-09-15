@@ -115,12 +115,36 @@ public class StaticSiteGenerator
                 
                 var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar);
                 
-                var fileName = $"{item.Slug}.html";
-                var filePath = Path.Combine(outputPath, fileName);
+                // Determine output path based on content type
+                string fileName;
+                string fullOutputPath;
                 
-                await File.WriteAllTextAsync(filePath, html);
+                if (IsFromPostsDirectory(item.FilePath))
+                {
+                    // Posts go in /blog/<slug>.html
+                    var blogDirectory = Path.Combine(outputPath, "blog");
+                    Directory.CreateDirectory(blogDirectory);
+                    fileName = $"{item.Slug}.html";
+                    fullOutputPath = Path.Combine(blogDirectory, fileName);
+                    result.GeneratedFiles.Add($"blog/{fileName}");
+                }
+                else if (IsFromPagesDirectory(item.FilePath))
+                {
+                    // Pages go in /<slug>.html
+                    fileName = $"{item.Slug}.html";
+                    fullOutputPath = Path.Combine(outputPath, fileName);
+                    result.GeneratedFiles.Add(fileName);
+                }
+                else
+                {
+                    // Default behavior for other content
+                    fileName = $"{item.Slug}.html";
+                    fullOutputPath = Path.Combine(outputPath, fileName);
+                    result.GeneratedFiles.Add(fileName);
+                }
+                
+                await File.WriteAllTextAsync(fullOutputPath, html);
                 result.PagesGenerated++;
-                result.GeneratedFiles.Add(fileName);
             }
             catch (Exception ex)
             {
@@ -337,6 +361,11 @@ public class StaticSiteGenerator
     private static bool IsFromPagesDirectory(string filePath)
     {
         return filePath.Contains(Path.Combine("content", "pages"));
+    }
+
+    private static bool IsFromPostsDirectory(string filePath)
+    {
+        return filePath.Contains(Path.Combine("content", "posts"));
     }
 
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
