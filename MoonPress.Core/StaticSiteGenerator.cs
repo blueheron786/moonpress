@@ -148,19 +148,14 @@ public class StaticSiteGenerator
         else
         {
             // Fallback template
-            indexTemplate = @"    <div class=""text-center mb-4"">
-        <h1 class=""text-gradient"">Welcome to MoonPress</h1>
-        <p>A modern, beautiful static site generator</p>
-    </div>
-    
-    {{ARTICLES_SECTION}}";
+            indexTemplate = @"{{ articles_section }}";
         }
 
         // Generate the articles section
         var articlesSection = GenerateArticlesSectionHtml(contentItems);
         
         // Replace the placeholder
-        return indexTemplate.Replace("{{ARTICLES_SECTION}}", articlesSection);
+        return indexTemplate.Replace("{{ articles_section }}", articlesSection);
     }
 
     private static string GenerateArticlesSectionHtml(List<ContentItem> contentItems)
