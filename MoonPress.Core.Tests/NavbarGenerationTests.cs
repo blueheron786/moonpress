@@ -15,6 +15,9 @@ public class NavbarGenerationTests
     [SetUp]
     public void Setup()
     {
+        // Clear the static cache to ensure test isolation
+        MoonPress.Core.Content.ContentItemFetcher.ClearContentItems();
+        
         _generator = new StaticSiteGenerator(new ContentItemHtmlRenderer());
         _testDirectory = Path.Combine(Path.GetTempPath(), $"moonpress_navbar_test_{Guid.NewGuid()}");
         Directory.CreateDirectory(_testDirectory);

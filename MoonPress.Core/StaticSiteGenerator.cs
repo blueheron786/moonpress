@@ -101,6 +101,9 @@ public class StaticSiteGenerator
     {
         var navbar = GenerateNavbar(contentItems);
         
+        // Process posts blocks in the theme layout once, before applying to individual pages
+        var processedThemeLayout = _postsProcessor.ProcessPostsBlocks(themeLayout, contentItems);
+        
         foreach (var item in contentItems.Where(i => !i.IsDraft))
         {
             try
@@ -110,10 +113,7 @@ public class StaticSiteGenerator
                 // Process posts filters in the content HTML
                 contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
                 
-                var html = ApplyThemeLayout(themeLayout, item.Title, contentHtml, navbar);
-                
-                // Also process posts filters in the final HTML (for theme layout)
-                html = _postsProcessor.ProcessPostsBlocks(html, contentItems);
+                var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar);
                 
                 var fileName = $"{item.Slug}.html";
                 var filePath = Path.Combine(outputPath, fileName);
@@ -138,7 +138,12 @@ public class StaticSiteGenerator
 
         var navbar = GenerateNavbar(contentItems);
         var indexContentHtml = await GenerateIndexContentHtmlAsync(publishedItems, project);
-        var indexHtml = ApplyThemeLayout(themeLayout, "Site Index", indexContentHtml, navbar);
+        
+        // First, process posts blocks in the theme layout BEFORE applying it
+        var processedThemeLayout = _postsProcessor.ProcessPostsBlocks(themeLayout, contentItems);
+        
+        var indexHtml = ApplyThemeLayout(processedThemeLayout, "Site Index", indexContentHtml, navbar);
+        
         var indexPath = Path.Combine(outputPath, "index.html");
         
         await File.WriteAllTextAsync(indexPath, indexHtml);
