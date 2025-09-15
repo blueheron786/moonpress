@@ -78,8 +78,8 @@ else
                     }
                     
                     <div class="mt-3">
-                        <button class="btn btn-outline-primary btn-sm" @onclick="OpenOutputFolder">
-                            <i class="fa-solid fa-folder-open"></i> Open Output Folder
+                        <button class="btn btn-outline-primary btn-sm" @onclick="ViewSite">
+                            <i class="fa-solid fa-eye"></i> View
                         </button>
                     </div>
                 </div>
@@ -173,25 +173,47 @@ else
         }
     }
 
-    private void OpenOutputFolder()
+    private void ViewSite()
     {
         if (!string.IsNullOrWhiteSpace(OutputPath) && Directory.Exists(OutputPath))
         {
-            try
+            var indexPath = Path.Combine(OutputPath, "index.html");
+            
+            if (File.Exists(indexPath))
             {
-                // Use Process.Start to open the folder in Windows Explorer
-                var startInfo = new ProcessStartInfo
+                try
                 {
-                    FileName = "explorer.exe",
-                    Arguments = $"\"{OutputPath}\"",
-                    UseShellExecute = true
-                };
-                Process.Start(startInfo);
+                    // Use Process.Start to open the index.html file in the default browser
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = indexPath,
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
+                }
+                catch (Exception ex)
+                {
+                    // If opening fails, we could log or show an error message
+                    Console.WriteLine($"Failed to open site: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                // If opening fails, we could log or show an error message
-                Console.WriteLine($"Failed to open folder: {ex.Message}");
+                // If index.html doesn't exist, fall back to opening the folder
+                try
+                {
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = $"\"{OutputPath}\"",
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to open folder: {ex.Message}");
+                }
             }
         }
     }
