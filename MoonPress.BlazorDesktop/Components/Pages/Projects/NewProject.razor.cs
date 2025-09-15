@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Components;
 using MoonPress.Core;
+using MoonPress.BlazorDesktop.Services;
 
 namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
@@ -53,6 +54,9 @@ public partial class NewProject : ComponentBase
 
             ProjectState.Current = project;
             ProjectState.Current.RootFolder = _selectedFolder;
+
+            // Save as last opened project for auto-loading
+            _ = Task.Run(async () => await ProjectStateService.SaveLastOpenedProjectAsync(project, _selectedFolder));
         }
         catch (Exception ex)
         {

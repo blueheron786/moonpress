@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Components;
 using MoonPress.Core;
+using MoonPress.BlazorDesktop.Services;
 
 namespace MoonPress.BlazorDesktop.Components.Pages.Projects;
 
@@ -34,6 +35,10 @@ public partial class LoadProject : ComponentBase
                 {
                     ProjectState.Current = project;
                     ProjectState.Current.RootFolder = folder;
+
+                    // Save as last opened project for auto-loading
+                    _ = Task.Run(async () => await ProjectStateService.SaveLastOpenedProjectAsync(project, folder));
+
                     Nav.NavigateTo("/content-items");
                 }
             }
