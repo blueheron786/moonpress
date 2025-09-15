@@ -2,6 +2,7 @@ using System.Text;
 using MoonPress.Core.Content;
 using MoonPress.Core.Models;
 using MoonPress.Core.Renderers;
+using MoonPress.Core.Templates;
 
 namespace MoonPress.Core;
 
@@ -16,10 +17,12 @@ public class StaticSiteGenerator
     private const string ContentPlaceholder = "{{ content }}";
     private const string NavbarPlaceholder = "{{ navbar }}";
     private readonly IHtmlRenderer _htmlRenderer;
+    private readonly PostsTemplateProcessor _postsProcessor;
     
-    public StaticSiteGenerator(IHtmlRenderer htmlRenderer)
+    public StaticSiteGenerator(IHtmlRenderer htmlRenderer, PostsTemplateProcessor? postsProcessor = null)
     {
         _htmlRenderer = htmlRenderer ?? throw new ArgumentNullException(nameof(htmlRenderer));
+        _postsProcessor = postsProcessor ?? new PostsTemplateProcessor();
     }
 
     /// <summary>
@@ -103,7 +106,15 @@ public class StaticSiteGenerator
             try
             {
                 var contentHtml = _htmlRenderer.RenderHtml(item);
+                
+                // Process posts filters in the content HTML
+                contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
+                
                 var html = ApplyThemeLayout(themeLayout, item.Title, contentHtml, navbar);
+                
+                // Also process posts filters in the final HTML (for theme layout)
+                html = _postsProcessor.ProcessPostsBlocks(html, contentItems);
+                
                 var fileName = $"{item.Slug}.html";
                 var filePath = Path.Combine(outputPath, fileName);
                 
@@ -150,6 +161,9 @@ public class StaticSiteGenerator
             // Fallback template
             indexTemplate = @"{{ articles_section }}";
         }
+
+        // Process posts filters first
+        indexTemplate = _postsProcessor.ProcessPostsBlocks(indexTemplate, contentItems);
 
         // Generate the articles section
         var articlesSection = GenerateArticlesSectionHtml(contentItems);
