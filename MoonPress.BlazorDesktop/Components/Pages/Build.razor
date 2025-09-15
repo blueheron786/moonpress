@@ -40,18 +40,24 @@ else
                 </div>
             </div>
 
-            <button class="btn btn-primary" @onclick="BuildSite" disabled="@IsBuilding">
-                @if (IsBuilding)
-                {
-                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                    <span>Building...</span>
-                }
-                else
-                {
-                    <i class="fa-solid fa-play"></i>
-                    <span>Build Site</span>
-                }
-            </button>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" @onclick="BuildSite" disabled="@IsBuilding">
+                    @if (IsBuilding)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        <span>Building...</span>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-play"></i>
+                        <span>Build Site</span>
+                    }
+                </button>
+                
+                <button class="btn btn-outline-primary" @onclick="ViewSite">
+                    <i class="fa-solid fa-eye"></i> View Site
+                </button>
+            </div>
         </div>
     </div>
 
@@ -76,12 +82,6 @@ else
                             </ul>
                         </details>
                     }
-                    
-                    <div class="mt-3">
-                        <button class="btn btn-outline-primary btn-sm" @onclick="ViewSite">
-                            <i class="fa-solid fa-eye"></i> View
-                        </button>
-                    </div>
                 </div>
             }
             else
