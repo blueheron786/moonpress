@@ -128,10 +128,10 @@ public class CategoryPageGenerationTests
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
         await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);
@@ -193,10 +193,10 @@ Essential tips for modern web development.";
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
         await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);
@@ -280,10 +280,10 @@ Another published post in the same category.";
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
         await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);

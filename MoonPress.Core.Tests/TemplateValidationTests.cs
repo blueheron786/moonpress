@@ -37,9 +37,9 @@ public class TemplateValidationTests
         var project = CreateTestProject();
         CreateThemeWithLayout(@"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
+    <nav>{{navbar}}</nav>
 </body>
 </html>");
 
@@ -53,7 +53,7 @@ public class TemplateValidationTests
 
         // Assert
         Assert.That(result.Success, Is.False);
-        Assert.That(result.Message, Does.Contain("{{ content }}"));
+        Assert.That(result.Message, Does.Contain("{{content}}"));
         Assert.That(result.Message, Does.Contain("missing"));
     }
 
@@ -64,9 +64,9 @@ public class TemplateValidationTests
         var project = CreateTestProject();
         CreateThemeWithLayout(@"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <main>{{ content }}</main>
+    <main>{{content}}</main>
 </body>
 </html>");
 
@@ -76,7 +76,7 @@ public class TemplateValidationTests
 
         // Assert
         Assert.That(result.Success, Is.False);
-        Assert.That(result.Message, Does.Contain("{{ navbar }}"));
+        Assert.That(result.Message, Does.Contain("{{navbar}}"));
         Assert.That(result.Message, Does.Contain("missing"));
     }
 
@@ -101,7 +101,7 @@ public class TemplateValidationTests
 
         // Assert
         Assert.That(result.Success, Is.False);
-        Assert.That(result.Message, Does.Contain("{{ title }}"));
+        Assert.That(result.Message, Does.Contain("{{title}}"));
         Assert.That(result.Message, Does.Contain("missing"));
     }
 
@@ -112,10 +112,10 @@ public class TemplateValidationTests
         var project = CreateTestProject();
         CreateThemeWithLayout(@"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>");
 

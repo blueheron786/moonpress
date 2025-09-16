@@ -124,16 +124,16 @@ This is a test news post.";
 
         var layoutHtml = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
+    <nav>{{navbar}}</nav>
     <main>
-        {{ content }}
+        {{content}}
         <section class=""recent-blog-posts"">
             <h2>Recent Blog Posts</h2>
-            {{ posts | category=""blog"" | limit=3 }}
-              <div><a href=""{{ url }}"">{{ title }}</a></div>
-            {{ /posts }}
+            {{posts | category=""blog"" | limit=3}}
+              <div><a href=""{{url}}"">{{title}}</a></div>
+            {{/posts}}
         </section>
     </main>
 </body>
@@ -152,19 +152,19 @@ This is a test news post.";
 
         var layoutHtml = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
 
         File.WriteAllText(Path.Combine(themePath, "layout.html"), layoutHtml);
 
         var indexHtml = @"<h1>Welcome to the site</h1>
-{{ posts | limit=2 }}
-  <article>{{ title }} ({{ category }})</article>
-{{ /posts }}";
+{{posts | limit=2}}
+  <article>{{title}} ({{category}})</article>
+{{/posts}}";
         File.WriteAllText(Path.Combine(themePath, "index.html"), indexHtml);
     }
 }

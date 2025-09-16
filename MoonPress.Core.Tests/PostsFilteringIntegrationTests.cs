@@ -36,18 +36,18 @@ public class PostsFilteringIntegrationTests
 <head>
   <meta charset=""UTF-8"">
   <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-  <title>Test Site - {{ title }}</title>
+  <title>Test Site - {{title}}</title>
 </head>
 <body>
   <header>
     <nav class=""navbar"">
       <a href=""index.html"">Home</a>
-      {{ navbar }}
+      {{navbar}}
     </nav>
   </header>
   <main>
     <div class=""content-card"">
-      {{ content }}
+      {{content}}
     </div>
   </main>
 </body>
@@ -60,17 +60,17 @@ public class PostsFilteringIntegrationTests
 <h2>📝 Latest Blog Posts</h2>
 
 <ul>
-{{ posts | category=""blog"" | limit=5 }}
-  <li><a href=""{{ slug }}.html"">{{ title }}</a></li>
-{{ /posts }}
+{{posts | category=""blog"" | limit=5}}
+  <li><a href=""{{slug}}.html"">{{title}}</a></li>
+{{/posts}}
 </ul>
 
 <h2>📖 Latest Books</h2>
 
 <ul>
-{{ posts | category=""books"" | limit=3 }}
-  <li><a href=""{{ slug }}.html"">{{ title }}</a></li>
-{{ /posts }}
+{{posts | category=""books"" | limit=3}}
+  <li><a href=""{{slug}}.html"">{{title}}</a></li>
+{{/posts}}
 </ul>";
         File.WriteAllText(Path.Combine(themeDir, "index.html"), indexHtml);
         

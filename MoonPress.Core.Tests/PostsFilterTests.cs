@@ -22,9 +22,9 @@ public class PostsFilterTests
         // Arrange
         var template = @"
 <h1>My Blog</h1>
-{{ posts | category=""blog"" | limit=2 }}
-  <li><a href=""{{ url }}"">{{ title }}</a></li>
-{{ /posts }}
+{{posts | category=""blog"" | limit=2}}
+  <li><a href=""{{url}}"">{{title}}</a></li>
+{{/posts}}
 <p>End</p>";
 
         var contentItems = new List<ContentItem>
@@ -52,13 +52,13 @@ public class PostsFilterTests
     {
         // Arrange
         var template = @"
-{{ posts | category=""blog"" | limit=1 }}
-  <p>{{ title }}</p>
-{{ /posts }}
+{{posts | category=""blog"" | limit=1}}
+  <p>{{title}}</p>
+{{/posts}}
 <hr>
-{{ posts | category=""news"" | limit=1 }}
-  <div>{{ title }}</div>
-{{ /posts }}";
+{{posts | category=""news"" | limit=1}}
+  <div>{{title}}</div>
+{{/posts}}";
 
         var contentItems = new List<ContentItem>
         {
@@ -80,9 +80,9 @@ public class PostsFilterTests
     {
         // Arrange
         var template = @"
-{{ posts | limit=2 }}
-  <span>{{ title }}</span>
-{{ /posts }}";
+{{posts | limit=2}}
+  <span>{{title}}</span>
+{{/posts}}";
 
         var contentItems = new List<ContentItem>
         {
@@ -103,9 +103,9 @@ public class PostsFilterTests
     {
         // Arrange
         var template = @"
-{{ posts | limit=5 }}
-  <p>{{ title }}</p>
-{{ /posts }}";
+{{posts | limit=5}}
+  <p>{{title}}</p>
+{{/posts}}";
 
         var contentItems = new List<ContentItem>
         {

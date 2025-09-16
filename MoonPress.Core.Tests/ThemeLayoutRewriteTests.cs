@@ -21,7 +21,7 @@ namespace MoonPress.Core.Tests
             var themeDir = Path.Combine(tempDir, "themes", themeName);
             Directory.CreateDirectory(themeDir);
             var layoutPath = Path.Combine(themeDir, "layout.html");
-            var originalLayout = "<html><head><title>{{ title }}</title><link rel=\"stylesheet\" href=\"/themes/testtheme/style.css\"><script src=\"themes/testtheme/app.js\"></script></head><body><nav>{{ navbar }}</nav>{{ content }}</body></html>";
+            var originalLayout = "<html><head><title>{{title}}</title><link rel=\"stylesheet\" href=\"/themes/testtheme/style.css\"><script src=\"themes/testtheme/app.js\"></script></head><body><nav>{{navbar}}</nav>{{content}}</body></html>";
             await File.WriteAllTextAsync(layoutPath, originalLayout);
             var project = new StaticSiteProject { RootFolder = tempDir, Theme = themeName };
             

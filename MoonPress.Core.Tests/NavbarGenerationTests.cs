@@ -33,13 +33,13 @@ public class NavbarGenerationTests
         // Create layout.html with navbar placeholder
         var layoutHtml = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
     <nav>
         <a href=""index.html"">Home</a>
-        {{ navbar }}
+        {{navbar}}
     </nav>
-    <main>{{ content }}</main>
+    <main>{{content}}</main>
 </body>
 </html>";
         File.WriteAllText(Path.Combine(themeDir, "layout.html"), layoutHtml);

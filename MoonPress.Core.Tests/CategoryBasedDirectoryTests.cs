@@ -89,10 +89,10 @@ public class CategoryBasedDirectoryTests
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
         await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);

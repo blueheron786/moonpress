@@ -35,7 +35,7 @@ namespace MoonPress.Core.Tests
         {
             // This test demonstrates exactly what the user requested:
             // 1. Parse pages/**/*.md files and extract Category metadata
-            // 2. Process template tags like {{ posts | category = "Blog" | limit = 5 }}
+            // 2. Process template tags like {{posts | category = "Blog" | limit = 5}}
             
             // ARRANGE: Set up a user project structure
             CreateUserProjectStructure();
@@ -84,10 +84,10 @@ namespace MoonPress.Core.Tests
             
             var layoutHtml = @"<!DOCTYPE html>
 <html>
-<head><title>{{ title }}</title></head>
+<head><title>{{title}}</title></head>
 <body>
-    <nav>{{ navbar }}</nav>
-    <main>{{ content }}</main>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
 </body>
 </html>";
             File.WriteAllText(Path.Combine(themeDir, "layout.html"), layoutHtml);
@@ -98,18 +98,18 @@ namespace MoonPress.Core.Tests
 <section class=""blog-section"">
     <h2>📝 Latest Blog Posts</h2>
     <ul>
-{{ posts | category=""Blog"" | limit=2 }}
-        <li><a href=""{{ url }}"">{{ title }}</a> - <em>{{ summary }}</em></li>
-{{ /posts }}
+{{posts | category=""Blog"" | limit=2}}
+        <li><a href=""{{url}}"">{{title}}</a> - <em>{{summary}}</em></li>
+{{/posts}}
     </ul>
 </section>
 
 <section class=""tutorial-section"">
     <h2>🎓 Programming Tutorials</h2>
     <ul>
-{{ posts | category=""Tutorials"" | limit=3 }}
-        <li><a href=""{{ url }}"">{{ title }}</a> - <em>{{ category }}</em></li>
-{{ /posts }}
+{{posts | category=""Tutorials"" | limit=3}}
+        <li><a href=""{{url}}"">{{title}}</a> - <em>{{category}}</em></li>
+{{/posts}}
     </ul>
 </section>";
             File.WriteAllText(Path.Combine(themeDir, "index.html"), indexHtml);
