@@ -64,11 +64,13 @@ public class StaticSiteGenerator
             var contentItemsDict = ContentItemFetcher.GetContentItems(project.RootFolder);
             var contentItems = contentItemsDict.Values.ToList();
             
+            // Set up theme path for custom templates
+            var themePath = Path.Combine(project.RootFolder, "themes", project.Theme);
+            
             // Generate HTML pages for each content item
-            await _contentPageGenerator.GenerateContentPagesAsync(contentItems, outputPath, themeLayout, result);
+            await _contentPageGenerator.GenerateContentPagesAsync(contentItems, outputPath, themeLayout, result, themePath);
             
             // Generate category pages
-            var themePath = Path.Combine(project.RootFolder, "themes", project.Theme);
             await _categoryPageGenerator.GenerateCategoryPagesAsync(contentItems, outputPath, themeLayout, result, themePath);
             
             // Generate index page

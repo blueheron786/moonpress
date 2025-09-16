@@ -20,7 +20,7 @@ public class ContentPageGenerator
         _postsProcessor = postsProcessor ?? new PostsTemplateProcessor();
     }
 
-    public async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
+    public async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result, string? themePath = null)
     {
         var navbar = GenerateNavbar(contentItems);
         
@@ -31,10 +31,41 @@ public class ContentPageGenerator
         {
             try
             {
-                var contentHtml = _htmlRenderer.RenderHtml(item);
+                string contentHtml;
                 
-                // Process posts filters in the content HTML
-                contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
+                // Check if this content item uses a custom template file
+                var customTemplateName = item.CustomFields?.GetValueOrDefault("template");
+                if (!string.IsNullOrWhiteSpace(customTemplateName) && !string.IsNullOrWhiteSpace(themePath))
+                {
+                    // Try to load custom template from theme directory
+                    var customTemplatePath = Path.Combine(themePath, $"{customTemplateName}.html");
+                    if (File.Exists(customTemplatePath))
+                    {
+                        // Load and process custom template
+                        var customTemplateContent = await File.ReadAllTextAsync(customTemplatePath);
+                        
+                        // Replace {{content}} with the page's rendered markdown
+                        var pageContentHtml = _htmlRenderer.RenderHtml(item);
+                        customTemplateContent = customTemplateContent.Replace("{{content}}", pageContentHtml);
+                        
+                        // Process posts blocks in the custom template
+                        contentHtml = _postsProcessor.ProcessPostsBlocks(customTemplateContent, contentItems);
+                    }
+                    else
+                    {
+                        // Fallback to standard rendering if custom template not found
+                        contentHtml = _htmlRenderer.RenderHtml(item);
+                        contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
+                    }
+                }
+                else
+                {
+                    // Use standard markdown rendering
+                    contentHtml = _htmlRenderer.RenderHtml(item);
+                    
+                    // Process posts filters in the content HTML
+                    contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
+                }
                 
                 var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar, item.DatePublished);
                 

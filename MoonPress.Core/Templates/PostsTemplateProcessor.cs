@@ -136,12 +136,114 @@ public class PostsTemplateProcessor
             var postHtml = innerTemplate
                 .Replace("{{url}}", urlPath)
                 .Replace("{{title}}", post.Title)
-                .Replace("{{category}}", post.Category)
+                .Replace("{{category}}", post.Category ?? "")
                 .Replace("{{summary}}", post.Summary ?? "")
                 .Replace("{{date}}", post.DatePublished.ToString("MMMM dd, yyyy"));
+            
+            // Process custom fields from frontmatter
+            if (post.CustomFields != null)
+            {
+                foreach (var field in post.CustomFields)
+                {
+                    postHtml = postHtml.Replace($"{{{{{field.Key}}}}}", field.Value);
+                }
+            }
+            
+            // Process conditional sections for custom fields
+            postHtml = ProcessConditionalSections(postHtml, post);
+            
             generatedHtml.AppendLine(postHtml);
         }
         
         return generatedHtml.ToString();
+    }
+    
+    /// <summary>
+    /// Processes conditional template sections like {{#author}}...{{/author}}
+    /// </summary>
+    private static string ProcessConditionalSections(string template, ContentItem post)
+    {
+        var result = template;
+        
+        // Process custom field conditionals
+        if (post.CustomFields != null)
+        {
+            foreach (var field in post.CustomFields)
+            {
+                var startTag = $"{{#{field.Key}}}";
+                var endTag = $"{{/{field.Key}}}";
+                
+                if (!string.IsNullOrWhiteSpace(field.Value))
+                {
+                    // Field has value - remove the conditional tags but keep content
+                    result = result.Replace(startTag, "").Replace(endTag, "");
+                }
+                else
+                {
+                    // Field is empty - remove entire conditional section
+                    result = RemoveConditionalSection(result, startTag, endTag);
+                }
+            }
+        }
+        
+        // Process standard field conditionals
+        result = ProcessStandardConditionals(result, post);
+        
+        return result;
+    }
+    
+    /// <summary>
+    /// Processes conditionals for standard fields like summary, category, etc.
+    /// </summary>
+    private static string ProcessStandardConditionals(string template, ContentItem post)
+    {
+        var result = template;
+        
+        // Summary conditional
+        if (!string.IsNullOrWhiteSpace(post.Summary))
+        {
+            result = result.Replace("{{#summary}}", "").Replace("{{/summary}}", "");
+        }
+        else
+        {
+            result = RemoveConditionalSection(result, "{{#summary}}", "{{/summary}}");
+        }
+        
+        // Category conditional
+        if (!string.IsNullOrWhiteSpace(post.Category))
+        {
+            result = result.Replace("{{#category}}", "").Replace("{{/category}}", "");
+        }
+        else
+        {
+            result = RemoveConditionalSection(result, "{{#category}}", "{{/category}}");
+        }
+        
+        // Date conditional
+        if (post.DatePublished != default)
+        {
+            result = result.Replace("{{#date}}", "").Replace("{{/date}}", "");
+        }
+        else
+        {
+            result = RemoveConditionalSection(result, "{{#date}}", "{{/date}}");
+        }
+        
+        return result;
+    }
+    
+    /// <summary>
+    /// Removes a conditional section and its content if the condition is false
+    /// </summary>
+    private static string RemoveConditionalSection(string text, string startTag, string endTag)
+    {
+        var startIndex = text.IndexOf(startTag);
+        if (startIndex == -1) return text;
+        
+        var endIndex = text.IndexOf(endTag, startIndex);
+        if (endIndex == -1) return text;
+        
+        var sectionLength = endIndex + endTag.Length - startIndex;
+        return text.Remove(startIndex, sectionLength);
     }
 }
