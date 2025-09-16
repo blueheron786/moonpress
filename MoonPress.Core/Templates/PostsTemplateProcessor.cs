@@ -3,6 +3,7 @@ using MoonPress.Core.Models;
 
 namespace MoonPress.Core.Templates;
 
+
 /// <summary>
 /// Processes {{posts}} template blocks with filtering support
 /// </summary>
@@ -56,6 +57,44 @@ public class PostsTemplateProcessor
             // Move past this replacement to find any other blocks
             startIndex = startIndex + generatedHtml.Length;
         }
+        
+        return result;
+    }
+
+    /// <summary>
+    /// Processes template variables for a single content item (for individual page templates)
+    /// </summary>
+    /// <param name="template">The template content</param>
+    /// <param name="contentItem">The content item to substitute variables for</param>
+    /// <returns>Template with variables replaced</returns>
+    public string ProcessSingleItemVariables(string template, ContentItem contentItem)
+    {
+        if (string.IsNullOrWhiteSpace(template) || contentItem == null)
+            return template;
+
+        // Generate URL path based on category: /category/slug.html
+        var urlPath = !string.IsNullOrEmpty(contentItem.Category)
+            ? $"/{contentItem.Category.ToLowerInvariant()}/{contentItem.Slug}.html"
+            : $"/uncategorized/{contentItem.Slug}.html";
+            
+        var result = template
+            .Replace("{{url}}", urlPath)
+            .Replace("{{title}}", contentItem.Title)
+            .Replace("{{category}}", contentItem.Category ?? "")
+            .Replace("{{summary}}", contentItem.Summary ?? "")
+            .Replace("{{date}}", contentItem.DatePublished.ToString("MMMM dd, yyyy"));
+        
+        // Process custom fields from frontmatter
+        if (contentItem.CustomFields != null)
+        {
+            foreach (var field in contentItem.CustomFields)
+            {
+                result = result.Replace($"{{{{{field.Key}}}}}", field.Value);
+            }
+        }
+        
+        // Process conditional sections for custom fields
+        result = ProcessConditionalSections(result, contentItem);
         
         return result;
     }
