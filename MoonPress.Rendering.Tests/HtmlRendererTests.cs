@@ -103,5 +103,37 @@ namespace MoonPress.Rendering.Tests
             Assert.That(result, Does.Contain("<div class=\"content\">"));
             Assert.That(result, Does.Contain(longContent));
         }
+
+        [Test]
+        public void RenderHtml_ConvertsMarkdownToHtml()
+        {
+            var markdownContent = @"# This is a markdown heading
+
+This is a paragraph with **bold text** and *italic text*.
+
+- Item 1
+- Item 2
+- Item 3
+
+[This is a link](https://example.com)";
+
+            var contentItem = new ContentItem
+            {
+                Title = "Markdown Test",
+                DatePublished = new DateTime(2024, 6, 1, 14, 30, 0),
+                Summary = "Testing markdown conversion",
+                Contents = markdownContent
+            };
+
+            var result = new ContentItemHtmlRenderer().RenderHtml(contentItem);
+
+            // Check that markdown is converted to HTML
+            Assert.That(result, Does.Contain("This is a markdown heading</h1>"));
+            Assert.That(result, Does.Contain("<strong>bold text</strong>"));
+            Assert.That(result, Does.Contain("<em>italic text</em>"));
+            Assert.That(result, Does.Contain("<ul>"));
+            Assert.That(result, Does.Contain("<li>Item 1</li>"));
+            Assert.That(result, Does.Contain("<a href=\"https://example.com\">This is a link</a>"));
+        }
     }
 }

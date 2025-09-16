@@ -10,4 +10,8 @@
     <ProjectReference Include="..\MoonPress.Core\MoonPress.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.42.0" />
+  </ItemGroup>
+
 </Project>
