@@ -23,12 +23,31 @@ class Program
         }
 
         var outputPath = Path.Combine(projectPath, "output");
-        var projectName = Path.GetFileName(projectPath);
 
-        Console.WriteLine($"🌙 Generating {projectName} -> {outputPath}");
+        Console.WriteLine($"🌙 Generating site -> {outputPath}");
 
         try
         {
+            // Try to load project configuration
+            StaticSiteProject project;
+            var projectJsonPath = Path.Combine(projectPath, "project.json");
+            
+            if (File.Exists(projectJsonPath))
+            {
+                project = StaticSiteProject.Load(projectPath);
+                Console.WriteLine($"📄 Loaded project: {project.ProjectName} (theme: {project.Theme})");
+            }
+            else
+            {
+                // Fallback to defaults
+                project = new StaticSiteProject
+                {
+                    RootFolder = projectPath,
+                    Theme = "default",
+                    ProjectName = Path.GetFileName(projectPath)
+                };
+                Console.WriteLine($"📄 Using defaults: {project.ProjectName} (theme: {project.Theme})");
+            }
             // Clear output directory
             if (Directory.Exists(outputPath))
             {
@@ -46,13 +65,6 @@ class Program
             }
 
             // Generate the site
-            var project = new StaticSiteProject
-            {
-                RootFolder = projectPath,
-                Theme = "default",
-                ProjectName = projectName
-            };
-
             var renderer = new ContentItemHtmlRenderer();
             var generator = new StaticSiteGenerator(renderer);
             var result = await generator.GenerateSiteAsync(project, outputPath);
