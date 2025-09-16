@@ -6,6 +6,12 @@ namespace MoonPress.Core.Tests.Content;
 [TestFixture]
 public class ContentItemFetcherCategoryTests
 {
+    [SetUp]
+    public void SetUp()
+    {
+        ContentItemFetcher.ClearContentItems();
+    }
+
     [TearDown]
     public void TearDown()
     {

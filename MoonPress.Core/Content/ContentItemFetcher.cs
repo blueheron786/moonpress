@@ -16,7 +16,7 @@ public static class ContentItemFetcher
     // Used for unit testing
     public static void ClearContentItems()
     {
-        _contentItems = new Dictionary<string, ContentItem>();
+        _contentItems = null;
     }
 
     public static Dictionary<string, ContentItem> GetContentItems(string rootFolder)
