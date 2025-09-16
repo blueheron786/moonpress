@@ -130,6 +130,7 @@ public class PostsTemplateProcessor
         {
             var postHtml = innerTemplate
                 .Replace("{{ slug }}", post.Slug)
+                .Replace("{{ url }}", $"{post.Slug}.html")
                 .Replace("{{ title }}", post.Title)
                 .Replace("{{ category }}", post.Category)
                 .Replace("{{ summary }}", post.Summary ?? "")
