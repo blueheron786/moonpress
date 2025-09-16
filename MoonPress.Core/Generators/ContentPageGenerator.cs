@@ -20,6 +20,27 @@ public class ContentPageGenerator
         _postsProcessor = postsProcessor ?? new PostsTemplateProcessor();
     }
 
+    /// <summary>
+    /// Renders only the markdown content of a ContentItem, without the auto-generated title and date
+    /// Used for custom templates where you want full control over the layout
+    /// </summary>
+    private string RenderRawMarkdownContent(ContentItem contentItem)
+    {
+        // Use the existing HTML renderer but extract only the content div
+        var fullHtml = _htmlRenderer.RenderHtml(contentItem);
+        
+        // Extract just the content inside the <div class="content"> tags
+        var contentStart = fullHtml.IndexOf("<div class=\"content\">");
+        if (contentStart == -1) return contentItem.Contents ?? string.Empty;
+        
+        contentStart = fullHtml.IndexOf('>', contentStart) + 1;
+        var contentEnd = fullHtml.LastIndexOf("</div>");
+        
+        if (contentEnd == -1 || contentEnd <= contentStart) return contentItem.Contents ?? string.Empty;
+        
+        return fullHtml.Substring(contentStart, contentEnd - contentStart).Trim();
+    }
+
     public async Task GenerateContentPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result, string? themePath = null)
     {
         var navbar = GenerateNavbar(contentItems);
@@ -46,8 +67,8 @@ public class ContentPageGenerator
                         // Load and process custom template
                         var customTemplateContent = await File.ReadAllTextAsync(customTemplatePath);
                         
-                        // Replace {{content}} with the page's rendered markdown
-                        var pageContentHtml = _htmlRenderer.RenderHtml(item);
+                        // For custom templates, render only the raw markdown content (without auto-generated title/date)
+                        var pageContentHtml = RenderRawMarkdownContent(item);
                         customTemplateContent = customTemplateContent.Replace("{{content}}", pageContentHtml);
                         
                         // Process individual field variables (title, cover, buy_link, etc.)
