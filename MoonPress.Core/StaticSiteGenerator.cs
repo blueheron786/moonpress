@@ -68,7 +68,8 @@ public class StaticSiteGenerator
             await _contentPageGenerator.GenerateContentPagesAsync(contentItems, outputPath, themeLayout, result);
             
             // Generate category pages
-            await _categoryPageGenerator.GenerateCategoryPagesAsync(contentItems, outputPath, themeLayout, result);
+            var themePath = Path.Combine(project.RootFolder, "themes", project.Theme);
+            await _categoryPageGenerator.GenerateCategoryPagesAsync(contentItems, outputPath, themeLayout, result, themePath);
             
             // Generate index page
             await _indexPageGenerator.GenerateIndexPageAsync(contentItems, outputPath, themeLayout, project, result);

@@ -11,13 +11,15 @@ namespace MoonPress.Core.Generators;
 public class CategoryPageGenerator
 {
     private readonly PostsTemplateProcessor _postsProcessor;
+    private readonly CategoryPageTemplate _categoryTemplate;
 
-    public CategoryPageGenerator(PostsTemplateProcessor? postsProcessor = null)
+    public CategoryPageGenerator(PostsTemplateProcessor? postsProcessor = null, CategoryPageTemplate? categoryTemplate = null)
     {
         _postsProcessor = postsProcessor ?? new PostsTemplateProcessor();
+        _categoryTemplate = categoryTemplate ?? new CategoryPageTemplate();
     }
 
-    public async Task GenerateCategoryPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result)
+    public async Task GenerateCategoryPagesAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, SiteGenerationResult result, string? themePath = null)
     {
         var navbar = GenerateNavbar(contentItems);
         
@@ -45,7 +47,7 @@ public class CategoryPageGenerator
             try
             {
                 // Generate category page content
-                var categoryContentHtml = GenerateCategoryContentHtml(categoryName, categoryItems);
+                var categoryContentHtml = GenerateCategoryContentHtml(categoryName, categoryItems, themePath);
                 
                 var html = ApplyThemeLayout(processedThemeLayout, $"Category: {categoryName}", categoryContentHtml, navbar);
                 
@@ -65,33 +67,20 @@ public class CategoryPageGenerator
         }
     }
 
-    private string GenerateCategoryContentHtml(string categoryName, List<ContentItem> categoryItems)
+    private string GenerateCategoryContentHtml(string categoryName, List<ContentItem> categoryItems, string? themePath)
     {
         var publishedItems = categoryItems.Where(i => !i.IsDraft).OrderByDescending(i => i.DatePublished);
         
-        var contentHtml = new StringBuilder();
-        contentHtml.AppendLine($"<h1>Category: {categoryName}</h1>");
-        contentHtml.AppendLine("<ul>");
-        
-        foreach (var item in publishedItems)
+        var templateItems = publishedItems.Select(item =>
         {
             var itemUrl = IsFromPagesDirectory(item.FilePath)
                 ? $"/{item.Slug}.html"
                 : $"/{item.Category?.ToLowerInvariant()}/{item.Slug}.html";
                 
-            contentHtml.AppendLine($"  <li><a href=\"{itemUrl}\">{item.Title}</a>");
-            
-            if (!string.IsNullOrWhiteSpace(item.Summary))
-            {
-                contentHtml.AppendLine($" - <em>{item.Summary}</em>");
-            }
-            
-            contentHtml.AppendLine("</li>");
-        }
+            return new CategoryPageItem(itemUrl, item.Title, item.Summary);
+        });
         
-        contentHtml.AppendLine("</ul>");
-        
-        return contentHtml.ToString();
+        return _categoryTemplate.Render(categoryName, templateItems, themePath);
     }
 
     private static string GenerateNavbar(List<ContentItem> contentItems)

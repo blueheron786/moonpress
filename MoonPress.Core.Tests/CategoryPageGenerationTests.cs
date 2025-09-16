@@ -241,4 +241,79 @@ isDraft: false
 Another published post in the same category.";
         await File.WriteAllTextAsync(Path.Combine(postsPath, "another-published-post.md"), mixedCategoryPost);
     }
+
+    [Test]
+    public async Task GenerateSiteAsync_ShouldLoadCustomCategoryTemplate_WhenAvailable()
+    {
+        // Arrange
+        await CreateTestProjectWithCustomCategoryTemplate();
+        var project = StaticSiteProject.Load(_testProjectPath);
+
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, _outputPath);
+
+        // Assert
+        Assert.That(result.Success, Is.True);
+        
+        // Verify that the custom template was used for category pages
+        var blogCategoryFile = Path.Combine(_outputPath, "category", "blog.html");
+        Assert.That(File.Exists(blogCategoryFile), Is.True);
+        
+        var blogCategoryContent = await File.ReadAllTextAsync(blogCategoryFile);
+        Assert.That(blogCategoryContent, Contains.Substring("Custom Category Template: Blog"));
+        Assert.That(blogCategoryContent, Contains.Substring("Custom item format:"));
+    }
+
+    private async Task CreateTestProjectWithCustomCategoryTemplate()
+    {
+        // Create project.json
+        var projectJson = @"{
+  ""ProjectName"": ""Test Project"",
+  ""Theme"": ""custom"",
+  ""CreatedOn"": ""2025-09-15T00:00:00Z""
+}";
+        await File.WriteAllTextAsync(Path.Combine(_testProjectPath, "project.json"), projectJson);
+
+        // Create custom theme with custom category template
+        var themePath = Path.Combine(_testProjectPath, "themes", "custom");
+        Directory.CreateDirectory(themePath);
+        
+        var layoutContent = @"<!DOCTYPE html>
+<html>
+<head><title>{{ title }}</title></head>
+<body>
+    <nav>{{ navbar }}</nav>
+    <main>{{ content }}</main>
+</body>
+</html>";
+        await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);
+
+        // Create custom category template
+        var customCategoryTemplate = @"<h1>Custom Category Template: {{categoryName}}</h1>
+<div class=""custom-category-list"">
+{{#items}}
+  <div class=""custom-item"">
+    <h2><a href=""{{url}}"">{{title}}</a></h2>
+    <p>Custom item format:{{#summary}} {{summary}}{{/summary}}</p>
+  </div>
+{{/items}}
+</div>";
+        await File.WriteAllTextAsync(Path.Combine(themePath, "category-page.html"), customCategoryTemplate);
+
+        // Create a blog post to generate a category page
+        var postsPath = Path.Combine(_testProjectPath, "content", "posts");
+        Directory.CreateDirectory(postsPath);
+        
+        var blogPost = @"---
+title: Test Blog Post
+slug: test-blog-post
+category: Blog
+datePublished: 2025-09-12
+summary: A test blog post
+---
+
+# Test Content
+This is a test blog post.";
+        await File.WriteAllTextAsync(Path.Combine(postsPath, "test-blog.md"), blogPost);
+    }
 }
