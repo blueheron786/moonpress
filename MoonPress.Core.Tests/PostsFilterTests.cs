@@ -39,8 +39,8 @@ public class PostsFilterTests
         var result = _processor.ProcessPostsBlocks(template, contentItems);
 
         // Assert
-        Assert.That(result, Does.Contain("<li><a href=\"blog/post-3.html\">Post 3</a></li>"));
-        Assert.That(result, Does.Contain("<li><a href=\"blog/post-2.html\">Post 2</a></li>"));
+        Assert.That(result, Does.Contain("<li><a href=\"/blog/post-3.html\">Post 3</a></li>"));
+        Assert.That(result, Does.Contain("<li><a href=\"/blog/post-2.html\">Post 2</a></li>"));
         Assert.That(result, Does.Not.Contain("Post 1"));
         Assert.That(result, Does.Not.Contain("News 1"));
         Assert.That(result, Does.Contain("<h1>My Blog</h1>"));

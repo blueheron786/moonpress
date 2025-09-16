@@ -80,8 +80,8 @@ public class IndexPageGenerator
         foreach (var item in contentItems.Take(10)) // Show latest 10 items
         {
             var url = IsFromPostsDirectory(item.FilePath) 
-                ? $"blog/{item.Slug}.html" 
-                : $"{item.Slug}.html";
+                ? $"/blog/{item.Slug}.html" 
+                : $"/{item.Slug}.html";
             
             html.AppendLine($"        <li>");
             html.AppendLine($"            <a href=\"{url}\">{item.Title}</a>");
@@ -115,7 +115,7 @@ public class IndexPageGenerator
         var navbarHtml = new StringBuilder();
         foreach (var page in pageItems)
         {
-            var href = !string.IsNullOrEmpty(page.Slug) ? $"{page.Slug}.html" : $"{page.Title.ToLowerInvariant().Replace(" ", "-")}.html";
+            var href = !string.IsNullOrEmpty(page.Slug) ? $"/{page.Slug}.html" : $"/{page.Title.ToLowerInvariant().Replace(" ", "-")}.html";
             navbarHtml.AppendLine($"                <a href=\"{href}\" class=\"nav-link\">{page.Title}</a>");
         }
 

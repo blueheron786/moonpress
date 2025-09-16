@@ -55,7 +55,7 @@ public class IndexPagePostsFilterTests
         // Should contain the filtered blog posts
         Assert.That(indexContent, Does.Contain("Test Blog Post"));
         Assert.That(indexContent, Does.Not.Contain("Test News Post")); // Different category
-        Assert.That(indexContent, Does.Contain("href=\"blog/test-blog-post.html\""));
+        Assert.That(indexContent, Does.Contain("href=\"/blog/test-blog-post.html\""));
     }
 
     [Test]

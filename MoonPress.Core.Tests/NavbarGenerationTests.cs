@@ -115,14 +115,14 @@ This is the contact page.";
         
         // Check that the navbar links are present in the generated HTML
         var aboutHtml = await File.ReadAllTextAsync(Path.Combine(outputDir, "about.html"));
-        Assert.That(aboutHtml, Does.Contain(@"<a href=""about.html"" class=""nav-link"">About Us</a>"), "About link not found in navbar");
-        Assert.That(aboutHtml, Does.Contain(@"<a href=""contact.html"" class=""nav-link"">Contact Us</a>"), "Contact link not found in navbar");
-        Assert.That(aboutHtml, Does.Contain(@"<a href=""services.html"" class=""nav-link"">Our Services</a>"), "Services link not found in navbar");
+        Assert.That(aboutHtml, Does.Contain(@"<a href=""/about.html"" class=""nav-link"">About Us</a>"), "About link not found in navbar");
+        Assert.That(aboutHtml, Does.Contain(@"<a href=""/contact.html"" class=""nav-link"">Contact Us</a>"), "Contact link not found in navbar");
+        Assert.That(aboutHtml, Does.Contain(@"<a href=""/services.html"" class=""nav-link"">Our Services</a>"), "Services link not found in navbar");
         
         // Check that the navbar links are in alphabetical order by title
-        var navbarStartIndex = aboutHtml.IndexOf(@"<a href=""about.html"" class=""nav-link"">About Us</a>");
-        var contactIndex = aboutHtml.IndexOf(@"<a href=""contact.html"" class=""nav-link"">Contact Us</a>");
-        var servicesIndex = aboutHtml.IndexOf(@"<a href=""services.html"" class=""nav-link"">Our Services</a>");
+        var navbarStartIndex = aboutHtml.IndexOf(@"<a href=""/about.html"" class=""nav-link"">About Us</a>");
+        var contactIndex = aboutHtml.IndexOf(@"<a href=""/contact.html"" class=""nav-link"">Contact Us</a>");
+        var servicesIndex = aboutHtml.IndexOf(@"<a href=""/services.html"" class=""nav-link"">Our Services</a>");
         
         Assert.That(navbarStartIndex, Is.LessThan(contactIndex), "About link should come before Contact link");
         Assert.That(contactIndex, Is.LessThan(servicesIndex), "Contact link should come before Services link");

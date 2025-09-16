@@ -99,7 +99,7 @@ public class ContentPageGenerator
         var navbarHtml = new StringBuilder();
         foreach (var page in pageItems)
         {
-            var href = !string.IsNullOrEmpty(page.Slug) ? $"{page.Slug}.html" : $"{page.Title.ToLowerInvariant().Replace(" ", "-")}.html";
+            var href = !string.IsNullOrEmpty(page.Slug) ? $"/{page.Slug}.html" : $"/{page.Title.ToLowerInvariant().Replace(" ", "-")}.html";
             navbarHtml.AppendLine($"                <a href=\"{href}\" class=\"nav-link\">{page.Title}</a>");
         }
 
