@@ -1,16 +1,31 @@
 <h1>Books</h1>
 <p>Here are all the book reviews I've written:</p>
 
-{{posts category="books"}}
-<div class="book-review">
-    <h3><a href="{{url}}">{{title}}</a></h3>
-    {{#author}}
-    <p><strong>Author:</strong> {{author}}</p>
-    {{/author}}
-    {{#rating}}
-    <p><strong>Rating:</strong> ⭐ {{rating}}/5</p>
-    {{/rating}}
-    <p class="excerpt">{{excerpt}}</p>
-    <p class="read-more"><a href="{{url}}">Read full review →</a></p>
+<div class="books-grid">
+  {{posts | category="books"}}
+    <article class="single book-row">
+      <div class="book-grid">
+        <div class="book-image">
+          <a href="{{url}}">
+            {{#cover}}
+            <img src="/images/covers/{{cover}}" alt="{{title}} cover">
+            {{/cover}}
+          </a>
+        </div>
+        <div class="book-info">
+          <h2 class="book-title">
+            <a href="{{url}}">{{title}}</a>
+          </h2>
+          {{#author}}
+          <p class="book-author">by {{author}}</p>
+          {{/author}}
+          {{#rating}}
+          <p class="book-rating">⭐ {{rating}}/5</p>
+          {{/rating}}
+          <p class="book-summary">{{summary}}</p>
+          <p><a href="{{url}}" class="read-more">Read more →</a></p>
+        </div>
+      </div>
+    </article>
+  {{/posts}}
 </div>
-{{/posts}}

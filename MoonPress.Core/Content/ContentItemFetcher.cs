@@ -214,7 +214,7 @@ public static class ContentItemFetcher
             var metadataLines = yamlContent.Split('\n');
             var knownKeys = new HashSet<string>
             {
-                "id", "title", "Title", "slug", "Slug", "datePublished", "dateUpdated", "category", "Category", "tags", "isDraft", "summary", "date", "Date", "save_as", "template"
+                "id", "title", "Title", "slug", "Slug", "datePublished", "dateUpdated", "category", "Category", "tags", "isDraft", "summary", "date", "Date", "save_as"
             };
             foreach (var line in metadataLines)
             {
