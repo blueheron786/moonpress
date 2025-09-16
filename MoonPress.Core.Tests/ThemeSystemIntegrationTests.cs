@@ -77,8 +77,8 @@ public class ThemeSystemIntegrationTests
         Assert.That(File.Exists(Path.Combine(_outputPath, "style.css")), Is.True);
 
         // Check that content pages use theme layout
-        Assert.That(File.Exists(Path.Combine(_outputPath, "test-article.html")), Is.True, "test-article.html was not generated");
-        var contentHtml = File.ReadAllText(Path.Combine(_outputPath, "test-article.html"));
+        Assert.That(File.Exists(Path.Combine(_outputPath, "uncategorized", "test-article.html")), Is.True, "test-article.html was not generated in uncategorized directory");
+        var contentHtml = File.ReadAllText(Path.Combine(_outputPath, "uncategorized", "test-article.html"));
         Assert.That(contentHtml, Does.Contain("<!DOCTYPE html>"));
         Assert.That(contentHtml, Does.Contain("<title>Test Article</title>"));
         Assert.That(contentHtml, Does.Contain("<link rel=\"stylesheet\" href=\"style.css\""));

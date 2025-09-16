@@ -98,8 +98,19 @@ public class StaticSiteGenerator
     {
         if (Directory.Exists(outputPath))
         {
-            // Clean existing output directory
-            Directory.Delete(outputPath, true);
+            // Clean existing output directory, preserving file handle on directory.
+            // This is incase there's a web-server running on that directory.
+            foreach (var item in Directory.GetFileSystemEntries(outputPath))
+            {
+                if (Directory.Exists(item))
+                {
+                    Directory.Delete(item, true);
+                }
+                else
+                {
+                    File.Delete(item);
+                }
+            }
         }
         
         Directory.CreateDirectory(outputPath);

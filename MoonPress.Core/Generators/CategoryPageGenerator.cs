@@ -75,9 +75,9 @@ public class CategoryPageGenerator
         
         foreach (var item in publishedItems)
         {
-            var itemUrl = IsFromPostsDirectory(item.FilePath) 
-                ? $"/{item.Category?.ToLowerInvariant()}/{item.Slug}.html" 
-                : $"/{item.Slug}.html";
+            var itemUrl = IsFromPagesDirectory(item.FilePath)
+                ? $"/{item.Slug}.html"
+                : $"/{item.Category?.ToLowerInvariant()}/{item.Slug}.html";
                 
             contentHtml.AppendLine($"  <li><a href=\"{itemUrl}\">{item.Title}</a>");
             

@@ -42,9 +42,16 @@ public class ContentPageGenerator
                 string fileName;
                 string fullOutputPath;
                 
-                if (IsFromPostsDirectory(item.FilePath))
+                if (IsFromPagesDirectory(item.FilePath))
                 {
-                    // Posts go in /<category>/<slug>.html
+                    // Pages go in root: /<slug>.html
+                    fileName = $"{item.Slug}.html";
+                    fullOutputPath = Path.Combine(outputPath, fileName);
+                    result.GeneratedFiles.Add(fileName);
+                }
+                else if (ShouldUseCategoryDirectory(item))
+                {
+                    // All other content (posts, books, etc.) go in /<category>/<slug>.html
                     var categoryDirectory = !string.IsNullOrEmpty(item.Category) 
                         ? Path.Combine(outputPath, item.Category.ToLowerInvariant())
                         : Path.Combine(outputPath, "uncategorized");
@@ -59,16 +66,9 @@ public class ContentPageGenerator
                     
                     result.GeneratedFiles.Add(relativePath);
                 }
-                else if (IsFromPagesDirectory(item.FilePath))
-                {
-                    // Pages go in /<slug>.html
-                    fileName = $"{item.Slug}.html";
-                    fullOutputPath = Path.Combine(outputPath, fileName);
-                    result.GeneratedFiles.Add(fileName);
-                }
                 else
                 {
-                    // Default behavior for other content
+                    // Default behavior for edge cases
                     fileName = $"{item.Slug}.html";
                     fullOutputPath = Path.Combine(outputPath, fileName);
                     result.GeneratedFiles.Add(fileName);
@@ -114,6 +114,12 @@ public class ContentPageGenerator
     private static bool IsFromPostsDirectory(string filePath)
     {
         return filePath.Contains(Path.Combine("content", "posts"));
+    }
+
+    private static bool ShouldUseCategoryDirectory(ContentItem item)
+    {
+        // All content except pages should use category-based directories
+        return !IsFromPagesDirectory(item.FilePath);
     }
 
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")

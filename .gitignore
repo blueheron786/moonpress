@@ -400,3 +400,7 @@ FodyWeavers.xsd
 
 CoverageReport/
 build.bat
+
+# Sometimes necessary for temporary testing files
+content/
+output/
