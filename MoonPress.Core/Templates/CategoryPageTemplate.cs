@@ -31,6 +31,16 @@ public class CategoryPageTemplate
                 .Replace("{{url}}", item.Url)
                 .Replace("{{title}}", item.Title);
                 
+            // Handle date replacement
+            if (item.DatePublished.HasValue)
+            {
+                itemHtml = itemHtml.Replace("{{date}}", item.DatePublished.Value.ToString("MMMM dd, yyyy"));
+            }
+            else
+            {
+                itemHtml = itemHtml.Replace("{{date}}", "");
+            }
+                
             // Handle conditional summary
             if (!string.IsNullOrWhiteSpace(item.Summary))
             {
@@ -99,4 +109,4 @@ public class CategoryPageTemplate
     }
 }
 
-public record CategoryPageItem(string Url, string Title, string? Summary = null);
+public record CategoryPageItem(string Url, string Title, string? Summary = null, DateTime? DatePublished = null);

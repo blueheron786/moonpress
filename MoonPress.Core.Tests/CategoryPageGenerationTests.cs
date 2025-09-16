@@ -316,4 +316,76 @@ summary: A test blog post
 This is a test blog post.";
         await File.WriteAllTextAsync(Path.Combine(postsPath, "test-blog.md"), blogPost);
     }
+
+    [Test]
+    public async Task GenerateCategoryPage_ShouldReplaceeDateTokens()
+    {
+        // Arrange
+        await CreateTestProjectWithDateTokens();
+        var project = StaticSiteProject.Load(_testProjectPath);
+
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, _outputPath);
+
+        // Assert
+        Assert.That(result.Success, Is.True);
+        
+        var categoryPagePath = Path.Combine(_outputPath, "category", "blog.html");
+        Assert.That(File.Exists(categoryPagePath), Is.True);
+        
+        var categoryContent = await File.ReadAllTextAsync(categoryPagePath);
+        Assert.That(categoryContent, Does.Contain("Test Blog Post"));
+        Assert.That(categoryContent, Does.Contain("September 15, 2025"));
+        Assert.That(categoryContent, Does.Not.Contain("{{date}}"));
+    }
+
+    private async Task CreateTestProjectWithDateTokens()
+    {
+        // Create project.json
+        var projectJson = @"{
+  ""Name"": ""Test Site"",
+  ""Theme"": ""default"",
+  ""CreatedOn"": ""2025-09-15T00:00:00Z""
+}";
+        await File.WriteAllTextAsync(Path.Combine(_testProjectPath, "project.json"), projectJson);
+
+        // Create theme with category template that includes date
+        var themePath = Path.Combine(_testProjectPath, "themes", "default");
+        Directory.CreateDirectory(themePath);
+        
+        var layoutContent = @"<!DOCTYPE html>
+<html>
+<head><title>{{title}}</title></head>
+<body>
+    <nav>{{navbar}}</nav>
+    <main>{{content}}</main>
+</body>
+</html>";
+        await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);
+
+        // Create custom category template with date token
+        var categoryTemplate = @"<h1>Category: {{categoryName}}</h1>
+<ul>
+{{#items}}
+  <li><a href=""{{url}}"">{{title}}</a> - {{date}}{{#summary}} - <em>{{summary}}</em>{{/summary}}</li>
+{{/items}}
+</ul>";
+        await File.WriteAllTextAsync(Path.Combine(themePath, "category-page.html"), categoryTemplate);
+
+        // Create posts with dates
+        var postsPath = Path.Combine(_testProjectPath, "content", "posts");
+        Directory.CreateDirectory(postsPath);
+        
+        var blogPost = @"---
+title: Test Blog Post
+slug: test-blog-post
+category: Blog
+datePublished: 2025-09-15
+summary: A test blog post with date
+---
+
+# Test Content
+This is a test blog post with a date.";
+        await File.WriteAllTextAsync(Path.Combine(postsPath, "test-blog.md"), blogPost);
+    }
 }

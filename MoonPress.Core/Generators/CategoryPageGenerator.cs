@@ -77,7 +77,7 @@ public class CategoryPageGenerator
                 ? $"/{item.Slug}.html"
                 : $"/{item.Category?.ToLowerInvariant()}/{item.Slug}.html";
                 
-            return new CategoryPageItem(itemUrl, item.Title, item.Summary);
+            return new CategoryPageItem(itemUrl, item.Title, item.Summary, item.DatePublished);
         });
         
         return _categoryTemplate.Render(categoryName, templateItems, themePath);
