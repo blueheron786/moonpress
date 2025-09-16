@@ -125,8 +125,8 @@ public class ContentPageGenerator
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
     {
         return layout
-            .Replace("{{ title }}", title)
-            .Replace("{{ content }}", content)
-            .Replace("{{ navbar }}", navbar);
+            .Replace("{{title}}", title)
+            .Replace("{{content}}", content)
+            .Replace("{{navbar}}", navbar);
     }
 }

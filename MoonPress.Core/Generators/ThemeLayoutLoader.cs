@@ -8,9 +8,9 @@ namespace MoonPress.Core.Generators;
 public class ThemeLayoutLoader
 {
     private const string ThemesFolderName = "themes";
-    private const string ContentPlaceholder = "{{ content }}";
-    private const string NavbarPlaceholder = "{{ navbar }}";
-    private const string TitlePlaceholder = "{{ title }}";
+    private const string ContentPlaceholder = "{{content}}";
+    private const string NavbarPlaceholder = "{{navbar}}";
+    private const string TitlePlaceholder = "{{title}}";
 
     public async Task<ThemeLayoutResult> LoadThemeLayoutAsync(StaticSiteProject project)
     {

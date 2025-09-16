@@ -4,16 +4,16 @@ using MoonPress.Core.Models;
 namespace MoonPress.Core.Templates;
 
 /// <summary>
-/// Processes {{ posts }} template blocks with filtering support
+/// Processes {{posts}} template blocks with filtering support
 /// </summary>
 public class PostsTemplateProcessor
 {
     /// <summary>
-    /// Processes all {{ posts }} blocks in the given template, replacing them with filtered content
+    /// Processes all {{posts}} blocks in the given template, replacing them with filtered content
     /// </summary>
-    /// <param name="template">The template containing {{ posts }} blocks</param>
+    /// <param name="template">The template containing {{posts}} blocks</param>
     /// <param name="contentItems">Available content items to filter from</param>
-    /// <returns>Template with all {{ posts }} blocks replaced with generated HTML</returns>
+    /// <returns>Template with all {{posts}} blocks replaced with generated HTML</returns>
     public string ProcessPostsBlocks(string template, List<ContentItem> contentItems)
     {
         if (string.IsNullOrWhiteSpace(template) || contentItems == null)
@@ -22,8 +22,8 @@ public class PostsTemplateProcessor
         var result = template;
         
         // Find all {{ posts }} blocks using simple string search
-        const string startPattern = "{{ posts";
-        const string endPattern = "{{ /posts }}";
+        const string startPattern = "{{posts";
+        const string endPattern = "{{/posts}}";
         
         int startIndex = 0;
         while ((startIndex = result.IndexOf(startPattern, startIndex)) != -1)
@@ -61,9 +61,9 @@ public class PostsTemplateProcessor
     }
 
     /// <summary>
-    /// Parses filter parameters from the opening {{ posts }} tag
+    /// Parses filter parameters from the opening {{posts}} tag
     /// </summary>
-    /// <param name="openTag">The opening tag (e.g., "{{ posts | category="blog" | limit=5 }}")</param>
+    /// <param name="openTag">The opening tag (e.g., "{{posts | category="blog" | limit=5}}")</param>
     /// <returns>Dictionary of filter key-value pairs</returns>
     private static Dictionary<string, string> ParseFilters(string openTag)
     {
@@ -71,7 +71,7 @@ public class PostsTemplateProcessor
         
         // Simple parsing: look for | followed by key="value" or key=value
         var parts = openTag.Split('|');
-        for (int i = 1; i < parts.Length; i++) // Skip the first part "{{ posts"
+        for (int i = 1; i < parts.Length; i++) // Skip the first part "{{posts"
         {
             var filter = parts[i].Trim().TrimEnd('}');
             var equalIndex = filter.IndexOf('=');
@@ -134,11 +134,11 @@ public class PostsTemplateProcessor
                 : $"uncategorized/{post.Slug}.html";
                 
             var postHtml = innerTemplate
-                .Replace("{{ url }}", urlPath)
-                .Replace("{{ title }}", post.Title)
-                .Replace("{{ category }}", post.Category)
-                .Replace("{{ summary }}", post.Summary ?? "")
-                .Replace("{{ date }}", post.DatePublished.ToString("MMMM dd, yyyy"));
+                .Replace("{{url}}", urlPath)
+                .Replace("{{title}}", post.Title)
+                .Replace("{{category}}", post.Category)
+                .Replace("{{summary}}", post.Summary ?? "")
+                .Replace("{{date}}", post.DatePublished.ToString("MMMM dd, yyyy"));
             generatedHtml.AppendLine(postHtml);
         }
         
