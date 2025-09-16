@@ -71,11 +71,12 @@ public class ContentPageGenerator
                         var pageContentHtml = RenderRawMarkdownContent(item);
                         customTemplateContent = customTemplateContent.Replace("{{content}}", pageContentHtml);
                         
-                        // Process individual field variables (title, cover, buy_link, etc.)
-                        customTemplateContent = _postsProcessor.ProcessSingleItemVariables(customTemplateContent, item);
+                        // Process posts blocks first (this handles templates like books.html with {{posts}} sections)
+                        customTemplateContent = _postsProcessor.ProcessPostsBlocks(customTemplateContent, contentItems);
                         
-                        // Process posts blocks in the custom template
-                        contentHtml = _postsProcessor.ProcessPostsBlocks(customTemplateContent, contentItems);
+                        // Then process individual field variables (title, cover, buy_link, etc.)
+                        // This handles templates like book.html for individual pages
+                        contentHtml = _postsProcessor.ProcessSingleItemVariables(customTemplateContent, item);
                     }
                     else
                     {
