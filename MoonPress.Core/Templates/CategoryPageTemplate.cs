@@ -65,7 +65,7 @@ public class CategoryPageTemplate
             return DefaultTemplate;
         }
 
-        var templatePath = Path.Combine(themePath, CategoryTemplateFileName);
+        var templatePath = Path.Combine(themePath, "templates", CategoryTemplateFileName);
         
         if (File.Exists(templatePath))
         {

@@ -29,7 +29,10 @@ content/
     index.md        # Your home page
 themes/
   your-theme/
-    books-list.html # Custom template for books
+    templates/
+      books-list.html     # Custom template for books page
+      category-page.html  # Template for category listing pages
+      home-with-books.html # Custom home page template
 ```
 
 ### 2. Create Book Content
@@ -67,7 +70,7 @@ Absolutely! This is a must-read for anyone looking to improve their productivity
 
 ### 3. Create a Custom Template
 
-Create a template file at `themes/your-theme/books-list.html`:
+Create a template file at `themes/your-theme/templates/books-list.html`:
 
 ```html
 <div class="page-intro">
@@ -225,7 +228,7 @@ Use `{{posts}}` blocks to display collections of content:
 
 ### Simple Projects Template
 
-Create `themes/your-theme/projects-list.html`:
+Create `themes/your-theme/templates/projects-list.html`:
 
 ```html
 {{content}}
@@ -290,7 +293,7 @@ Here are some of the projects I've worked on.
 
 ### Recipe Template
 
-Create `themes/your-theme/recipes-list.html`:
+Create `themes/your-theme/templates/recipes-list.html`:
 
 ```html
 {{content}}
@@ -372,7 +375,7 @@ template: home-with-books
 This is my personal blog where I share book reviews and thoughts.
 ```
 
-### Custom Template (`themes/your-theme/books-list.html`)
+### Custom Template (`themes/your-theme/templates/books-list.html`)
 ```html
 <div class="page-intro">
   {{content}}

@@ -1,0 +1,19 @@
+<div class="home-intro">
+    <h1>Welcome to My Blog</h1>
+    <p>I write about technology, books, and various thoughts.</p>
+</div>
+
+{{content}}
+
+<section class="recent-books">
+    <h2>Recent Book Reviews</h2>
+    {{posts category="books" count="5"}}
+    <div class="recent-book">
+        <h4><a href="{{url}}">{{title}}</a></h4>
+        {{#author}}<p class="book-author">by {{author}}</p>{{/author}}
+        {{#rating}}<p class="book-rating">⭐ {{rating}}/5</p>{{/rating}}
+        <p class="book-excerpt">{{excerpt}}</p>
+    </div>
+    {{/posts}}
+    <p><a href="/pages/books.html" class="view-all-books">View all book reviews →</a></p>
+</section>

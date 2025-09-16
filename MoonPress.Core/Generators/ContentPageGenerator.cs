@@ -37,8 +37,10 @@ public class ContentPageGenerator
                 var customTemplateName = item.CustomFields?.GetValueOrDefault("template");
                 if (!string.IsNullOrWhiteSpace(customTemplateName) && !string.IsNullOrWhiteSpace(themePath))
                 {
-                    // Try to load custom template from theme directory
-                    var customTemplatePath = Path.Combine(themePath, $"{customTemplateName}.html");
+                    // Try to load custom template from theme/templates directory
+                    var templatesDir = Path.Combine(themePath, "templates");
+                    var customTemplatePath = Path.Combine(templatesDir, $"{customTemplateName}.html");
+                    
                     if (File.Exists(customTemplatePath))
                     {
                         // Load and process custom template
