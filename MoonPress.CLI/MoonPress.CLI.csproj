@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>moonpress</AssemblyName>
+    <RootNamespace>MoonPress.CLI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoonPress.Core\MoonPress.Core.csproj" />
+    <ProjectReference Include="..\MoonPress.Rendering\MoonPress.Rendering.csproj" />
+  </ItemGroup>
+
+</Project>

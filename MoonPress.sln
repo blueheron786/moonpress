@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.Rendering", "Moon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.Rendering.Tests", "MoonPress.Rendering.Tests\MoonPress.Rendering.Tests.csproj", "{F6794FFB-C7AE-4F72-A5C6-CEB87522F9F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonPress.CLI", "MoonPress.CLI\MoonPress.CLI.csproj", "{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{F6794FFB-C7AE-4F72-A5C6-CEB87522F9F6}.Release|x64.Build.0 = Release|Any CPU
 		{F6794FFB-C7AE-4F72-A5C6-CEB87522F9F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{F6794FFB-C7AE-4F72-A5C6-CEB87522F9F6}.Release|x86.Build.0 = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|x64.Build.0 = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Debug|x86.Build.0 = Debug|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|x64.ActiveCfg = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|x64.Build.0 = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A65AD2A8-DC15-4073-A23E-67CDDFCA82BC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
