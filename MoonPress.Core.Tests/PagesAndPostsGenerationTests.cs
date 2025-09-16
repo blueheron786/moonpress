@@ -135,4 +135,68 @@ datePublished: 2025-09-12
 This is a blog post about advanced features.";
         await File.WriteAllTextAsync(Path.Combine(postsPath, "advanced-features.md"), post2Content);
     }
+
+    [Test]
+    public async Task GeneratePage_ShouldReplaceeDateTokenInPageTemplate()
+    {
+        // Arrange
+        await CreateTestProjectWithDateToken();
+        var project = StaticSiteProject.Load(_testProjectPath);
+
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, _outputPath);
+
+        // Assert
+        Assert.That(result.Success, Is.True);
+        
+        var aboutPagePath = Path.Combine(_outputPath, "about.html");
+        Assert.That(File.Exists(aboutPagePath), Is.True);
+        
+        var aboutContent = await File.ReadAllTextAsync(aboutPagePath);
+        Assert.That(aboutContent, Does.Contain("About Us"));
+        Assert.That(aboutContent, Does.Contain("Published on: September 15, 2025"));
+        Assert.That(aboutContent, Does.Not.Contain("{{date}}"));
+    }
+
+    private async Task CreateTestProjectWithDateToken()
+    {
+        // Create project.json
+        var projectJson = @"{
+  ""Name"": ""Test Site"",
+  ""Theme"": ""default"",
+  ""CreatedOn"": ""2025-09-15T00:00:00Z""
+}";
+        await File.WriteAllTextAsync(Path.Combine(_testProjectPath, "project.json"), projectJson);
+
+        // Create theme with date token in layout
+        var themePath = Path.Combine(_testProjectPath, "themes", "default");
+        Directory.CreateDirectory(themePath);
+        
+        var layoutContent = @"<!DOCTYPE html>
+<html>
+<head><title>{{title}}</title></head>
+<body>
+    <nav>{{navbar}}</nav>
+    <main>
+        {{content}}
+        <footer>Published on: {{date}}</footer>
+    </main>
+</body>
+</html>";
+        await File.WriteAllTextAsync(Path.Combine(themePath, "layout.html"), layoutContent);
+
+        // Create a page with a specific date
+        var pagesPath = Path.Combine(_testProjectPath, "content", "pages");
+        Directory.CreateDirectory(pagesPath);
+        
+        var aboutContent = @"---
+title: About Us
+slug: about
+datePublished: 2025-09-15
+---
+
+# About Us
+This is our about page.";
+        await File.WriteAllTextAsync(Path.Combine(pagesPath, "about.md"), aboutContent);
+    }
 }

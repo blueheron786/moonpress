@@ -399,7 +399,7 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/csharp
 
 CoverageReport/
-build.bat
+*.bat
 
 # Sometimes necessary for temporary testing files
 content/

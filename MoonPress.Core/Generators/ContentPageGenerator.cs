@@ -36,7 +36,7 @@ public class ContentPageGenerator
                 // Process posts filters in the content HTML
                 contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
                 
-                var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar);
+                var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar, item.DatePublished);
                 
                 // Determine output path based on content type
                 string fileName;
@@ -122,11 +122,19 @@ public class ContentPageGenerator
         return !IsFromPagesDirectory(item.FilePath);
     }
 
-    private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "")
+    private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "", DateTime? date = null)
     {
-        return layout
+        var result = layout
             .Replace("{{title}}", title)
             .Replace("{{content}}", content)
             .Replace("{{navbar}}", navbar);
+            
+        // Replace date token if a date is provided
+        if (date.HasValue)
+        {
+            result = result.Replace("{{date}}", date.Value.ToString("MMMM dd, yyyy"));
+        }
+        
+        return result;
     }
 }

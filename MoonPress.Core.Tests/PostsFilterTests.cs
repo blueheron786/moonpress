@@ -120,4 +120,42 @@ public class PostsFilterTests
         Assert.That(result, Does.Contain("Published Post"));
         Assert.That(result, Does.Not.Contain("Draft Post"));
     }
+
+    [Test]
+    public void ProcessPostsBlocks_ShouldReplaceeDateToken()
+    {
+        // Arrange
+        var template = @"
+{{posts | category=""blog"" | limit=1}}
+  <article>
+    <h2>{{title}}</h2>
+    <p>Published on: {{date}}</p>
+    <p>Category: {{category}}</p>
+  </article>
+{{/posts}}";
+
+        var testDate = DateTime.Parse("2025-09-15");
+        var contentItems = new List<ContentItem>
+        {
+            new ContentItem 
+            { 
+                Title = "Test Post", 
+                Slug = "test-post", 
+                Category = "blog", 
+                DatePublished = testDate,
+                IsDraft = false
+            }
+        };
+
+        // Act
+        var result = _processor.ProcessPostsBlocks(template, contentItems);
+
+        // Assert
+        Assert.That(result, Does.Contain("Test Post"));
+        Assert.That(result, Does.Contain("Published on: September 15, 2025"));
+        Assert.That(result, Does.Contain("Category: blog"));
+        Assert.That(result, Does.Not.Contain("{{date}}"));
+        Assert.That(result, Does.Not.Contain("{{title}}"));
+        Assert.That(result, Does.Not.Contain("{{category}}"));
+    }
 }
