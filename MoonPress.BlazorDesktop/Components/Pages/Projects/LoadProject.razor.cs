@@ -33,6 +33,7 @@ public partial class LoadProject : ComponentBase
 
                 if (project is not null)
                 {
+                    project.RootFolder = folder;
                     ProjectState.Current = project;
                     ProjectState.Current.RootFolder = folder;
 

@@ -1,4 +1,5 @@
 using MoonPress.Core;
+using MoonPress.Core.Content;
 
 namespace MoonPress.BlazorDesktop;
 
@@ -22,6 +23,10 @@ public static class ProjectState
         {
             _current = value;
             OnProjectLoaded?.Invoke();
+            if (_current != null)
+            {
+                ContentItemFetcher.GetContentItems(_current.RootFolder); // Load content items
+            }
         }
     }
 }
