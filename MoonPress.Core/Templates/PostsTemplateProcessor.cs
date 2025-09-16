@@ -128,8 +128,13 @@ public class PostsTemplateProcessor
         
         foreach (var post in posts)
         {
+            // Generate URL path based on category: /category/slug.html
+            var urlPath = !string.IsNullOrEmpty(post.Category)
+                ? $"{post.Category.ToLowerInvariant()}/{post.Slug}.html"
+                : $"uncategorized/{post.Slug}.html";
+                
             var postHtml = innerTemplate
-                .Replace("{{ url }}", $"{post.Slug}.html")
+                .Replace("{{ url }}", urlPath)
                 .Replace("{{ title }}", post.Title)
                 .Replace("{{ category }}", post.Category)
                 .Replace("{{ summary }}", post.Summary ?? "")

@@ -85,7 +85,7 @@ public class CategoryPageGenerationTests
         var tutorialsCategoryContent = await File.ReadAllTextAsync(Path.Combine(_outputPath, "category", "tutorials.html"));
         Assert.That(tutorialsCategoryContent.Contains("Category: Tutorials"), Is.True, "Tutorials category page should contain category title");
         Assert.That(tutorialsCategoryContent.Contains("Getting Started with MoonPress"), Is.True, "Tutorials category page should contain tutorial post title");
-        Assert.That(tutorialsCategoryContent.Contains("/blog/getting-started-moonpress.html"), Is.True, "Tutorials category page should contain correct tutorial post URL");
+        Assert.That(tutorialsCategoryContent.Contains("/tutorials/getting-started-moonpress.html"), Is.True, "Tutorials category page should contain correct tutorial post URL");
     }
 
     [Test]

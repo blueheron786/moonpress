@@ -55,7 +55,7 @@ public class IndexPagePostsFilterTests
         // Should contain the filtered blog posts
         Assert.That(indexContent, Does.Contain("Test Blog Post"));
         Assert.That(indexContent, Does.Not.Contain("Test News Post")); // Different category
-        Assert.That(indexContent, Does.Contain("href=\"test-blog-post.html\""));
+        Assert.That(indexContent, Does.Contain("href=\"blog/test-blog-post.html\""));
     }
 
     [Test]
@@ -132,7 +132,7 @@ This is a test news post.";
         <section class=""recent-blog-posts"">
             <h2>Recent Blog Posts</h2>
             {{ posts | category=""blog"" | limit=3 }}
-              <div><a href=""{{ slug }}.html"">{{ title }}</a></div>
+              <div><a href=""{{ url }}"">{{ title }}</a></div>
             {{ /posts }}
         </section>
     </main>

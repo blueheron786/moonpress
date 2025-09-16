@@ -44,12 +44,20 @@ public class ContentPageGenerator
                 
                 if (IsFromPostsDirectory(item.FilePath))
                 {
-                    // Posts go in /blog/<slug>.html
-                    var blogDirectory = Path.Combine(outputPath, "blog");
-                    Directory.CreateDirectory(blogDirectory);
+                    // Posts go in /<category>/<slug>.html
+                    var categoryDirectory = !string.IsNullOrEmpty(item.Category) 
+                        ? Path.Combine(outputPath, item.Category.ToLowerInvariant())
+                        : Path.Combine(outputPath, "uncategorized");
+                    
+                    Directory.CreateDirectory(categoryDirectory);
                     fileName = $"{item.Slug}.html";
-                    fullOutputPath = Path.Combine(blogDirectory, fileName);
-                    result.GeneratedFiles.Add($"blog/{fileName}");
+                    fullOutputPath = Path.Combine(categoryDirectory, fileName);
+                    
+                    var relativePath = !string.IsNullOrEmpty(item.Category)
+                        ? $"{item.Category.ToLowerInvariant()}/{fileName}"
+                        : $"uncategorized/{fileName}";
+                    
+                    result.GeneratedFiles.Add(relativePath);
                 }
                 else if (IsFromPagesDirectory(item.FilePath))
                 {

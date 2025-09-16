@@ -23,7 +23,7 @@ public class PostsFilterTests
         var template = @"
 <h1>My Blog</h1>
 {{ posts | category=""blog"" | limit=2 }}
-  <li><a href=""{{ slug }}"">{{ title }}</a></li>
+  <li><a href=""{{ url }}"">{{ title }}</a></li>
 {{ /posts }}
 <p>End</p>";
 
@@ -39,8 +39,8 @@ public class PostsFilterTests
         var result = _processor.ProcessPostsBlocks(template, contentItems);
 
         // Assert
-        Assert.That(result, Does.Contain("<li><a href=\"post-3\">Post 3</a></li>"));
-        Assert.That(result, Does.Contain("<li><a href=\"post-2\">Post 2</a></li>"));
+        Assert.That(result, Does.Contain("<li><a href=\"blog/post-3.html\">Post 3</a></li>"));
+        Assert.That(result, Does.Contain("<li><a href=\"blog/post-2.html\">Post 2</a></li>"));
         Assert.That(result, Does.Not.Contain("Post 1"));
         Assert.That(result, Does.Not.Contain("News 1"));
         Assert.That(result, Does.Contain("<h1>My Blog</h1>"));

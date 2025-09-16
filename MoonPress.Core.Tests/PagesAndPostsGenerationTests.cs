@@ -54,9 +54,10 @@ public class PagesAndPostsGenerationTests
         Assert.That(File.Exists(Path.Combine(_outputPath, "about.html")), Is.True, "About page should be in root");
         Assert.That(File.Exists(Path.Combine(_outputPath, "contact.html")), Is.True, "Contact page should be in root");
         
-        // Check that posts are generated in blog directory
+        // Check that posts are generated in category directories
+        Assert.That(Directory.Exists(Path.Combine(_outputPath, "tutorials")), Is.True, "Tutorials directory should exist");
+        Assert.That(File.Exists(Path.Combine(_outputPath, "tutorials", "getting-started-moonpress.html")), Is.True, "Getting started post should be in tutorials directory");
         Assert.That(Directory.Exists(Path.Combine(_outputPath, "blog")), Is.True, "Blog directory should exist");
-        Assert.That(File.Exists(Path.Combine(_outputPath, "blog", "getting-started-moonpress.html")), Is.True, "Getting started post should be in blog directory");
         Assert.That(File.Exists(Path.Combine(_outputPath, "blog", "advanced-features-ssg.html")), Is.True, "Advanced features post should be in blog directory");
     }
 

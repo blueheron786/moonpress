@@ -99,7 +99,7 @@ namespace MoonPress.Core.Tests
     <h2>📝 Latest Blog Posts</h2>
     <ul>
 {{ posts | category=""Blog"" | limit=2 }}
-        <li><a href=""{{ slug }}.html"">{{ title }}</a> - <em>{{ summary }}</em></li>
+        <li><a href=""{{ url }}"">{{ title }}</a> - <em>{{ summary }}</em></li>
 {{ /posts }}
     </ul>
 </section>
@@ -108,7 +108,7 @@ namespace MoonPress.Core.Tests
     <h2>🎓 Programming Tutorials</h2>
     <ul>
 {{ posts | category=""Tutorials"" | limit=3 }}
-        <li><a href=""{{ slug }}.html"">{{ title }}</a> - <em>{{ category }}</em></li>
+        <li><a href=""{{ url }}"">{{ title }}</a> - <em>{{ category }}</em></li>
 {{ /posts }}
     </ul>
 </section>";

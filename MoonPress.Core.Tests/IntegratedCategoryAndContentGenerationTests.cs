@@ -54,9 +54,10 @@ public class IntegratedCategoryAndContentGenerationTests
         Assert.That(File.Exists(Path.Combine(_outputPath, "about.html")), Is.True, "About page should exist");
         Assert.That(File.Exists(Path.Combine(_outputPath, "contact.html")), Is.True, "Contact page should exist");
         
-        // Verify posts are generated in blog directory
+        // Verify posts are generated in their respective category directories
+        Assert.That(Directory.Exists(Path.Combine(_outputPath, "tutorials")), Is.True, "Tutorials directory should exist");
+        Assert.That(File.Exists(Path.Combine(_outputPath, "tutorials", "tutorial-post.html")), Is.True, "Tutorial post should exist in tutorials directory");
         Assert.That(Directory.Exists(Path.Combine(_outputPath, "blog")), Is.True, "Blog directory should exist");
-        Assert.That(File.Exists(Path.Combine(_outputPath, "blog", "tutorial-post.html")), Is.True, "Tutorial post should exist in blog directory");
         Assert.That(File.Exists(Path.Combine(_outputPath, "blog", "blog-post.html")), Is.True, "Blog post should exist in blog directory");
         
         // Verify category pages are generated
@@ -94,7 +95,7 @@ public class IntegratedCategoryAndContentGenerationTests
         // Check tutorials category page content and links
         var tutorialsCategoryContent = await File.ReadAllTextAsync(Path.Combine(_outputPath, "category", "tutorials.html"));
         Assert.That(tutorialsCategoryContent.Contains("Category: Tutorials"), Is.True, "Tutorials category page should contain category title");
-        Assert.That(tutorialsCategoryContent.Contains("/blog/tutorial-post.html"), Is.True, "Tutorials category page should link to tutorial post with correct path");
+        Assert.That(tutorialsCategoryContent.Contains("/tutorials/tutorial-post.html"), Is.True, "Tutorials category page should link to tutorial post with correct path");
         Assert.That(tutorialsCategoryContent.Contains("Sample Tutorial Post"), Is.True, "Tutorials category page should contain tutorial post title");
     }
 
