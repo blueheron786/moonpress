@@ -9,6 +9,7 @@ public class AssetCopier
 {
     private const string ThemesFolderName = "themes";
     private const string StaticFolderName = "static";
+    private const string ContentFolderName = "content";
 
     public async Task CopyThemeAssetsAsync(StaticSiteProject project, string outputPath, SiteGenerationResult result)
     {
@@ -82,6 +83,46 @@ public class AssetCopier
             catch (Exception ex)
             {
                 result.Errors.Add($"Failed to copy static asset '{staticFile}': {ex.Message}");
+            }
+        }
+    }
+
+    public async Task CopyContentAssetsAsync(string projectRootFolder, string outputPath, SiteGenerationResult result)
+    {
+        var contentFolder = Path.Combine(projectRootFolder, ContentFolderName);
+        
+        if (!Directory.Exists(contentFolder))
+        {
+            return; // No content folder to process
+        }
+
+        // Get all non-markdown files from content subdirectories
+        var contentFiles = Directory
+            .EnumerateFiles(contentFolder, "*", SearchOption.AllDirectories)
+            .Where(file => !Path.GetExtension(file).Equals(".md", StringComparison.OrdinalIgnoreCase));
+
+        foreach (var contentFile in contentFiles)
+        {
+            try
+            {
+                var relativePath = Path.GetRelativePath(contentFolder, contentFile);
+                var outputFile = Path.Combine(outputPath, relativePath);
+                
+                // Ensure the output directory exists
+                var outputDir = Path.GetDirectoryName(outputFile);
+                if (!string.IsNullOrEmpty(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
+                
+                await CopyFileAsync(contentFile, outputFile);
+                result.GeneratedFiles.Add(relativePath);
+                
+                Console.WriteLine($"  -> Copied content asset: {relativePath}");
+            }
+            catch (Exception ex)
+            {
+                result.Errors.Add($"Failed to copy content asset '{contentFile}': {ex.Message}");
             }
         }
     }

@@ -82,6 +82,9 @@ public class StaticSiteGenerator
             // Copy static assets (if any)
             await _assetCopier.CopyStaticAssetsAsync(project.RootFolder, outputPath, result);
             
+            // Copy non-markdown files from content directory
+            await _assetCopier.CopyContentAssetsAsync(project.RootFolder, outputPath, result);
+            
             result.Success = true;
             result.EndTime = DateTime.UtcNow;
             result.Message = $"Successfully generated {result.PagesGenerated} pages in {result.Duration.TotalSeconds:F2} seconds";
