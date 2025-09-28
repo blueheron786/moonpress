@@ -276,7 +276,8 @@ Another published post in the same category.";
 
         // Create custom theme with custom category template
         var themePath = Path.Combine(_testProjectPath, "themes", "custom");
-        Directory.CreateDirectory(themePath);
+        var templatesPath = Path.Combine(themePath, "templates");
+        Directory.CreateDirectory(templatesPath);
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
@@ -298,7 +299,7 @@ Another published post in the same category.";
   </div>
 {{/items}}
 </div>";
-        await File.WriteAllTextAsync(Path.Combine(themePath, "category-page.html"), customCategoryTemplate);
+        await File.WriteAllTextAsync(Path.Combine(templatesPath, "category-page.html"), customCategoryTemplate);
 
         // Create a blog post to generate a category page
         var postsPath = Path.Combine(_testProjectPath, "content", "posts");
@@ -351,7 +352,8 @@ This is a test blog post.";
 
         // Create theme with category template that includes date
         var themePath = Path.Combine(_testProjectPath, "themes", "default");
-        Directory.CreateDirectory(themePath);
+        var templatesPath = Path.Combine(themePath, "templates");
+        Directory.CreateDirectory(templatesPath);
         
         var layoutContent = @"<!DOCTYPE html>
 <html>
@@ -370,7 +372,7 @@ This is a test blog post.";
   <li><a href=""{{url}}"">{{title}}</a> - {{date}}{{#summary}} - <em>{{summary}}</em>{{/summary}}</li>
 {{/items}}
 </ul>";
-        await File.WriteAllTextAsync(Path.Combine(themePath, "category-page.html"), categoryTemplate);
+        await File.WriteAllTextAsync(Path.Combine(templatesPath, "category-page.html"), categoryTemplate);
 
         // Create posts with dates
         var postsPath = Path.Combine(_testProjectPath, "content", "posts");
