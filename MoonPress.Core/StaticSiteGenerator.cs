@@ -26,7 +26,7 @@ public class StaticSiteGenerator
         
         _contentPageGenerator = new ContentPageGenerator(htmlRenderer, processor);
         _categoryPageGenerator = new CategoryPageGenerator(processor);
-        _indexPageGenerator = new IndexPageGenerator(processor);
+        _indexPageGenerator = new IndexPageGenerator(processor, htmlRenderer);
         _assetCopier = new AssetCopier();
         _themeLayoutLoader = new ThemeLayoutLoader();
     }

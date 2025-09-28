@@ -1,6 +1,7 @@
 using System.Text;
 using MoonPress.Core.Models;
 using MoonPress.Core.Templates;
+using MoonPress.Core.Renderers;
 
 namespace MoonPress.Core.Generators;
 
@@ -11,10 +12,12 @@ public class IndexPageGenerator
 {
     private const string ThemesFolderName = "themes";
     private readonly PostsTemplateProcessor _postsProcessor;
+    private readonly IHtmlRenderer? _htmlRenderer;
 
-    public IndexPageGenerator(PostsTemplateProcessor? postsProcessor = null)
+    public IndexPageGenerator(PostsTemplateProcessor? postsProcessor = null, IHtmlRenderer? htmlRenderer = null)
     {
         _postsProcessor = postsProcessor ?? new PostsTemplateProcessor();
+        _htmlRenderer = htmlRenderer;
     }
 
     public async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, StaticSiteProject project, SiteGenerationResult result)
@@ -57,6 +60,34 @@ public class IndexPageGenerator
 
         // Process posts filters first
         indexTemplate = _postsProcessor.ProcessPostsBlocks(indexTemplate, contentItems);
+
+        // Process markdown in the template if we have an HTML renderer
+        if (_htmlRenderer != null)
+        {
+            // Create a temporary content item to use the markdown processor
+            var tempContentItem = new ContentItem
+            {
+                Contents = indexTemplate,
+                Title = "Index",
+                DatePublished = DateTime.UtcNow
+            };
+            
+            // Use the HTML renderer to convert markdown to HTML, then extract just the content
+            var fullHtml = _htmlRenderer.RenderHtml(tempContentItem);
+            
+            // Extract just the content inside the <div class="content"> tags
+            var contentStart = fullHtml.IndexOf("<div class=\"content\">");
+            if (contentStart != -1)
+            {
+                contentStart = fullHtml.IndexOf('>', contentStart) + 1;
+                var contentEnd = fullHtml.LastIndexOf("</div>");
+                
+                if (contentEnd != -1 && contentEnd > contentStart)
+                {
+                    indexTemplate = fullHtml.Substring(contentStart, contentEnd - contentStart).Trim();
+                }
+            }
+        }
 
         // Generate the articles section
         var articlesSection = GenerateArticlesSection(contentItems);
