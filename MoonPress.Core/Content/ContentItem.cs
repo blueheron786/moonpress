@@ -39,6 +39,7 @@ public class ContentItem
     public string Title { get; set; } = string.Empty;
     public string Contents { get; set; } = string.Empty;
     public bool IsDraft { get; set; }
+    public bool Display { get; set; } = true; // Controls whether to show in navbar
     public string Category { get; set; } = string.Empty;
     public string Tags { get; set; } = string.Empty; // comma separated list of tags
                                                      // Custom key/value pairs

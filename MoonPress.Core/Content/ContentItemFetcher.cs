@@ -208,13 +208,17 @@ public static class ContentItemFetcher
 
             // Parse draft status
             var isDraft = bool.TryParse(isDraftStr, out var draft) && draft;
+            
+            // Parse display status - default to true if not specified or if Display: true
+            var displayStr = ExtractYamlValue(yamlContent, "Display") ?? ExtractYamlValue(yamlContent, "display");
+            var display = !bool.TryParse(displayStr, out var displayValue) || displayValue;
 
             // Extract all YAML key-value pairs for custom fields
             var customFields = new Dictionary<string, string>();
             var metadataLines = yamlContent.Split('\n');
             var knownKeys = new HashSet<string>
             {
-                "id", "title", "Title", "slug", "Slug", "datePublished", "dateUpdated", "category", "Category", "tags", "isDraft", "summary", "date", "Date", "save_as"
+                "id", "title", "Title", "slug", "Slug", "datePublished", "dateUpdated", "category", "Category", "tags", "isDraft", "Display", "display", "summary", "date", "Date", "save_as"
             };
             foreach (var line in metadataLines)
             {
@@ -240,6 +244,7 @@ public static class ContentItemFetcher
                 Category = ExtractYamlValue(yamlContent, "category") ?? ExtractYamlValue(yamlContent, "Category") ?? string.Empty,
                 Tags = ExtractYamlValue(yamlContent, "tags") ?? string.Empty,
                 IsDraft = isDraft,
+                Display = display,
                 Summary = ExtractYamlValue(yamlContent, "summary"),
                 Contents = bodyContent,
                 CustomFields = customFields

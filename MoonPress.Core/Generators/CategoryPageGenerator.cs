@@ -86,7 +86,7 @@ public class CategoryPageGenerator
     private static string GenerateNavbar(List<ContentItem> contentItems)
     {
         var pageItems = contentItems
-            .Where(item => IsFromPagesDirectory(item.FilePath) && !item.IsDraft)
+            .Where(item => IsFromPagesDirectory(item.FilePath) && !item.IsDraft && item.Display)
             .OrderBy(item => item.Title)
             .ToList();
 

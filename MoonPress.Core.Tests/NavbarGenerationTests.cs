@@ -209,4 +209,212 @@ This is a blog post, not a page.";
         Assert.That(aboutHtml, Does.Not.Contain("My Blog Post"), "Blog post should not appear in navbar");
         Assert.That(aboutHtml, Does.Not.Contain("my-blog-post.html"), "Blog post link should not appear in navbar");
     }
+
+    [Test]
+    public async Task GenerateSite_WithPageMarkedDisplayFalse_ExcludesFromNavbar()
+    {
+        // Arrange
+        var contentDir = Path.Combine(_testDirectory, "content", "pages");
+        
+        // Create a page with Display: false
+        var hiddenPage = @"---
+id: hidden
+title: Hidden Page
+slug: hidden
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+Display: false
+---
+# Hidden Page
+This page should not appear in navbar due to Display: false.";
+        File.WriteAllText(Path.Combine(contentDir, "hidden.md"), hiddenPage);
+        
+        var project = new StaticSiteProject
+        {
+            RootFolder = _testDirectory,
+            Theme = "default",
+            ProjectName = "Test Site"
+        };
+        
+        var outputDir = Path.Combine(_testDirectory, "output");
+        
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, outputDir);
+        
+        // Assert
+        Assert.That(result.Success, Is.True, $"Site generation failed: {result.Message}");
+        
+        // Check that hidden page was generated (it's not a draft)
+        Assert.That(File.Exists(Path.Combine(outputDir, "hidden.html")), Is.True, "hidden.html should be generated even when Display is false");
+        
+        // Check that hidden page link is not in navbar
+        var aboutHtml = await File.ReadAllTextAsync(Path.Combine(outputDir, "about.html"));
+        Assert.That(aboutHtml, Does.Not.Contain("Hidden Page"), "Hidden page should not appear in navbar when Display is false");
+        Assert.That(aboutHtml, Does.Not.Contain("hidden.html"), "Hidden page link should not appear in navbar when Display is false");
+        
+        // Verify other pages still appear
+        Assert.That(aboutHtml, Does.Contain(@"<a href=""/about.html"" class=""nav-link"">About Us</a>"), "About link should still be in navbar");
+        Assert.That(aboutHtml, Does.Contain(@"<a href=""/contact.html"" class=""nav-link"">Contact Us</a>"), "Contact link should still be in navbar");
+    }
+
+    [Test]
+    public async Task GenerateSite_WithPageMarkedDisplayTrue_IncludesInNavbar()
+    {
+        // Arrange
+        var contentDir = Path.Combine(_testDirectory, "content", "pages");
+        
+        // Create a page with explicit Display: true
+        var visiblePage = @"---
+id: visible
+title: Visible Page
+slug: visible
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+Display: true
+---
+# Visible Page
+This page should appear in navbar due to explicit Display: true.";
+        File.WriteAllText(Path.Combine(contentDir, "visible.md"), visiblePage);
+        
+        var project = new StaticSiteProject
+        {
+            RootFolder = _testDirectory,
+            Theme = "default",
+            ProjectName = "Test Site"
+        };
+        
+        var outputDir = Path.Combine(_testDirectory, "output");
+        
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, outputDir);
+        
+        // Assert
+        Assert.That(result.Success, Is.True, $"Site generation failed: {result.Message}");
+        
+        // Check that visible page was generated
+        Assert.That(File.Exists(Path.Combine(outputDir, "visible.html")), Is.True, "visible.html should be generated");
+        
+        // Check that visible page link is in navbar
+        var aboutHtml = await File.ReadAllTextAsync(Path.Combine(outputDir, "about.html"));
+        Assert.That(aboutHtml, Does.Contain("Visible Page"), "Visible page should appear in navbar when Display is true");
+        Assert.That(aboutHtml, Does.Contain("visible.html"), "Visible page link should appear in navbar when Display is true");
+    }
+
+    [Test]
+    public async Task GenerateSite_WithPageUsingLowercaseDisplayFalse_ExcludesFromNavbar()
+    {
+        // Arrange
+        var contentDir = Path.Combine(_testDirectory, "content", "pages");
+        
+        // Create a page with lowercase display: false
+        var hiddenPage = @"---
+id: lowercase-hidden
+title: Lowercase Hidden Page
+slug: lowercase-hidden
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+display: false
+---
+# Lowercase Hidden Page
+This page should not appear in navbar due to lowercase display: false.";
+        File.WriteAllText(Path.Combine(contentDir, "lowercase-hidden.md"), hiddenPage);
+        
+        var project = new StaticSiteProject
+        {
+            RootFolder = _testDirectory,
+            Theme = "default",
+            ProjectName = "Test Site"
+        };
+        
+        var outputDir = Path.Combine(_testDirectory, "output");
+        
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, outputDir);
+        
+        // Assert
+        Assert.That(result.Success, Is.True, $"Site generation failed: {result.Message}");
+        
+        // Check that page was generated but not in navbar
+        Assert.That(File.Exists(Path.Combine(outputDir, "lowercase-hidden.html")), Is.True, "lowercase-hidden.html should be generated");
+        
+        var aboutHtml = await File.ReadAllTextAsync(Path.Combine(outputDir, "about.html"));
+        Assert.That(aboutHtml, Does.Not.Contain("Lowercase Hidden Page"), "Page with lowercase display: false should not appear in navbar");
+        Assert.That(aboutHtml, Does.Not.Contain("lowercase-hidden.html"), "Page link with lowercase display: false should not appear in navbar");
+    }
+
+    [Test]
+    public async Task GenerateSite_WithMixedDisplaySettings_FiltersCorrectly()
+    {
+        // Arrange
+        var contentDir = Path.Combine(_testDirectory, "content", "pages");
+        
+        // Create multiple pages with different display settings
+        var explicitTruePage = @"---
+id: explicit-true
+title: Explicit True Page
+slug: explicit-true
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+Display: true
+---
+# Explicit True Page";
+        File.WriteAllText(Path.Combine(contentDir, "explicit-true.md"), explicitTruePage);
+        
+        var explicitFalsePage = @"---
+id: explicit-false
+title: Explicit False Page
+slug: explicit-false
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+Display: false
+---
+# Explicit False Page";
+        File.WriteAllText(Path.Combine(contentDir, "explicit-false.md"), explicitFalsePage);
+        
+        var defaultPage = @"---
+id: default
+title: Default Page
+slug: default
+datePublished: 2025-09-12 10:00:00
+isDraft: false
+---
+# Default Page";
+        File.WriteAllText(Path.Combine(contentDir, "default.md"), defaultPage);
+        
+        var project = new StaticSiteProject
+        {
+            RootFolder = _testDirectory,
+            Theme = "default",
+            ProjectName = "Test Site"
+        };
+        
+        var outputDir = Path.Combine(_testDirectory, "output");
+        
+        // Act
+        var result = await _generator.GenerateSiteAsync(project, outputDir);
+        
+        // Assert
+        Assert.That(result.Success, Is.True, $"Site generation failed: {result.Message}");
+        
+        var aboutHtml = await File.ReadAllTextAsync(Path.Combine(outputDir, "about.html"));
+        
+        // Should be in navbar: About Us, Contact Us, Default Page, Explicit True Page, Our Services (alphabetical order)
+        Assert.That(aboutHtml, Does.Contain("Explicit True Page"), "Page with explicit Display: true should be in navbar");
+        Assert.That(aboutHtml, Does.Contain("Default Page"), "Page without Display property should default to appearing in navbar");
+        
+        // Should NOT be in navbar: Explicit False Page
+        Assert.That(aboutHtml, Does.Not.Contain("Explicit False Page"), "Page with explicit Display: false should not be in navbar");
+        
+        // Verify proper ordering (alphabetical by title)
+        var aboutIndex = aboutHtml.IndexOf("About Us");
+        var contactIndex = aboutHtml.IndexOf("Contact Us");
+        var defaultIndex = aboutHtml.IndexOf("Default Page");
+        var explicitTrueIndex = aboutHtml.IndexOf("Explicit True Page");
+        var servicesIndex = aboutHtml.IndexOf("Our Services");
+        
+        Assert.That(aboutIndex, Is.LessThan(contactIndex), "About should come before Contact");
+        Assert.That(contactIndex, Is.LessThan(defaultIndex), "Contact should come before Default");
+        Assert.That(defaultIndex, Is.LessThan(explicitTrueIndex), "Default should come before Explicit True");
+        Assert.That(explicitTrueIndex, Is.LessThan(servicesIndex), "Explicit True should come before Services");
+    }
 }

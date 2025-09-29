@@ -399,4 +399,113 @@ summary: No category field";
         // Assert
         Assert.That(items1, Is.SameAs(items2)); // Should return same instance from cache
     }
+
+    [Test]
+    public void GetContentItems_ParsesDisplayProperty_WhenExplicitlySetToTrue()
+    {
+        // Arrange
+        var yaml = @"
+id: test1
+title: Test Title
+Display: true
+datePublished: 2023-01-01 12:00:00
+isDraft: false";
+        WriteMarkdown("item1.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(1));
+        var item = items.Values.First();
+        Assert.That(item.Display, Is.True);
+    }
+
+    [Test]
+    public void GetContentItems_ParsesDisplayProperty_WhenExplicitlySetToFalse()
+    {
+        // Arrange
+        var yaml = @"
+id: test1
+title: Test Title
+Display: false
+datePublished: 2023-01-01 12:00:00
+isDraft: false";
+        WriteMarkdown("item1.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(1));
+        var item = items.Values.First();
+        Assert.That(item.Display, Is.False);
+    }
+
+    [Test]
+    public void GetContentItems_ParsesDisplayProperty_WithLowercaseKey()
+    {
+        // Arrange
+        var yaml = @"
+id: test1
+title: Test Title
+display: false
+datePublished: 2023-01-01 12:00:00
+isDraft: false";
+        WriteMarkdown("item1.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(1));
+        var item = items.Values.First();
+        Assert.That(item.Display, Is.False);
+    }
+
+    [Test]
+    public void GetContentItems_DefaultsDisplayToTrue_WhenNotSpecified()
+    {
+        // Arrange
+        var yaml = @"
+id: test1
+title: Test Title
+datePublished: 2023-01-01 12:00:00
+isDraft: false";
+        WriteMarkdown("item1.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(1));
+        var item = items.Values.First();
+        Assert.That(item.Display, Is.True);
+    }
+
+    [Test]
+    public void GetContentItems_DoesNotIncludeDisplayInCustomFields()
+    {
+        // Arrange
+        var yaml = @"
+id: test1
+title: Test Title
+Display: false
+customField: customValue
+datePublished: 2023-01-01 12:00:00
+isDraft: false";
+        WriteMarkdown("item1.md", yaml);
+
+        // Act
+        var items = ContentItemFetcher.GetContentItems(_testRoot);
+
+        // Assert
+        Assert.That(items, Has.Count.EqualTo(1));
+        var item = items.Values.First();
+        Assert.That(item.Display, Is.False);
+        Assert.That(item.CustomFields.ContainsKey("Display"), Is.False);
+        Assert.That(item.CustomFields.ContainsKey("display"), Is.False);
+        Assert.That(item.CustomFields.ContainsKey("customField"), Is.True);
+        Assert.That(item.CustomFields["customField"], Is.EqualTo("customValue"));
+    }
 }

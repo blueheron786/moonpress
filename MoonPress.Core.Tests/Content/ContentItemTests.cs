@@ -199,4 +199,40 @@ public class ContentItemTests
         // Assert
         Assert.That(result, Is.EqualTo(DateTime.UtcNow).Within(TimeSpan.FromSeconds(1)));
     }
+
+    [Test]
+    public void Display_ShouldDefaultToTrue_WhenContentItemIsCreated()
+    {
+        // Arrange & Act
+        var contentItem = new ContentItem();
+
+        // Assert
+        Assert.That(contentItem.Display, Is.True);
+    }
+
+    [Test]
+    public void Display_ShouldBeSettable()
+    {
+        // Arrange
+        var contentItem = new ContentItem();
+
+        // Act
+        contentItem.Display = false;
+
+        // Assert
+        Assert.That(contentItem.Display, Is.False);
+    }
+
+    [Test]
+    public void Display_ShouldRemainTrue_WhenExplicitlySetToTrue()
+    {
+        // Arrange
+        var contentItem = new ContentItem();
+
+        // Act
+        contentItem.Display = true;
+
+        // Assert
+        Assert.That(contentItem.Display, Is.True);
+    }
 }
