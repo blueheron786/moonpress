@@ -72,12 +72,16 @@ public class PostsTemplateProcessor
         if (string.IsNullOrWhiteSpace(template) || contentItem == null)
             return template;
 
+        // Process conditional sections FIRST, before variable substitution
+        // This prevents variables from being replaced inside conditional tags
+        var result = ProcessConditionalSections(template, contentItem);
+
         // Generate URL path based on category: /category/slug.html
         var urlPath = !string.IsNullOrEmpty(contentItem.Category)
             ? $"/{contentItem.Category.ToLowerInvariant()}/{contentItem.Slug}.html"
             : $"/uncategorized/{contentItem.Slug}.html";
             
-        var result = template
+        result = result
             .Replace("{{url}}", urlPath)
             .Replace("{{title}}", contentItem.Title)
             .Replace("{{category}}", contentItem.Category ?? "")
@@ -92,9 +96,6 @@ public class PostsTemplateProcessor
                 result = result.Replace($"{{{{{field.Key}}}}}", field.Value);
             }
         }
-        
-        // Process conditional sections for custom fields
-        result = ProcessConditionalSections(result, contentItem);
         
         return result;
     }
@@ -167,12 +168,15 @@ public class PostsTemplateProcessor
         
         foreach (var post in posts)
         {
+            // Process conditional sections FIRST, before variable substitution
+            var postHtml = ProcessConditionalSections(innerTemplate, post);
+            
             // Generate URL path based on category: /category/slug.html
             var urlPath = !string.IsNullOrEmpty(post.Category)
                 ? $"/{post.Category.ToLowerInvariant()}/{post.Slug}.html"
                 : $"/uncategorized/{post.Slug}.html";
                 
-            var postHtml = innerTemplate
+            postHtml = postHtml
                 .Replace("{{url}}", urlPath)
                 .Replace("{{title}}", post.Title)
                 .Replace("{{category}}", post.Category ?? "")
@@ -187,9 +191,6 @@ public class PostsTemplateProcessor
                     postHtml = postHtml.Replace($"{{{{{field.Key}}}}}", field.Value);
                 }
             }
-            
-            // Process conditional sections for custom fields
-            postHtml = ProcessConditionalSections(postHtml, post);
             
             generatedHtml.AppendLine(postHtml);
         }
@@ -209,8 +210,10 @@ public class PostsTemplateProcessor
         {
             foreach (var field in post.CustomFields)
             {
-                var startTag = $"{{#{field.Key}}}";
-                var endTag = $"{{/{field.Key}}}";
+                // Use 4 braces to output 2 braces in interpolated strings
+                // $"{{{{" becomes "{{"
+                var startTag = $"{{{{#{field.Key}}}}}";
+                var endTag = $"{{{{/{field.Key}}}}}";
                 
                 if (!string.IsNullOrWhiteSpace(field.Value))
                 {
