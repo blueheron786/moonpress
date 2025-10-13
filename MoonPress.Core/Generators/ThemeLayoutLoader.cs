@@ -16,8 +16,6 @@ public class ThemeLayoutLoader
     {
         var themeLayoutPath = Path.Combine(project.RootFolder, ThemesFolderName, project.Theme, "layout.html");
         
-        Console.WriteLine($"Debug: Looking for theme layout at: {themeLayoutPath}");
-        
         if (!File.Exists(themeLayoutPath))
         {
             return new ThemeLayoutResult
@@ -30,10 +28,6 @@ public class ThemeLayoutLoader
         try
         {
             var layout = await File.ReadAllTextAsync(themeLayoutPath);
-            
-            Console.WriteLine($"Debug: Layout HTML = {layout}");
-            Console.WriteLine($"Debug: Looking for ContentPlaceholder = '{ContentPlaceholder}'");
-            Console.WriteLine($"Debug: Contains ContentPlaceholder = {layout.Contains(ContentPlaceholder)}");
             
             // Validate that the theme contains all required placeholders
             var missingPlaceholders = new List<string>();
