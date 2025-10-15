@@ -205,7 +205,10 @@ public class PostsTemplateProcessor
     {
         var result = template;
         
-        // Process custom field conditionals
+        // FIRST: Process {{if field_exists fieldname}} conditionals
+        result = ProcessFieldExistsConditionals(result, post);
+        
+        // THEN: Process custom field conditionals ({{#fieldname}})
         if (post.CustomFields != null)
         {
             foreach (var field in post.CustomFields)
@@ -230,6 +233,58 @@ public class PostsTemplateProcessor
         
         // Process standard field conditionals
         result = ProcessStandardConditionals(result, post);
+        
+        return result;
+    }
+    
+    /// <summary>
+    /// Processes {{if field_exists fieldname}}...{{/if}} conditionals.
+    /// These check if a field exists in CustomFields, regardless of its value.
+    /// </summary>
+    private static string ProcessFieldExistsConditionals(string template, ContentItem post)
+    {
+        var result = template;
+        const string pattern = "{{if field_exists ";
+        
+        while (true)
+        {
+            var startIndex = result.IndexOf(pattern);
+            if (startIndex == -1) break;
+            
+            // Find the end of the opening tag to extract field name
+            var openTagEnd = result.IndexOf("}}", startIndex);
+            if (openTagEnd == -1) break;
+            
+            // Extract field name from "{{if field_exists fieldname}}"
+            var fieldNameStart = startIndex + pattern.Length;
+            var fieldName = result.Substring(fieldNameStart, openTagEnd - fieldNameStart).Trim();
+            
+            // Find the closing {{/if}} tag
+            const string closingTag = "{{/if}}";
+            var closingIndex = result.IndexOf(closingTag, openTagEnd);
+            if (closingIndex == -1) break;
+            
+            // Extract the content between the tags
+            var contentStart = openTagEnd + 2;
+            var content = result.Substring(contentStart, closingIndex - contentStart);
+            
+            // Check if field exists in CustomFields
+            var fieldExists = post.CustomFields != null && post.CustomFields.ContainsKey(fieldName);
+            
+            // Calculate what to replace
+            var fullSection = result.Substring(startIndex, closingIndex + closingTag.Length - startIndex);
+            
+            if (fieldExists)
+            {
+                // Field exists - replace entire conditional with just the content
+                result = result.Replace(fullSection, content);
+            }
+            else
+            {
+                // Field doesn't exist - remove entire conditional section
+                result = result.Replace(fullSection, "");
+            }
+        }
         
         return result;
     }
