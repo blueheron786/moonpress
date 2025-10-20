@@ -84,6 +84,7 @@ public class PostsTemplateProcessor
         result = result
             .Replace("{{url}}", urlPath)
             .Replace("{{title}}", contentItem.Title)
+            .Replace("{{slug}}", contentItem.Slug)
             .Replace("{{category}}", contentItem.Category ?? "")
             .Replace("{{summary}}", contentItem.Summary ?? "")
             .Replace("{{date}}", contentItem.DatePublished.ToString("MMMM dd, yyyy"));
@@ -179,6 +180,7 @@ public class PostsTemplateProcessor
             postHtml = postHtml
                 .Replace("{{url}}", urlPath)
                 .Replace("{{title}}", post.Title)
+                .Replace("{{slug}}", post.Slug)
                 .Replace("{{category}}", post.Category ?? "")
                 .Replace("{{summary}}", post.Summary ?? "")
                 .Replace("{{date}}", post.DatePublished.ToString("MMMM dd, yyyy"));
