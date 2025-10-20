@@ -22,6 +22,18 @@ public class IndexPageGenerator
 
     public async Task GenerateIndexPageAsync(List<ContentItem> contentItems, string outputPath, string themeLayout, StaticSiteProject project, SiteGenerationResult result)
     {
+        // Check if there's a page with slug="index" - if so, skip auto-generation
+        // The ContentPageGenerator will handle it
+        var indexPage = contentItems.FirstOrDefault(i => 
+            !i.IsDraft && 
+            i.Slug.Equals("index", StringComparison.OrdinalIgnoreCase));
+        
+        if (indexPage != null)
+        {
+            // There's a custom index page, don't generate the default one
+            return;
+        }
+
         var publishedItems = contentItems
             .Where(i => !i.IsDraft)
             .OrderByDescending(i => i.DatePublished)

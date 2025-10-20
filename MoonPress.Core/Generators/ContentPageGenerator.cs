@@ -87,11 +87,30 @@ public class ContentPageGenerator
                 }
                 else
                 {
-                    // Use standard markdown rendering
-                    contentHtml = _htmlRenderer.RenderHtml(item);
+                    // Process posts blocks in the RAW markdown BEFORE rendering
+                    // This allows template tags like {{posts}} to work in markdown files
+                    var processedMarkdown = _postsProcessor.ProcessPostsBlocks(item.Contents, contentItems);
                     
-                    // Process posts filters in the content HTML
-                    contentHtml = _postsProcessor.ProcessPostsBlocks(contentHtml, contentItems);
+                    // Create a temporary item with the processed content for rendering
+                    var tempItem = new ContentItem
+                    {
+                        Id = item.Id,
+                        Title = item.Title,
+                        DatePublished = item.DatePublished,
+                        DateUpdated = item.DateUpdated,
+                        Category = item.Category,
+                        Tags = item.Tags,
+                        IsDraft = item.IsDraft,
+                        Display = item.Display,
+                        Summary = item.Summary,
+                        Contents = processedMarkdown,
+                        CustomFields = item.CustomFields,
+                        FilePath = item.FilePath
+                    };
+                    tempItem.Slug = item.Slug;
+                    
+                    // Now render the processed markdown to HTML
+                    contentHtml = _htmlRenderer.RenderHtml(tempItem);
                 }
                 
                 var html = ApplyThemeLayout(processedThemeLayout, item.Title, contentHtml, navbar, item.DatePublished);
