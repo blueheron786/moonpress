@@ -78,7 +78,7 @@ public class PostsTemplateProcessor
 
         // Generate URL path based on category: /category/slug.html
         var urlPath = !string.IsNullOrEmpty(contentItem.Category)
-            ? $"/{contentItem.Category.ToLowerInvariant()}/{contentItem.Slug}.html"
+            ? $"/{CategoryToSlug(contentItem.Category)}/{contentItem.Slug}.html"
             : $"/uncategorized/{contentItem.Slug}.html";
             
         result = result
@@ -173,7 +173,7 @@ public class PostsTemplateProcessor
             
             // Generate URL path based on category: /category/slug.html
             var urlPath = !string.IsNullOrEmpty(post.Category)
-                ? $"/{post.Category.ToLowerInvariant()}/{post.Slug}.html"
+                ? $"/{CategoryToSlug(post.Category)}/{post.Slug}.html"
                 : $"/uncategorized/{post.Slug}.html";
                 
             postHtml = postHtml
@@ -342,5 +342,19 @@ public class PostsTemplateProcessor
         
         var sectionLength = endIndex + endTag.Length - startIndex;
         return text.Remove(startIndex, sectionLength);
+    }
+
+    /// <summary>
+    /// Converts a category name to a URL-safe slug
+    /// e.g., "Jannah Journeys" -> "jannah-journeys"
+    /// </summary>
+    private static string CategoryToSlug(string category)
+    {
+        if (string.IsNullOrEmpty(category))
+        {
+            return string.Empty;
+        }
+        
+        return category.ToLowerInvariant().Replace(" ", "-");
     }
 }

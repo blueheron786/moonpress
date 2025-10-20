@@ -130,7 +130,7 @@ public class ContentPageGenerator
                 {
                     // All other content (posts, books, etc.) go in /<category>/<slug>.html
                     var categoryDirectory = !string.IsNullOrEmpty(item.Category) 
-                        ? Path.Combine(outputPath, item.Category.ToLowerInvariant())
+                        ? Path.Combine(outputPath, CategoryToSlug(item.Category))
                         : Path.Combine(outputPath, "uncategorized");
                     
                     Directory.CreateDirectory(categoryDirectory);
@@ -138,7 +138,7 @@ public class ContentPageGenerator
                     fullOutputPath = Path.Combine(categoryDirectory, fileName);
                     
                     var relativePath = !string.IsNullOrEmpty(item.Category)
-                        ? $"{item.Category.ToLowerInvariant()}/{fileName}"
+                        ? $"{CategoryToSlug(item.Category)}/{fileName}"
                         : $"uncategorized/{fileName}";
                     
                     result.GeneratedFiles.Add(relativePath);
@@ -197,6 +197,20 @@ public class ContentPageGenerator
     {
         // All content except pages should use category-based directories
         return !IsFromPagesDirectory(item.FilePath);
+    }
+
+    /// <summary>
+    /// Converts a category name to a URL-safe slug
+    /// e.g., "Jannah Journeys" -> "jannah-journeys"
+    /// </summary>
+    private static string CategoryToSlug(string category)
+    {
+        if (string.IsNullOrEmpty(category))
+        {
+            return string.Empty;
+        }
+        
+        return category.ToLowerInvariant().Replace(" ", "-");
     }
 
     private static string ApplyThemeLayout(string layout, string title, string content, string navbar = "", DateTime? date = null)
