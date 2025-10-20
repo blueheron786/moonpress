@@ -29,7 +29,9 @@ public class ContentItemHtmlRenderer : IHtmlRenderer
         // Determine if this is a page or a post/article
         // Pages (in content/pages/) don't show title and date
         // Posts/articles do show them
-        var isPage = contentItem.FilePath.Contains(Path.Combine("content", "pages"));
+        // Normalize path separators to handle both forward and backslashes
+        var normalizedPath = contentItem.FilePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        var isPage = normalizedPath.Contains(Path.Combine("content", "pages"));
         
         if (isPage)
         {
